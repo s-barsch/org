@@ -1,14 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import './App.css';
+import React, { useEffect, useState } from 'react';
 
-const File = ({ file }) => {
-  console.log("x");
-  return (
-    <div>{file.path}</div>
-  )
-}
-
-const App = () => {
+const Files = () => {
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
@@ -27,4 +19,12 @@ const App = () => {
   );
 }
 
-export default App;
+const File = ({ file }) => {
+  console.log("x");
+  return (
+    <div>{file.path}</div>
+  )
+}
+
+export default Files;
+

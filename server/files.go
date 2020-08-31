@@ -5,8 +5,8 @@ import (
 )
 
 type File struct {
-	Path  string
-	IsDir bool
+	Path  string `json:"path"`
+	IsDir bool	 `json:"isdir"`
 }
 
 func getFiles(path string) ([]*File, error) {
