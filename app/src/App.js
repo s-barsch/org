@@ -1,34 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import './App.css';
-import { basename } from 'path';
-
-const File = ({ file }) => {
-  console.log("x");
-  return (
-    <>
-      <div>- <a href={file.path}>{basename(file.path)}</a> ({file.type})</div>
-    </>
-  )
-}
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import Files from './components/files';
 
 const App = () => {
-  const [files, setFiles] = useState([]);
-
-  const path = window.location.pathname;
-
-  useEffect(() => {
-    fetch("/api/view" + path).then(
-      resp => resp.json().then(
-        files => setFiles(files)
-      ));
-
-  }, [path]);
-
   return (
-    files.map((file, i) => (
-      <File key={i} file={file} />
-    ))
-  );
+    <Router>
+    <Switch>
+    <Route path="/">
+        <Link to="..">^</Link>
+        <Files />
+      </Route>
+    </Switch>
+    </Router>
+  )
 }
 
 export default App;
