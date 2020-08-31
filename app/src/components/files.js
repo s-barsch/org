@@ -13,9 +13,10 @@ const Files = () => {
   }, []);
 
   return (
-    files.map((file, i) => (
+    files.map((file, i) => ({
+      if
       <File key={i} file={file} />
-    ))
+    }))
   );
 }
 

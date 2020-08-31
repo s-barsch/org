@@ -14,13 +14,16 @@ func main() {
 func routes() *mux.Router {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/view/", view)
+	r.PathPrefix("/api/view/").HandlerFunc(view)
 
 	return r
 }
 
+var ROOT = "/home/stef/org"
+
 func view(w http.ResponseWriter, r *http.Request) {
-	files, err := getFiles("/home/stef/org" + r.URL.Path[len("/api/view/"):])
+	path := r.URL.Path[len("/api/view"):]
+	files, err := getFiles(path)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
