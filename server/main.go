@@ -3,7 +3,8 @@ package main
 import (
 	"net/http"
 	"github.com/gorilla/mux"
-	"encoding/json"
+	"log"
+	"os"
 )
 
 func main() {
@@ -23,14 +24,21 @@ var ROOT = "/home/stef/org"
 
 func view(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len("/api/view"):]
-	files, err := getFiles(path)
+
+	fi, err := os.Stat(ROOT + path)
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		http.NotFound(w, r)
+		log.Println(err)
 		return
 	}
-	err = json.NewEncoder(w).Encode(files)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
+
+	if fi.IsDir() {
+		dirListing(w, path)
+		return
+	}
+
+	if typ(path, false) == "text" {
+		textContent(w, path)
 		return
 	}
 }

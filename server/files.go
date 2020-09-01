@@ -25,7 +25,7 @@ func getFiles(path string) ([]*File, error) {
 		}
 		files = append(files, &File{
 			Path:  filepath.Join(path, fi.Name()),
-			Type:  typ(path, isDir),
+			Type:  typ(fi.Name(), isDir),
 		})
 	}
 	return files, nil
@@ -38,6 +38,8 @@ func typ(path string, isDir bool) string {
 	switch filepath.Ext(strings.ToLower(path)) {
 	case ".jpg", ".png", ".gif":
 		return "image"
+	case ".txt", ".info":
+		return "text"
 	}
 	return "file"
 }
