@@ -23,14 +23,29 @@ const Text = ({file}) => {
         textContent => setBody(textContent)
       )
     );
-
   }, [file]);
+
+  const handleTyping = event => {
+    setBody(event.target.value);
+  }
+
+  const submit = event => {
+    fetch("/api" + file.path, {
+      method: "POST",
+      body:   body
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
 
   return (
     <>
       <Dir file={file} />
-      <TextareaAutosize value={body} />
-    </>
+      <TextareaAutosize value={body}
+      onChange={handleTyping}
+      onBlur={submit} />
+      </>
   )
 }
 

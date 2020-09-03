@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"os"
+	"io/ioutil"
+	"log"
 )
 
 func main() {
@@ -24,7 +26,18 @@ func routes() *mux.Router {
 var ROOT = "org"
 
 func write(w http.ResponseWriter, r *http.Request) {
-	println(r.URL.Path)
+	path := r.URL.Path[len("/api"):]
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	err = ioutil.WriteFile(ROOT+path, body, 0664)
+	if err == nil {
+		log.Printf("written.\n{%s}\n", body)
+	}
 }
 
 func view(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +52,6 @@ func view(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case fi.IsDir():
 		dirListing(w, path)
-
 	case fileType(path) == "text":
 		textContent(w, path)
 	}
