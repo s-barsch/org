@@ -60,7 +60,7 @@ const Dir = ({file}) => {
 const Files = () => {
   const [files, setFiles] = useState([]);
 
-  let path = useLocation().pathname;
+  const path = useLocation().pathname;
   useEffect(() => {
     fetch("/api" + path).then(
       resp => resp.json().then(

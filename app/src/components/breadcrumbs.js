@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const Spacer = () => {
   return (
-    <span class="spacer">/</span>
+    <span className="spacer">/</span>
   )
 }
 
@@ -16,15 +16,19 @@ const Breadcrumbs = () => {
   const items = path.substr(1).split("/");
   let href = ""
   return (
-    items.map((e, i) => {
-      href += "/" + e
-      return (
-        <>
-          <Spacer />
-          <Link to={href}>{e}</Link>
-        </>
-      )
+    items.map((name, i) => {
+      href += "/" + name
+      return <Crumb key={i} href={href} name={name} />
     })
+  )
+}
+
+const Crumb = ({href, name}) => {
+  return (
+    <>
+    <Spacer />
+    <Link to={href}>{name}</Link>
+    </>
   )
 }
 

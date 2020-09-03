@@ -3,7 +3,7 @@
 }
 
 body {
-    margin:0;
+    margin:.5rem 1rem;
 }
 
 body,
@@ -19,4 +19,8 @@ a {
 textarea {
     font-size:2.25rem;
     width:100%;
+}
+
+.spacer {
+    margin:0 .375rem;
 }
