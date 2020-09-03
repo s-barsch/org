@@ -37,7 +37,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if typ(path, false) == "text" {
+	if fileType(path) == "text" {
 		textContent(w, path)
 		return
 	}

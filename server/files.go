@@ -2,7 +2,7 @@ package main
 
 import (
 	"io/ioutil"
-	"path/filepath"
+	p "path/filepath"
 	"strings"
 	"os"
 )
@@ -13,33 +13,34 @@ type File struct {
 }
 
 func getFiles(path string) ([]*File, error) {
-	l, err := ioutil.ReadDir(filepath.Join(ROOT, path))
+	l, err := ioutil.ReadDir(p.Join(ROOT, path))
 	if err != nil {
 		return nil, err
 	}
 	files := []*File{}
 	for _, fi := range l {
-		isDir := fi.IsDir()
-		if fi.Mode() & os.ModeSymlink != 0 {
-			isDir = true
-		}
 		files = append(files, &File{
-			Path:  filepath.Join(path, fi.Name()),
-			Type:  typ(fi.Name(), isDir),
+			Path:  p.Join(path, fi.Name()),
+			Type:  fileType(fi.Name()),
 		})
 	}
 	return files, nil
 }
 
-func typ(path string, isDir bool) string {
-	if isDir {
-		return "dir"
-	}
-	switch filepath.Ext(strings.ToLower(path)) {
+func fileType(path string) string {
+	switch p.Ext(strings.ToLower(path)) {
 	case ".jpg", ".png", ".gif":
 		return "image"
 	case ".txt", ".info":
 		return "text"
+	default:
+		fi, err := os.Stat(path)
+		if err != nil {
+			return "file"
+		}
+		if fi.IsDir() || fi.Mode() & os.ModeSymlink != 0 {
+			return "dir"
+		}
 	}
 	return "file"
 }
