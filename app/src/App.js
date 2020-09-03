@@ -1,15 +1,17 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Files from './components/files';
+import Top from './components/top';
 
 const App = () => {
+
   return (
     <Router>
     <Switch>
     <Route path="/">
-        <Link to="..">^</Link>
-        <Files />
+      <Top />
+      <Files />
       </Route>
     </Switch>
     </Router>
