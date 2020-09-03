@@ -20,7 +20,7 @@ func routes() *mux.Router {
 	return r
 }
 
-var ROOT = "/home/stef/org"
+var ROOT = "org"
 
 func view(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len("/api/view"):]
