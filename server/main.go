@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"github.com/gorilla/mux"
-	"log"
 	"os"
 )
 
@@ -15,30 +14,33 @@ func main() {
 func routes() *mux.Router {
 	r := mux.NewRouter()
 
-	r.PathPrefix("/api/view/").HandlerFunc(view)
+	api := r.PathPrefix("/api/").Subrouter()
+	api.Methods("GET").HandlerFunc(view)
+	api.Methods("POST").HandlerFunc(write)
 
 	return r
 }
 
 var ROOT = "org"
 
+func write(w http.ResponseWriter, r *http.Request) {
+	println(r.URL.Path)
+}
+
 func view(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path[len("/api/view"):]
+	path := r.URL.Path[len("/api"):]
 
 	fi, err := os.Stat(ROOT + path)
 	if err != nil {
 		http.NotFound(w, r)
-		log.Println(err)
 		return
 	}
 
-	if fi.IsDir() {
+	switch {
+	case fi.IsDir():
 		dirListing(w, path)
-		return
-	}
 
-	if fileType(path) == "text" {
+	case fileType(path) == "text":
 		textContent(w, path)
-		return
 	}
 }

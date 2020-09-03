@@ -18,7 +18,7 @@ const Text = ({file}) => {
   const [body, setBody] = useState("");
 
   useEffect(() => {
-    fetch("/api/view" + file.path).then(
+    fetch("/api" + file.path).then(
       resp => resp.text().then(
         textContent => setBody(textContent)
       )
@@ -47,7 +47,7 @@ const Files = () => {
 
   let path = useLocation().pathname;
   useEffect(() => {
-    fetch("/api/view" + path).then(
+    fetch("/api" + path).then(
       resp => resp.json().then(
         files => setFiles(files)
       ));
