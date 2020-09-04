@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
-import Files from './components/files';
+import DirView from './components/files';
 import Top from './components/top';
+import Filetype from './funcs/filetype';
 
 const App = () => {
 
@@ -29,7 +30,7 @@ const Dir = () => {
   return (
     <>
       <Top />
-      <Files />
+      <DirView />
     </>
   )
 }
@@ -43,11 +44,4 @@ const Single = () => {
   )
 }
 
-const Filetype = (path) => {
-  switch (path.split('.').pop()) {
-    case "txt":
-      return "text"
-    default:
-      return "dir"
-  }
-}
+

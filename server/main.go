@@ -52,7 +52,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case fi.IsDir():
 		dirListing(w, path)
-	case fileType(path) == "text":
+	case filetype(path) == "text":
 		textContent(w, path)
 	}
 }

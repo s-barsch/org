@@ -4,7 +4,11 @@ import { basename } from 'path';
 import Breadcrumbs from './breadcrumbs';
 
 const DirName = () => {
-  return basename(useLocation().pathname);
+  const name = basename(useLocation().pathname);
+  if (name === "") {
+    return "org"
+  }
+  return name
 }
 
 const Root = () => {

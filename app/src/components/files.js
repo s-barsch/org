@@ -1,63 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { basename } from 'path';
-import TextareaAutosize from 'react-textarea-autosize';
+import { useLocation, Link } from 'react-router-dom';
+import Text from './text';
+import Info from './info';
 
 const File = ({ file }) => {
   switch (file.type) {
     case "dir":
-      return Dir({file})
+      return Info({file})
     case "text":
       return Text({file})
     default:
-      return Dir({file})
+      return Info({file})
   }
 }
 
-const Text = ({file}) => {
-  const [body, setBody] = useState("");
-
-  useEffect(() => {
-    fetch("/api" + file.path).then(
-      resp => resp.text().then(
-        textContent => setBody(textContent)
-      )
-    );
-  }, [file]);
-
-  const handleTyping = event => {
-    setBody(event.target.value);
-  }
-
-  const submit = event => {
-    fetch("/api" + file.path, {
-      method: "POST",
-      body:   body
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  }
-
-  return (
-    <>
-      <Dir file={file} />
-      <TextareaAutosize value={body}
-      onChange={handleTyping}
-      onBlur={submit} />
-      </>
-  )
-}
-
-const Dir = ({file}) => {
-  return (
-    <>
-      <div>- <Link to={file.path}>{basename(file.path)}</Link> ({file.type})</div>
-    </>
-  )
-}
-
-const Files = () => {
+const DirView = () => {
   const [files, setFiles] = useState([]);
 
   const path = useLocation().pathname;
@@ -69,6 +26,30 @@ const Files = () => {
 
   }, [path]);
 
+
+  return (
+    <>
+      <DirList  dirs={dirsOnly(files)} />
+      <FileList files={filesOnly(files)} />
+    </>
+  )
+}
+
+const DirList = ({dirs}) => {
+  return (
+    dirs.map((dir, i) => (
+      <Dir key={i} dir={dir} />
+    ))
+  )
+}
+
+const Dir = ({dir}) => {
+  return (
+    <Link to={dir.path}>{dir.path}</Link>
+  )
+}
+
+const FileList = ({files}) => {
   return (
     files.map((file, i) => (
       <File key={i} file={file} />
@@ -76,6 +57,32 @@ const Files = () => {
   );
 }
 
-export default Files;
+export default DirView;
+
+const dirsOnly = (list) => {
+  return list.filter((file) => {
+    return file.type === "dir"
+  })
+}
+
+const filesOnly = (list) => {
+  return list.filter((file) => {
+    return file.type !== "dir"
+  })
+}
+
+/*
+const NewDir = () => {
+  const [name, setName] = useState("");
+  const change = event => {
+    setName(event.target.value);
+  }
+  const submit = event => {
+  }
+  return (
+    <input type="text" onChange={change} onBlur={submit} />
+  )
+}
 
 
+*/
