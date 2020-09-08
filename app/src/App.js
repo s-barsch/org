@@ -9,14 +9,14 @@ const App = () => {
 
   return (
     <Router>
-      <View />
+        <ViewSwitch />
     </Router>
   )
 }
 
 export default App;
 
-const View = () => {
+const ViewSwitch = () => {
   const path = useLocation().pathname;
   switch (Filetype(path)) {
     case "text":

@@ -2,8 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import Text from './text';
 import Info from './info';
+import {basename} from 'path';
+import AddDir from './add-dir';
 
 const File = ({ file }) => {
+  const drag = (ev) => {
+    ev.dataTransfer.setData("text", file.path);
+  }
+
+  return (
+    <div draggable="true" onDragStart={drag}>
+      <FileSwitch file={file} />
+    </div>
+  )
+}
+
+const FileSwitch = ({file}) => {
   switch (file.type) {
     case "dir":
       return Info({file})
@@ -17,21 +31,38 @@ const File = ({ file }) => {
 const DirView = () => {
   const [files, setFiles] = useState([]);
 
-  const path = useLocation().pathname;
-  useEffect(() => {
+  const loadFiles = (path) => {
     fetch("/api" + path).then(
       resp => resp.json().then(
         files => setFiles(files)
       ));
+  }
 
+  const path = useLocation().pathname;
+
+  useEffect(() => {
+    loadFiles(path);
   }, [path]);
 
+  const addNewDir = (name) => {
+    fetch("/api" + path + "/" + name, {
+      method: "POST"
+    }).then(
+      loadFiles(path)
+    ).catch(err => {
+      alert(err);
+      console.log(err);
+    })
+  }
 
   return (
-    <>
-      <DirList  dirs={dirsOnly(files)} />
+    <section>
+      <nav id="dirs">
+        <DirList  dirs={dirsOnly(files)} />
+        <AddDir submitFn={addNewDir} />
+      </nav>
       <FileList files={filesOnly(files)} />
-    </>
+    </section>
   )
 }
 
@@ -45,7 +76,7 @@ const DirList = ({dirs}) => {
 
 const Dir = ({dir}) => {
   return (
-    <Link to={dir.path}>{dir.path}</Link>
+    <Link to={dir.path}>{basename(dir.path)}</Link>
   )
 }
 

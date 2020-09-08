@@ -33,7 +33,7 @@ const Text = ({file}) => {
       <TextareaAutosize value={body}
       onChange={handleTyping}
       onBlur={submit} />
-      </>
+    </>
   )
 }
 

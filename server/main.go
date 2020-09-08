@@ -6,6 +6,8 @@ import (
 	"os"
 	"io/ioutil"
 	"log"
+	"strings"
+	"path/filepath"
 )
 
 func main() {
@@ -18,14 +20,43 @@ func routes() *mux.Router {
 
 	api := r.PathPrefix("/api/").Subrouter()
 	api.Methods("GET").HandlerFunc(view)
-	api.Methods("POST").HandlerFunc(write)
+	api.Methods("POST").HandlerFunc(writeSwitch)
 
 	return r
 }
 
 var ROOT = "org"
 
-func write(w http.ResponseWriter, r *http.Request) {
+func writeSwitch(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path[len("/api"):]
+
+	if strings.Contains(path, ".") {
+		writeFile(w, r)
+		return
+	}
+	createDir(w, r)
+}
+
+func createDir(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path[len("/api"):]
+	fi, err := os.Stat(ROOT+filepath.Dir(path))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	if !fi.IsDir() {
+		http.Error(w, "Can’t create dir in non-dir.", 500)
+		return
+	}
+	err = os.Mkdir(ROOT + path, 0755)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	return
+}
+
+func writeFile(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len("/api"):]
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -36,7 +67,7 @@ func write(w http.ResponseWriter, r *http.Request) {
 
 	err = ioutil.WriteFile(ROOT+path, body, 0664)
 	if err == nil {
-		log.Printf("written.\n{%s}\n", body)
+		log.Printf("writeFile:\n{%s}\n", body)
 	}
 }
 
