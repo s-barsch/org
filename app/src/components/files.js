@@ -5,31 +5,31 @@ import Info from './info';
 import {basename} from 'path';
 import AddDir from './add-dir';
 
-const File = ({ file }) => {
+const FileEntry = ({ file, delFn }) => {
   const drag = (ev) => {
     ev.dataTransfer.setData("text", file.path);
   }
 
   return (
     <div draggable="true" onDragStart={drag}>
-      <FileSwitch file={file} />
+      <FileSwitch file={file} delFn={delFn} />
     </div>
   )
 }
 
-const FileSwitch = ({file}) => {
+const FileSwitch = ({file, delFn}) => {
   switch (file.type) {
-    case "dir":
-      return Info({file})
     case "text":
-      return Text({file})
+      return <Text file={file} delFn={delFn} />
     default:
-      return Info({file})
+      return <Info file={file} delFn={delFn} />
   }
 }
 
 const DirView = () => {
   const [files, setFiles] = useState([]);
+
+  const path = useLocation().pathname;
 
   const loadFiles = (path) => {
     fetch("/api" + path).then(
@@ -37,8 +37,6 @@ const DirView = () => {
         files => setFiles(files)
       ));
   }
-
-  const path = useLocation().pathname;
 
   useEffect(() => {
     loadFiles(path);
@@ -55,13 +53,24 @@ const DirView = () => {
     })
   }
 
+  const del = (file) => {
+    fetch("/api" + file.path, {
+      method: "DELETE"
+    }).then(
+      loadFiles(path)
+    ).catch(err => {
+      alert(err);
+      console.log(err);
+    })
+  }
+
   return (
     <section>
       <nav id="dirs">
         <DirList  dirs={dirsOnly(files)} />
         <AddDir submitFn={addNewDir} />
       </nav>
-      <FileList files={filesOnly(files)} />
+      <FileList files={filesOnly(files)} delFn={del} />
     </section>
   )
 }
@@ -80,10 +89,10 @@ const Dir = ({dir}) => {
   )
 }
 
-const FileList = ({files}) => {
+const FileList = ({files, delFn}) => {
   return (
     files.map((file, i) => (
-      <File key={i} file={file} />
+      <FileEntry key={i} file={file} delFn={delFn} />
     ))
   );
 }

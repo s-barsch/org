@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import Info from './info';
 
-const Text = ({file}) => {
+const Text = ({file, delFn}) => {
   const [body, setBody] = useState("");
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Text = ({file}) => {
 
   return (
     <>
-      <Info file={file} />
+      <Info file={file} delFn={delFn} />
       <TextareaAutosize value={body}
       onChange={handleTyping}
       onBlur={submit} />

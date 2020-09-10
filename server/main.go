@@ -21,11 +21,22 @@ func routes() *mux.Router {
 	api := r.PathPrefix("/api/").Subrouter()
 	api.Methods("GET").HandlerFunc(view)
 	api.Methods("POST").HandlerFunc(writeSwitch)
+	api.Methods("DELETE").HandlerFunc(deleteFile)
 
 	return r
 }
 
 var ROOT = "org"
+
+func deleteFile(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path[len("/api"):]
+
+	err := os.Remove(ROOT+path)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+}
 
 func writeSwitch(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len("/api"):]
