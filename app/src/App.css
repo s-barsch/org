@@ -2,8 +2,26 @@
     box-sizing:border-box
 }
 
+:root {
+    --color-fg: black;
+    --color-bg: white;
+    --color-a: blue;
+}
+
+[data-theme="dark"] {
+    --color-fg: white;
+    --color-bg: black;
+    --color-a: #4b9bff;
+}
+
 body {
+    background:var(--color-bg);
+    color:var(--color-bg);
     margin:.5rem 1rem;
+}
+
+h1, .spacer {
+    color:var(--color-fg);
 }
 
 body,
@@ -14,7 +32,7 @@ textarea {
 }
 
 a {
-    color:blue;
+    color:var(--color-a);
     text-decoration:none;
 }
 
@@ -66,3 +84,4 @@ img {
 
 textarea {
 }
+

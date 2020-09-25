@@ -6,7 +6,6 @@ import Top from './components/top';
 //import Filetype from './funcs/filetype';
 
 const App = () => {
-
   return (
     <Router>
       <View />
@@ -83,3 +82,5 @@ const Single = ({view}) => {
     </>
   )
 }
+
+

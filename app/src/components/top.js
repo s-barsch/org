@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { basename } from 'path';
 import Breadcrumbs from './breadcrumbs';
 import Del from './del';
+import ThemeIcon from '@material-ui/icons/WbSunnySharp';
+import { readStateBool } from '../funcs/storage';
 
 const DirName = () => {
   const name = basename(useLocation().pathname);
@@ -19,6 +21,14 @@ const Root = () => {
 }
 
 const Top = ({view}) => {
+
+  const [darkTheme, setDarkTheme] = useState(readStateBool("dark-theme"));
+
+  useEffect(() => {
+    darkTheme
+      ? document.body.dataset["theme"] = "dark"
+      : document.body.dataset["theme"] = ""
+  })
 
   /*
   const rename = newName => {
@@ -48,6 +58,11 @@ const Top = ({view}) => {
     })
   }
 
+  const toggleTheme = () => {
+    setDarkTheme(!darkTheme);
+    localStorage.setItem("dark-theme", !darkTheme);
+  }
+
 
   return (
     <>
@@ -55,6 +70,7 @@ const Top = ({view}) => {
         <Root />
         <Breadcrumbs />
         <span className="right">
+          <button onClick={toggleTheme} ><ThemeIcon /></button>
           <Del file={view.file} delFn={del} />
         </span>
       </nav>

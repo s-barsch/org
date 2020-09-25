@@ -9,7 +9,7 @@ const Image = ({file, delFn}) => {
   }
   return (
     <>
-      <img src={"/files" + file.path} />
+      <img alt="" src={"/files" + file.path} />
       <Del file={file} delFn={delFn} />
       <Text file={info} delFn={delFn} />
     </>
