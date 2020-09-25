@@ -33,19 +33,3 @@ func dirListing(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
-func textContent(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path[len("/api"):]
-
-	b, err := ioutil.ReadFile(ROOT + path)
-	if err != nil {
-		if filepath.Ext(path) == ".info" {
-			return
-		}
-		err = fmt.Errorf("textContent: %v", err.Error())
-		http.Error(w, err.Error(), 500)
-		log.Println(err)
-		return
-	}
-	fmt.Fprintf(w, "%s", b)
-}

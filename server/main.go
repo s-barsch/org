@@ -23,7 +23,6 @@ func routes() *mux.Router {
 	r.PathPrefix("/files/").HandlerFunc(serveStatic)
 
 	api := r.PathPrefix("/api/").Subrouter()
-	api.Methods("GET").Queries("raw", "true").HandlerFunc(textContent)
 	api.Methods("GET").Queries("listing", "true").HandlerFunc(dirListing)
 	api.Methods("GET").HandlerFunc(view)
 	api.Methods("POST").HandlerFunc(writeSwitch)
