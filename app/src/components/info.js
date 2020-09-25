@@ -6,7 +6,7 @@ import DeleteIcon from '@material-ui/icons/ClearSharp';
 const Info = ({file, delFn}) => {
   return (
     <>
-      <div>- <Link to={file.path}>{basename(file.path)}</Link> ({file.type}) <Del file={file} delFn={delFn} /></div>
+      <div><Link to={file.path}>{basename(file.path)}</Link> ({file.type}) <Del file={file} delFn={delFn} /></div>
     </>
   )
 }

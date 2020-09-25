@@ -58,3 +58,11 @@ input {
 .right {
     float:right;
 }
+
+img {
+    max-width:100%;
+    max-height:130vh;
+}
+
+textarea {
+}
