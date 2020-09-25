@@ -16,7 +16,7 @@ export default Info;
 export const Del = ({ file, delFn }) => {
   const del = () => {
     if (window.confirm("Delete this " + file.type + "?")) {
-      delFn(file);
+      delFn(file.path);
     }
   }
   return <button className="del" onClick={del}><DeleteIcon /></button>

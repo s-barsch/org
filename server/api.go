@@ -10,8 +10,8 @@ import (
 )
 
 type View struct {
-	Parent string  `json:"parent"`
 	File   *File   `json:"file"`
+	Parent string  `json:"parent"`
 	Files  []*File `json:"files,omitempty"`
 }
 

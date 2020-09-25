@@ -6,7 +6,7 @@ const Text = ({file, delFn}) => {
   const [body, setBody] = useState("");
 
   useEffect(() => {
-    fetch("/api" + file.path).then(
+    fetch("/api" + file.path + "?raw=true").then(
       resp => resp.text().then(
         textContent => setBody(textContent)
       )

@@ -26,7 +26,10 @@ const FileSwitch = ({file, delFn}) => {
   }
 }
 
-const DirView = ({files}) => {
+const DirListing = ({files}) => {
+  if (!files) {
+    return null
+  }
   return (
     <section>
       <nav id="dirs">
@@ -106,7 +109,7 @@ const FileList = ({files, delFn}) => {
   );
 }
 
-export default DirView;
+export default DirListing;
 
 const dirsOnly = (list) => {
   return list.filter((file) => {
