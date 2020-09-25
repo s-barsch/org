@@ -46,6 +46,9 @@ const DirListing = () => {
   }, [path]);
 
   const addNewDir = (name) => {
+    if (name === "") {
+      return;
+    }
     if (path !== "/") {
       name = "/" + name
     }
