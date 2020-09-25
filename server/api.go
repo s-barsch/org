@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	//  "path/filepath"
+	"path/filepath"
 )
 
 type View struct {
@@ -39,6 +39,9 @@ func textContent(w http.ResponseWriter, r *http.Request) {
 
 	b, err := ioutil.ReadFile(ROOT + path)
 	if err != nil {
+		if filepath.Ext(path) == ".info" {
+			return
+		}
 		err = fmt.Errorf("textContent: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)

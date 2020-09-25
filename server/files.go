@@ -25,7 +25,31 @@ func getFiles(path string) ([]*File, error) {
 			Type: getFileType(fpath, fi.IsDir()),
 		})
 	}
-	return files, nil
+	return filterFiles(files), nil
+}
+
+func filterFiles(files []*File) []*File {
+	nu := []*File{}
+	for _, f := range files {
+		if p.Ext(f.Path) == ".info" && hasFile(files, stripExt(f.Path)) {
+			continue
+		}
+		nu = append(nu, f)
+	}
+	return nu
+}
+
+func hasFile(files []*File, path string) bool {
+	for _, f := range files {
+		if f.Path == path {
+			return true
+		}
+	}
+	return false
+}
+
+func stripExt(path string) string {
+	return  path[:len(path)-len(p.Ext(path))]
 }
 
 func getFileType(path string, isDir bool) string {

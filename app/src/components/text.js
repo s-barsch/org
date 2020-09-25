@@ -8,7 +8,9 @@ const Text = ({file, delFn}) => {
   useEffect(() => {
     fetch("/api" + file.path + "?raw=true").then(
       resp => resp.text().then(
-        textContent => setBody(textContent)
+        textContent => {
+          setBody(textContent);
+        }
       )
     );
   }, [file]);
