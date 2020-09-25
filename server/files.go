@@ -66,9 +66,13 @@ func fileType(path string) string {
 	case ".txt", ".info":
 		return "text"
 	default:
-		fi, err := os.Stat(path)
+		fi, err := os.Stat(ROOT+path)
 		if err != nil {
-			return "file"
+			break;
+		}
+		switch fi.Name() {
+		case "info", ".sort":
+			return "text"
 		}
 		if fi.IsDir() || fi.Mode()&os.ModeSymlink != 0 {
 			return "dir"
