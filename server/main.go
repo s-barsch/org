@@ -9,7 +9,6 @@ import (
 	"log"
 	"strings"
 	"path/filepath"
-	"fmt"
 )
 
 func main() {
@@ -21,6 +20,8 @@ func routes() *mux.Router {
 	r := mux.NewRouter()
 
 	api := r.PathPrefix("/api/").Subrouter()
+	api.Methods("GET").Queries("raw", "true").HandlerFunc(textContent)
+	api.Methods("GET").Queries("listing", "true").HandlerFunc(dirListing)
 	api.Methods("GET").HandlerFunc(view)
 	api.Methods("POST").HandlerFunc(writeSwitch)
 	api.Methods("DELETE").HandlerFunc(deleteFile)
@@ -36,6 +37,7 @@ func deleteFile(w http.ResponseWriter, r *http.Request) {
 	err := os.Remove(ROOT+path)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+		log.Println(err)
 		return
 	}
 }
@@ -55,6 +57,7 @@ func createDir(w http.ResponseWriter, r *http.Request) {
 	fi, err := os.Stat(ROOT+filepath.Dir(path))
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+		log.Println(err)
 		return
 	}
 	if !fi.IsDir() {
@@ -64,6 +67,7 @@ func createDir(w http.ResponseWriter, r *http.Request) {
 	err = os.Mkdir(ROOT + path, 0755)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+		log.Println(err)
 		return
 	}
 	return
@@ -75,6 +79,7 @@ func writeFile(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+		log.Println(err)
 		return
 	}
 
@@ -93,26 +98,12 @@ func view(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.FormValue("raw") == "true" {
-		textContent(w, path)
-		return
-	}
-
 	v := &View{
 		File:   &File{
 			Path: path,
 			Type: getFileType(path, fi.IsDir()),
 		},
 		Parent: filepath.Dir(path),
-	}
-
-	if fi.IsDir() {
-		files, err := getFiles(path)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		v.Files = files
 	}
 
 	err = json.NewEncoder(w).Encode(v)

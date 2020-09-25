@@ -26,23 +26,13 @@ const FileSwitch = ({file, delFn}) => {
   }
 }
 
-const DirListing = ({files}) => {
-  if (!files) {
-    return null
-  }
-  return (
-    <section>
-      <nav id="dirs">
-        <DirList  dirs={dirsOnly(files)} />
-      </nav>
-      <FileList files={filesOnly(files)} />
-    </section>
-  )
-  /*
+const DirListing = () => {
+  const [files, setFiles] = useState([]);
+
   const path = useLocation().pathname;
 
   const loadFiles = (path) => {
-    fetch("/api" + path).then(
+    fetch("/api" + path + "?listing=true").then(
       resp => resp.json().then(
         files => setFiles(files)
       ));
@@ -53,10 +43,18 @@ const DirListing = ({files}) => {
   }, [path]);
 
   const addNewDir = (name) => {
-    fetch("/api" + path + "/" + name, {
+    if (path !== "/") {
+      name = "/" + name
+    }
+    fetch("/api" + path + name, {
       method: "POST"
-    }).then(
+    }).then( resp => {
+      if (!resp.ok) {
+        alert(resp.statusText);
+        return;
+      }
       loadFiles(path)
+    }
     ).catch(err => {
       alert(err);
       console.log(err);
@@ -83,8 +81,6 @@ const DirListing = ({files}) => {
       <FileList files={filesOnly(files)} delFn={del} />
     </section>
   )
-  */
-  return null
 }
 
 const DirList = ({dirs}) => {

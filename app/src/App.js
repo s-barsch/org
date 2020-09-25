@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import DirListing from './components/files';
 import Top from './components/top';
-import Filetype from './funcs/filetype';
+//import Filetype from './funcs/filetype';
 
 const App = () => {
 
@@ -62,7 +62,7 @@ const Main = ({view}) => {
     case "text":
       return <Single view={view} />
     default:
-      return <DirListing files={view.files} />
+      return <DirListing view={view} />
   }
 }
 

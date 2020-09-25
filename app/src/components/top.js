@@ -20,8 +20,10 @@ const Root = () => {
 
 const Top = ({view}) => {
 
+  /*
   const rename = newName => {
   }
+  */
 
   const history = useHistory();
 
