@@ -2,14 +2,14 @@ package main
 
 import (
 	"io/ioutil"
+	"os"
 	p "path/filepath"
 	"strings"
-	"os"
 )
 
 type File struct {
-	Path  string `json:"path"`
-	Type  string `json:"type"`
+	Path string `json:"path"`
+	Type string `json:"type"`
 }
 
 func getFiles(path string) ([]*File, error) {
@@ -46,7 +46,7 @@ func fileType(path string) string {
 		if err != nil {
 			return "file"
 		}
-		if fi.IsDir() || fi.Mode() & os.ModeSymlink != 0 {
+		if fi.IsDir() || fi.Mode()&os.ModeSymlink != 0 {
 			return "dir"
 		}
 	}

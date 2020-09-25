@@ -1,17 +1,17 @@
 package main
 
 import (
-	"io/ioutil"
-	"net/http"
 	"encoding/json"
-	"log"
 	"fmt"
-//  "path/filepath"
+	"io/ioutil"
+	"log"
+	"net/http"
+	//  "path/filepath"
 )
 
 type View struct {
-	File   *File   `json:"file"`
-	Parent string  `json:"parent"`
+	File   *File  `json:"file"`
+	Parent string `json:"parent"`
 }
 
 func dirListing(w http.ResponseWriter, r *http.Request) {
@@ -19,6 +19,7 @@ func dirListing(w http.ResponseWriter, r *http.Request) {
 
 	files, err := getFiles(path)
 	if err != nil {
+		err = fmt.Errorf("dirListing: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
 		return
@@ -26,6 +27,7 @@ func dirListing(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(files)
 	if err != nil {
+		err = fmt.Errorf("dirListing: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
 		return
@@ -37,11 +39,10 @@ func textContent(w http.ResponseWriter, r *http.Request) {
 
 	b, err := ioutil.ReadFile(ROOT + path)
 	if err != nil {
+		err = fmt.Errorf("textContent: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
 		return
 	}
 	fmt.Fprintf(w, "%s", b)
 }
-
-

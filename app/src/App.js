@@ -28,14 +28,21 @@ const emptyView = () => {
 
 const View = () => {
   const [view, setView] = useState(emptyView());
+  const [notFound, setNotFound] = useState(false);
 
   const path = useLocation().pathname;
 
   const loadView = (path) => {
     fetch("/api" + path).then(
-      resp => resp.json().then(view => {
-        setView(view)
-      })
+      resp => {
+        if (!resp.ok) {
+          setNotFound(true);
+          return;
+        }
+        resp.json().then(view => {
+          setView(view)
+        })
+      }
     ).catch( err => {
         console.log(err)
         return null
@@ -46,7 +53,7 @@ const View = () => {
     loadView(path);
   }, [path]);
 
-  if (view.file.path === "") {
+  if (notFound) {
     return "404"
   }
 
@@ -62,8 +69,10 @@ const Main = ({view}) => {
   switch (view.file.type) {
     case "text":
       return <Single view={view} />
-    default:
+    case "dir":
       return <DirListing view={view} />
+    default:
+      return null
   }
 }
 

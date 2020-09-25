@@ -1,14 +1,15 @@
 package main
 
 import (
-	"net/http"
-	"github.com/gorilla/mux"
-	"os"
 	"encoding/json"
+	"fmt"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
-	"strings"
+	"net/http"
+	"os"
 	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -29,13 +30,20 @@ func routes() *mux.Router {
 	return r
 }
 
+type Err struct {
+	Func string
+	Path string
+	Err  error
+}
+
 var ROOT = "org"
 
 func deleteFile(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len("/api"):]
 
-	err := os.Remove(ROOT+path)
+	err := os.Remove(ROOT + path)
 	if err != nil {
+		err = fmt.Errorf("deleteFile: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
 		return
@@ -54,8 +62,9 @@ func writeSwitch(w http.ResponseWriter, r *http.Request) {
 
 func createDir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len("/api"):]
-	fi, err := os.Stat(ROOT+filepath.Dir(path))
+	fi, err := os.Stat(ROOT + filepath.Dir(path))
 	if err != nil {
+		err = fmt.Errorf("createDir: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
 		return
@@ -64,8 +73,9 @@ func createDir(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Can’t create dir in non-dir.", 500)
 		return
 	}
-	err = os.Mkdir(ROOT + path, 0755)
+	err = os.Mkdir(ROOT+path, 0755)
 	if err != nil {
+		err = fmt.Errorf("createDir: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
 		return
@@ -78,6 +88,7 @@ func writeFile(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		err = fmt.Errorf("writeFile: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
 		return
@@ -99,7 +110,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := &View{
-		File:   &File{
+		File: &File{
 			Path: path,
 			Type: getFileType(path, fi.IsDir()),
 		},
@@ -108,6 +119,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(v)
 	if err != nil {
+		err = fmt.Errorf("view: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
 		return
