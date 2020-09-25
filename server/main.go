@@ -20,6 +20,8 @@ func main() {
 func routes() *mux.Router {
 	r := mux.NewRouter()
 
+	r.PathPrefix("/files/").HandlerFunc(serveStatic)
+
 	api := r.PathPrefix("/api/").Subrouter()
 	api.Methods("GET").Queries("raw", "true").HandlerFunc(textContent)
 	api.Methods("GET").Queries("listing", "true").HandlerFunc(dirListing)
@@ -37,6 +39,12 @@ type Err struct {
 }
 
 var ROOT = "org"
+
+func serveStatic(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path[len("/files"):]
+
+	http.ServeFile(w, r, ROOT + path)
+}
 
 func deleteFile(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len("/api"):]

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import Text from './text';
 import Info from './info';
+import Image from './image';
 import {basename} from 'path';
 import AddDir from './add-dir';
 
@@ -21,6 +22,8 @@ const FileSwitch = ({file, delFn}) => {
   switch (file.type) {
     case "text":
       return <Text file={file} delFn={delFn} />
+    case "image":
+      return <Image file={file} delFn={delFn} />
     default:
       return <Info file={file} delFn={delFn} />
   }
@@ -61,8 +64,8 @@ const DirListing = () => {
     })
   }
 
-  const del = (file) => {
-    fetch("/api" + file.path, {
+  const del = filepath => {
+    fetch("/api" + filepath, {
       method: "DELETE"
     }).then(
       loadFiles(path)
