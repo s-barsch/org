@@ -61,7 +61,7 @@ func deleteFile(w http.ResponseWriter, r *http.Request) {
 func writeSwitch(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len("/api"):]
 
-	if strings.Contains(path, ".") {
+	if strings.Contains(path, ".") || filepath.Base(path) == "info" {
 		writeFile(w, r)
 		return
 	}

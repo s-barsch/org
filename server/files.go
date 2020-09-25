@@ -34,6 +34,10 @@ func filterFiles(files []*File) []*File {
 		if p.Ext(f.Path) == ".info" && hasFile(files, stripExt(f.Path)) {
 			continue
 		}
+		if p.Base(f.Path) == "info" {
+			nu = append([]*File{f}, nu...)
+			continue
+		}
 		nu = append(nu, f)
 	}
 	return nu
