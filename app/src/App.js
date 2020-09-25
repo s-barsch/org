@@ -23,7 +23,6 @@ const emptyView = () => {
       type: ""
     },
     parent: "",
-    files: []
   }
 }
 
@@ -47,6 +46,10 @@ const View = () => {
     loadView(path);
   }, [path]);
 
+  if (view.file.path === "") {
+    return "404"
+  }
+
   return (
     <>
       <Top view={view} />
@@ -57,8 +60,6 @@ const View = () => {
 
 const Main = ({view}) => {
   switch (view.file.type) {
-    case "":
-      return "404";
     case "text":
       return <Single view={view} />
     default:
