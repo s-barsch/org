@@ -1,7 +1,7 @@
 import React from 'react';
 import { basename } from 'path';
 import { Link } from 'react-router-dom';
-import DeleteIcon from '@material-ui/icons/ClearSharp';
+import Del from './del';
 
 const Info = ({file, delFn}) => {
   return (
@@ -12,12 +12,3 @@ const Info = ({file, delFn}) => {
 }
 
 export default Info;
-
-export const Del = ({ file, delFn }) => {
-  const del = () => {
-    if (window.confirm("Delete this " + file.type + "?")) {
-      delFn(file.path);
-    }
-  }
-  return <button className="del" onClick={del}><DeleteIcon /></button>
-}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { basename } from 'path';
 import Breadcrumbs from './breadcrumbs';
-import { Del } from './info';
+import Del from './del';
 
 const DirName = () => {
   const name = basename(useLocation().pathname);
