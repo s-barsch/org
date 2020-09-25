@@ -3,13 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -20,7 +21,7 @@ func main() {
 func routes() *mux.Router {
 	r := mux.NewRouter()
 
-	r.PathPrefix("/files/").HandlerFunc(serveStatic)
+	r.PathPrefix("/file/").HandlerFunc(serveStatic)
 
 	api := r.PathPrefix("/api/").Subrouter()
 	api.Methods("GET").Queries("listing", "true").HandlerFunc(dirListing)
@@ -40,9 +41,9 @@ type Err struct {
 var ROOT = "org"
 
 func serveStatic(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path[len("/files"):]
+	path := r.URL.Path[len("/file"):]
 
-	http.ServeFile(w, r, ROOT + path)
+	http.ServeFile(w, r, ROOT+path)
 }
 
 func deleteFile(w http.ResponseWriter, r *http.Request) {

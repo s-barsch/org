@@ -53,7 +53,7 @@ func hasFile(files []*File, path string) bool {
 }
 
 func stripExt(path string) string {
-	return  path[:len(path)-len(p.Ext(path))]
+	return path[:len(path)-len(p.Ext(path))]
 }
 
 func getFileType(path string, isDir bool) string {
@@ -70,9 +70,9 @@ func fileType(path string) string {
 	case ".txt", ".info":
 		return "text"
 	default:
-		fi, err := os.Stat(ROOT+path)
+		fi, err := os.Stat(ROOT + path)
 		if err != nil {
-			break;
+			break
 		}
 		switch fi.Name() {
 		case "info", ".sort":
