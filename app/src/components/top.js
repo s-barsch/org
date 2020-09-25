@@ -66,7 +66,7 @@ const Top = ({view}) => {
 
   return (
     <>
-      <nav>
+      <nav className="crumbs">
         <Root />
         <Breadcrumbs />
         <span className="right">
@@ -74,8 +74,8 @@ const Top = ({view}) => {
           <Del file={view.file} delFn={del} />
         </span>
       </nav>
-      <h1>
-        <Link to={view.parent}>^</Link>
+      <h1 className="name">
+        <Link className="parent" to={view.parent}>^</Link>
         <DirName />
       </h1>
     </>

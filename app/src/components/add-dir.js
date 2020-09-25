@@ -10,10 +10,10 @@ const AddDir = ({submitFn}) => {
   }
 
   return (
-    <span className="add-dir">
+    <>
       { !field && <AddButton clickFn={toggleField} /> }
       { field  && <AddField fieldRef={fieldEl} submitFn={submitFn} toggleFn={toggleField} /> }
-    </span>
+    </>
   )
 }
 
@@ -36,7 +36,7 @@ const AddField = ({fieldRef, submitFn, toggleFn}) => {
 
 const AddButton = ({clickFn}) => {
   return (
-    <button onClick={clickFn}>+</button>
+    <button className="add-dir" onClick={clickFn}>+</button>
   )
 }
 
