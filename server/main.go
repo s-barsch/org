@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"os"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -91,10 +92,32 @@ func view(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	switch {
-	case fi.IsDir():
-		dirListing(w, path)
-	case filetype(path) == "text":
+	if r.FormValue("raw") == "true" {
 		textContent(w, path)
+		return
+	}
+
+	v := &View{
+		File:   &File{
+			Path: path,
+			Type: getFileType(path, fi.IsDir()),
+		},
+		Parent: filepath.Dir(path),
+	}
+
+	if fi.IsDir() {
+		files, err := getFiles(path)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		v.Files = files
+	}
+
+	err = json.NewEncoder(w).Encode(v)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		log.Println(err)
+		return
 	}
 }

@@ -54,3 +54,7 @@ input {
 #dirs a {
     margin-right:.5rem;
 }
+
+.right {
+    float:right;
+}

@@ -26,9 +26,16 @@ const FileSwitch = ({file, delFn}) => {
   }
 }
 
-const DirView = () => {
-  const [files, setFiles] = useState([]);
-
+const DirView = ({files}) => {
+  return (
+    <section>
+      <nav id="dirs">
+        <DirList  dirs={dirsOnly(files)} />
+      </nav>
+      <FileList files={filesOnly(files)} />
+    </section>
+  )
+  /*
   const path = useLocation().pathname;
 
   const loadFiles = (path) => {
@@ -73,6 +80,8 @@ const DirView = () => {
       <FileList files={filesOnly(files)} delFn={del} />
     </section>
   )
+  */
+  return null
 }
 
 const DirList = ({dirs}) => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { basename } from 'path';
 import Breadcrumbs from './breadcrumbs';
+import { Del } from './info';
 
 const DirName = () => {
   const name = basename(useLocation().pathname);
@@ -17,15 +18,18 @@ const Root = () => {
   )
 }
 
-const Top = () => {
+const Top = ({view}) => {
   return (
     <>
       <nav>
         <Root />
         <Breadcrumbs />
+        <span className="right">
+          <Del file={view.file} />
+        </span>
       </nav>
       <h1>
-        <Link to="..">^</Link>
+        <Link to={view.parent}>^</Link>
         <DirName />
       </h1>
     </>

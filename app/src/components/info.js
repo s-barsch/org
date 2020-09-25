@@ -13,9 +13,9 @@ const Info = ({file, delFn}) => {
 
 export default Info;
 
-const Del = ({ file, delFn }) => {
+export const Del = ({ file, delFn }) => {
   const del = () => {
-    if (window.confirm("Delete this text?")) {
+    if (window.confirm("Delete this " + file.type + "?")) {
       delFn(file);
     }
   }

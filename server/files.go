@@ -22,20 +22,20 @@ func getFiles(path string) ([]*File, error) {
 		fpath := p.Join(path, fi.Name())
 		files = append(files, &File{
 			Path: fpath,
-			Type: getFiletype(fpath, fi.IsDir()),
+			Type: getFileType(fpath, fi.IsDir()),
 		})
 	}
 	return files, nil
 }
 
-func getFiletype(path string, isDir bool) string {
+func getFileType(path string, isDir bool) string {
 	if isDir {
 		return "dir"
 	}
-	return filetype(path)
+	return fileType(path)
 }
 
-func filetype(path string) string {
+func fileType(path string) string {
 	switch p.Ext(strings.ToLower(path)) {
 	case ".jpg", ".png", ".gif":
 		return "image"

@@ -3,11 +3,19 @@ package main
 import (
 	"io/ioutil"
 	"net/http"
-	"encoding/json"
+//	"encoding/json"
 	"log"
 	"fmt"
+//  "path/filepath"
 )
 
+type View struct {
+	Parent string  `json:"parent"`
+	File   *File   `json:"file"`
+	Files  []*File `json:"files,omitempty"`
+}
+
+/*
 func dirListing(w http.ResponseWriter, path string) {
 	files, err := getFiles(path)
 	if err != nil {
@@ -15,13 +23,14 @@ func dirListing(w http.ResponseWriter, path string) {
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(files)
+	err = json.NewEncoder(w).Encode()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
 		return
 	}
 }
+*/
 
 func textContent(w http.ResponseWriter, path string) {
 	b, err := ioutil.ReadFile(ROOT + path)
