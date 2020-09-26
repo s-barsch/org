@@ -111,6 +111,7 @@ func writeFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	body = removeMultipleNewLines(body)
 	body = addNewLine(body)
 
 	err = ioutil.WriteFile(ROOT+path, body, 0664)

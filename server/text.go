@@ -1,5 +1,9 @@
 package main
 
+import (
+	"bytes"
+)
+
 const newLine = '\n'
 
 func hasNewLine(b []byte) bool {
@@ -21,3 +25,6 @@ func addNewLine(b []byte) []byte {
 	return b
 }
 
+func removeMultipleNewLines(b []byte) []byte {
+	return bytes.ReplaceAll(b, []byte("\n\n\n"), []byte("\n\n"))
+}
