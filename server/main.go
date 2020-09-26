@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
 	"github.com/gorilla/mux"
 )
 
@@ -43,6 +42,16 @@ var ROOT = "org"
 func serveStatic(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len("/file"):]
 
+	if fileType(path) == "text" {
+		b, err := ioutil.ReadFile(ROOT+path)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			log.Println(err)
+			return
+		}
+		fmt.Fprintf(w, "%s", removeNewLine(b))  
+		return
+	}
 	http.ServeFile(w, r, ROOT+path)
 }
 
@@ -102,10 +111,15 @@ func writeFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	body = addNewLine(body)
+
 	err = ioutil.WriteFile(ROOT+path, body, 0664)
-	if err == nil {
-		log.Printf("writeFile:\n{%s}\n", body)
+	if err != nil {
+		err = fmt.Errorf("writeFile: %v", err.Error())
+		http.Error(w, err.Error(), 500)
+		log.Println(err)
 	}
+	log.Printf("writeFile:\n{%s}\n", body)
 }
 
 func view(w http.ResponseWriter, r *http.Request) {
