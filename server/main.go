@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
 	"github.com/gorilla/mux"
 )
 
@@ -20,115 +21,154 @@ func main() {
 func routes() *mux.Router {
 	r := mux.NewRouter()
 
-	r.PathPrefix("/file/").HandlerFunc(serveStatic)
+	r.PathPrefix("/file/").HandlerFunc(h(serveStatic))
 
 	api := r.PathPrefix("/api/").Subrouter()
-	api.Methods("GET").Queries("listing", "true").HandlerFunc(dirListing)
-	api.Methods("GET").HandlerFunc(view)
-	api.Methods("POST").HandlerFunc(writeSwitch)
-	api.Methods("DELETE").HandlerFunc(deleteFile)
+	api.Methods("GET").Queries("listing", "true").HandlerFunc(h(dirListing))
+	api.Methods("GET").HandlerFunc(h(viewFile))
+	api.Methods("POST").HandlerFunc(h(writeSwitch))
+	api.Methods("PUT").HandlerFunc(h(renameFile))
+	api.Methods("DELETE").HandlerFunc(h(deleteFile))
 
 	return r
+}
+
+func h(fn func(http.ResponseWriter, *http.Request) *Err) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := fn(w, r)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), err.Code)
+		}
+	}
 }
 
 type Err struct {
 	Func string
 	Path string
+	Code int
 	Err  error
+}
+
+func (e *Err) Error() string {
+	return e.Err.Error()
 }
 
 var ROOT = "org"
 
-func serveStatic(w http.ResponseWriter, r *http.Request) {
+func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/file"):]
 
+	e := &Err{
+		Func: "serveStatic",
+		Path: path,
+		Code: 500,
+	}
+
 	if fileType(path) == "text" {
-		b, err := ioutil.ReadFile(ROOT+path)
+		b, err := ioutil.ReadFile(ROOT + path)
 		if err != nil {
-			if filepath.Ext(path) == ".info" {	
-				return	
+			if filepath.Ext(path) == ".info" {
+				// dummy requests arrive, because of attached info field
+				return nil
 			}
-			http.Error(w, err.Error(), 500)
-			log.Println(err)
-			return
+			e.Err = err
+			return e
 		}
 
-		fmt.Fprintf(w, "%s", removeNewLine(b))  
-		return
+		fmt.Fprintf(w, "%s", removeNewLine(b))
+		return nil
 	}
+
 	http.ServeFile(w, r, ROOT+path)
+
+	return nil
 }
 
-func deleteFile(w http.ResponseWriter, r *http.Request) {
+func deleteFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
+
+	e := &Err{
+		Func: "deleteFile",
+		Path: path,
+		Code: 500,
+	}
 
 	err := os.Remove(ROOT + path)
 	if err != nil {
-		err = fmt.Errorf("deleteFile: %v", err.Error())
-		http.Error(w, err.Error(), 500)
-		log.Println(err)
-		return
+		e.Err = err
+		return e
 	}
+
+	return nil
 }
 
-func writeSwitch(w http.ResponseWriter, r *http.Request) {
+func rmFile(path string) error {
+	_, err := os.Stat(path)
+	if err != nil {
+		return nil
+	}
+	return os.Remove(path)
+}
+
+func writeSwitch(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
 
 	if strings.Contains(path, ".") || filepath.Base(path) == "info" {
-		writeFile(w, r)
-		return
+		return writeFile(w, r)
 	}
-	createDir(w, r)
+	return createDir(w, r)
 }
 
-func createDir(w http.ResponseWriter, r *http.Request) {
+func createDir(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
+
+	e := &Err{
+		Func: "createDir",
+		Path: path,
+		Code: 500,
+	}
+
 	fi, err := os.Stat(ROOT + filepath.Dir(path))
 	if err != nil {
-		err = fmt.Errorf("createDir: %v", err.Error())
-		http.Error(w, err.Error(), 500)
-		log.Println(err)
-		return
+		e.Err = err
+		return e
 	}
 	if !fi.IsDir() {
-		http.Error(w, "Can’t create dir in non-dir.", 500)
-		return
+		e.Err = fmt.Errorf("Can’t create dir in non-dir.")
+		return e
 	}
 	err = os.Mkdir(ROOT+path, 0755)
 	if err != nil {
-		err = fmt.Errorf("createDir: %v", err.Error())
-		http.Error(w, err.Error(), 500)
-		log.Println(err)
-		return
+		e.Err = err
+		return e
 	}
-	return
+	return nil
 }
 
-func writeFile(w http.ResponseWriter, r *http.Request) {
+func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
+
+	e := &Err{
+		Func: "writeFile",
+		Path: path,
+		Code: 500,
+	}
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		err = fmt.Errorf("writeFile: %v", err.Error())
-		http.Error(w, err.Error(), 500)
-		log.Println(err)
-		return
+		e.Err = err
+		return e
 	}
 
+	// delete empty files
 	if len(body) == 0 {
-		_, err := os.Stat(ROOT + path)
+		err := rmFile(ROOT + path)
 		if err != nil {
-			return
+			e.Err = err
+			return e
 		}
-		err = os.Remove(ROOT + path)
-		if err != nil {
-			err = fmt.Errorf("deleteFile: %v", err.Error())
-			http.Error(w, err.Error(), 500)
-			log.Println(err)
-			return
-		}
-		println("writeFile: deleted, because empty")
-		return
+		return nil
 	}
 
 	body = removeMultipleNewLines(body)
@@ -136,20 +176,29 @@ func writeFile(w http.ResponseWriter, r *http.Request) {
 
 	err = ioutil.WriteFile(ROOT+path, body, 0664)
 	if err != nil {
-		err = fmt.Errorf("writeFile: %v", err.Error())
-		http.Error(w, err.Error(), 500)
-		log.Println(err)
+		e.Err = err
+		return e
 	}
+
 	log.Printf("writeFile:\n{%s}\n", body)
+
+	return nil
 }
 
-func view(w http.ResponseWriter, r *http.Request) {
+func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
+
+	e := &Err{
+		Func: "view",
+		Path: path,
+		Code: 500,
+	}
 
 	fi, err := os.Stat(ROOT + path)
 	if err != nil {
-		http.NotFound(w, r)
-		return
+		e.Err = fmt.Errorf("Not found %v", path)
+		e.Code = 404
+		return e
 	}
 
 	v := &View{
@@ -162,9 +211,9 @@ func view(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(v)
 	if err != nil {
-		err = fmt.Errorf("view: %v", err.Error())
-		http.Error(w, err.Error(), 500)
-		log.Println(err)
-		return
+		e.Err = err
+		return e
 	}
+
+	return nil
 }
