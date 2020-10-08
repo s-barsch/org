@@ -115,3 +115,6 @@ img {
 textarea {
 }
 
+.fileinfo {
+    color: var(--color-fg);
+}

@@ -5,9 +5,9 @@ import Del from './del';
 
 const Info = ({file, delFn}) => {
   return (
-    <>
-      <div><Link className="filename" to={file.path}>{basename(file.path)}</Link> ({file.type}) <Del file={file} delFn={delFn} /></div>
-    </>
+    <div className="fileinfo">
+      <Link className="filename" to={file.path}>{basename(file.path)}</Link> ({file.type}) <Del file={file} delFn={delFn} />
+    </div>
   )
 }
 
