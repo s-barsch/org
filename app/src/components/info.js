@@ -3,10 +3,48 @@ import { basename } from 'path';
 import { Link } from 'react-router-dom';
 import Del from './del';
 
-const Info = ({file, delFn}) => {
+const BotToggle = ({file, moveFn}) => {
+  const move = () => {
+    const i = file.path.lastIndexOf("/")
+    let newPath;
+
+    if (target === "bot") {
+        newPath = file.path.substr(0, i) + "/bot" + file.path.substr(i)
+    }
+    if (target === "top") {
+        newPath = file.path.substr(0, i-4) + file.path.substr(i);
+    }
+
+    moveFn(file.path, newPath);
+    return;
+  }
+
+  let target = "bot";
+
+  const i = file.path.lastIndexOf("/");
+  if (i > 0) {
+    let cut = file.path.substr(0, i);
+    if (cut.length > 3) {
+      cut = cut.substr(cut.length-3);
+      console.log(cut);
+      if (cut === "bot") {
+        target = "top"
+      }
+    }
+  }
+
+  return <button className="info__bot" onClick={move}>{target}</button>
+}
+
+const Info = ({file, moveFn, delFn}) => {
   return (
-    <div className="fileinfo">
-      <Link className="filename" to={file.path}>{basename(file.path)}</Link> ({file.type}) <Del file={file} delFn={delFn} />
+    <div className="info">
+      <Link className="info__name" to={file.path}>{basename(file.path)}</Link>
+      <span className="info__type">{file.type}</span>
+      <BotToggle file={file} moveFn={moveFn} />
+      <span className="info__del">
+        <Del file={file} delFn={delFn} />
+      </span>
     </div>
   )
 }

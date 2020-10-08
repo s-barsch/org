@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
+	p "path/filepath"
 	"strings"
 )
 
@@ -55,13 +55,63 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	err = os.Rename(ROOT+path, ROOT+newPath)
+	newPath = ROOT+newPath
+	oldPath := ROOT+path
+
+	err = createBot(newPath)
 	if err != nil {
 		e.Err = err
 		return e
 	}
 
+	err = os.Rename(oldPath, newPath)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	/*
+	err = deleteBot(oldPath)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+	*/
+
 	return nil
+}
+
+func deleteBot(path string) error {
+	dir := p.Dir(path)
+	if p.Base(dir) != "bot" {
+		return nil
+	}
+
+	l, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+
+	if len(l) == 0 {
+		return os.Remove(dir)
+	}
+
+	return nil
+}
+
+func createBot(path string) error {
+
+	dir := p.Dir(path)
+	if p.Base(dir) != "bot" {
+		return nil
+	}
+
+	_, err := os.Stat(dir)
+	if err == nil {
+		return nil
+	}
+
+	return os.Mkdir(dir, 0755)
 }
 
 func getRenamePath(r *http.Request) (string, error) {
@@ -106,7 +156,7 @@ func rmFile(path string) error {
 func writeSwitch(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
 
-	if strings.Contains(path, ".") || filepath.Base(path) == "info" {
+	if strings.Contains(path, ".") || p.Base(path) == "info" {
 		return writeFile(w, r)
 	}
 	return createDir(w, r)
@@ -121,7 +171,7 @@ func createDir(w http.ResponseWriter, r *http.Request) *Err {
 		Code: 500,
 	}
 
-	fi, err := os.Stat(ROOT + filepath.Dir(path))
+	fi, err := os.Stat(ROOT + p.Dir(path))
 	if err != nil {
 		e.Err = err
 		return e
@@ -198,7 +248,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 			Path: path,
 			Type: getFileType(path, fi.IsDir()),
 		},
-		Parent: filepath.Dir(path),
+		Parent: p.Dir(path),
 	}
 
 	err = json.NewEncoder(w).Encode(v)
@@ -222,7 +272,7 @@ func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
 	if fileType(path) == "text" {
 		b, err := ioutil.ReadFile(ROOT + path)
 		if err != nil {
-			if filepath.Ext(path) == ".info" {
+			if p.Ext(path) == ".info" {
 				// dummy requests arrive, because of attached info field
 				return nil
 			}

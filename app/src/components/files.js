@@ -6,26 +6,26 @@ import Image from './image';
 import {basename} from 'path';
 import AddDir from './add-dir';
 
-const FileEntry = ({ file, delFn }) => {
+const FileEntry = ({ file, moveFn, delFn }) => {
   const drag = (ev) => {
     ev.dataTransfer.setData("text", file.path);
   }
 
   return (
     <div draggable="true" onDragStart={drag}>
-      <FileSwitch file={file} delFn={delFn} />
+      <FileSwitch file={file} moveFn={moveFn} delFn={delFn} />
     </div>
   )
 }
 
-const FileSwitch = ({file, delFn}) => {
+const FileSwitch = ({file, moveFn, delFn}) => {
   switch (file.type) {
     case "text":
-      return <Text file={file} delFn={delFn} />
+      return <Text file={file} moveFn={moveFn} delFn={delFn} />
     case "image":
-      return <Image file={file} delFn={delFn} />
+      return <Image file={file} moveFn={moveFn} delFn={delFn} />
     default:
-      return <Info file={file} delFn={delFn} />
+      return <Info file={file} moveFn={moveFn} delFn={delFn} />
   }
 }
 
@@ -67,6 +67,18 @@ const DirListing = () => {
     })
   }
 
+  const move = (filepath, newPath) => {
+    fetch("/api" + filepath, {
+      method: "PUT",
+      body: newPath
+    }).then(
+      loadFiles(path)
+    ).catch(err => {
+      alert(err);
+      console.log(err);
+    })
+  }
+
   const del = filepath => {
     fetch("/api" + filepath, {
       method: "DELETE"
@@ -84,7 +96,7 @@ const DirListing = () => {
         <DirList  dirs={dirsOnly(files)} />
         <AddDir submitFn={addNewDir} />
       </nav>
-      <FileList files={filesOnly(files)} delFn={del} />
+      <FileList files={filesOnly(files)} moveFn={move} delFn={del} />
     </section>
   )
 }
@@ -103,10 +115,10 @@ const Dir = ({dir}) => {
   )
 }
 
-const FileList = ({files, delFn}) => {
+const FileList = ({files, moveFn, delFn}) => {
   return (
     files.map((file, i) => (
-      <FileEntry key={i} file={file} delFn={delFn} />
+      <FileEntry key={i} file={file} moveFn={moveFn} delFn={delFn} />
     ))
   );
 }

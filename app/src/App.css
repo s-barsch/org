@@ -115,6 +115,15 @@ img {
 textarea {
 }
 
-.fileinfo {
+.info {
     color: var(--color-fg);
+}
+
+.info__bot,
+.info__type {
+    margin-left:1rem;
+}
+
+.info__del {
+    float:right;
 }
