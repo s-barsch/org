@@ -85,6 +85,43 @@ func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
+func renameFile(w http.ResponseWriter, r *http.Request) *Err {
+	path := r.URL.Path[len("/api"):]
+
+	e := &Err{
+		Func: "renameFile",
+		Path: path,
+		Code: 500,
+	}
+
+	newPath, err := getRenamePath(r)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	err = os.Rename(ROOT + path, ROOT + newPath)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	return nil
+}
+
+func getRenamePath(r *http.Request) (string, error) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", err
+	}
+
+	// TODO: make sure it’s a valid path
+
+	path := string(body)
+
+	return path, nil
+}
+
 func deleteFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
 
