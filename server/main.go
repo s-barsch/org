@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -45,7 +46,7 @@ type Err struct {
 }
 
 func (e *Err) Error() string {
-	return e.Err.Error()
+	return fmt.Sprintf("%v: %v (%d)\n%v", e.Func, e.Err.Error(), e.Code, e.Path)
 }
 
 var ROOT = "org"
