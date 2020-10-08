@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import Info from './info';
 
-const Text = ({file, moveFn, delFn}) => {
+const Text = ({file, moveFn, delFn, single}) => {
   const [body, setBody] = useState("");
 
   useEffect(() => {
@@ -29,10 +29,17 @@ const Text = ({file, moveFn, delFn}) => {
     });
   }
 
+  let minRows = 1;
+
+  if (single) {
+    minRows = Math.round(window.screen.height/(2.25*16)) - 8;
+  }
+
   return (
     <>
-      <Info file={file} moveFn={moveFn} delFn={delFn} />
+      { !single && <Info file={file} moveFn={moveFn} delFn={delFn} /> }
       <TextareaAutosize value={body}
+      minRows={minRows}
       onChange={handleTyping}
       onBlur={submit} />
     </>

@@ -18,10 +18,10 @@ const FileEntry = ({ file, moveFn, delFn }) => {
   )
 }
 
-const FileSwitch = ({file, moveFn, delFn}) => {
+const FileSwitch = ({file, moveFn, delFn, single}) => {
   switch (file.type) {
     case "text":
-      return <Text file={file} moveFn={moveFn} delFn={delFn} />
+      return <Text file={file} moveFn={moveFn} delFn={delFn} single={single} />
     case "image":
       return <Image file={file} moveFn={moveFn} delFn={delFn} />
     default:
@@ -126,7 +126,7 @@ const FileList = ({files, moveFn, delFn}) => {
   );
 }
 
-export default DirListing;
+export { DirListing, FileSwitch };
 
 const dirsOnly = (list) => {
   return list.filter((file) => {

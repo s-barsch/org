@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
-import DirListing from './components/files';
+import { DirListing, FileSwitch } from './components/files';
 import Top from './components/top';
 //import Filetype from './funcs/filetype';
 
@@ -78,7 +78,7 @@ const Main = ({view}) => {
 const Single = ({view}) => {
   return (
     <>
-      <>File view</>
+      <FileSwitch file={view.file} single={true} />
     </>
   )
 }

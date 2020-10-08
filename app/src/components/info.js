@@ -14,8 +14,8 @@ const getTarget = path => {
     if (cut === "bot") {
       return "top"
     }
-    return "bot"
   }
+  return "bot"
 }
 
 const BotToggle = ({file, moveFn}) => {
