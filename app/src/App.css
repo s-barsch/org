@@ -18,7 +18,7 @@
 
 body {
     background:var(--color-bg);
-    color:var(--color-bg);
+    color:var(--color-fg);
     margin:.5rem 1rem;
 }
 
@@ -113,10 +113,6 @@ img {
 }
 
 textarea {
-}
-
-.info {
-    color: var(--color-fg);
 }
 
 .info__bot,
