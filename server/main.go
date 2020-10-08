@@ -45,10 +45,14 @@ func serveStatic(w http.ResponseWriter, r *http.Request) {
 	if fileType(path) == "text" {
 		b, err := ioutil.ReadFile(ROOT+path)
 		if err != nil {
+			if filepath.Ext(path) == ".info" {	
+				return	
+			}
 			http.Error(w, err.Error(), 500)
 			log.Println(err)
 			return
 		}
+
 		fmt.Fprintf(w, "%s", removeNewLine(b))  
 		return
 	}
@@ -108,6 +112,22 @@ func writeFile(w http.ResponseWriter, r *http.Request) {
 		err = fmt.Errorf("writeFile: %v", err.Error())
 		http.Error(w, err.Error(), 500)
 		log.Println(err)
+		return
+	}
+
+	if len(body) == 0 {
+		_, err := os.Stat(ROOT + path)
+		if err != nil {
+			return
+		}
+		err = os.Remove(ROOT + path)
+		if err != nil {
+			err = fmt.Errorf("deleteFile: %v", err.Error())
+			http.Error(w, err.Error(), 500)
+			log.Println(err)
+			return
+		}
+		println("writeFile: deleted, because empty")
 		return
 	}
 
