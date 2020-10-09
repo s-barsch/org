@@ -140,16 +140,18 @@ const Top = ({view}) => {
   return (
     <>
       <nav id="links">
-        <LinkList links={links} />
-    {view.public}
-      <span className="right">
-    <TargetList
-    links={targetList}
-    page={location.pathname}
-    activeTarget={activeTarget}
-    setActiveFn={setActive}
-    removeFn={removeTarget} />
-      </span>
+        <span className="links__top">
+          <LinkList links={links} />
+          {/*view.public*/}
+        </span>
+        <span className="right">
+          <TargetList
+          links={targetList}
+          page={location.pathname}
+          activeTarget={activeTarget}
+          setActiveFn={setActive}
+          removeFn={removeTarget} />
+        </span>
       </nav>
 
       <nav id="bar">

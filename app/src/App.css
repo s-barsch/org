@@ -140,6 +140,11 @@ textarea {
     font-family:monospace;
 }
 
+.links__top a {
+    color:var(--color-fg);
+    opacity:0.3;
+}
+
 button {
     border:none;
     background:transparent;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
 import { DirListing, FileSwitch } from './components/files';
 import Top from './components/top';
 //import Filetype from './funcs/filetype';
@@ -32,8 +32,19 @@ const View = () => {
   const [notFound, setNotFound] = useState(false);
 
   const path = useLocation().pathname;
+  const history = useHistory();
 
-  const loadView = (path) => {
+  const loadView = (history, path) => {
+    if (path === "/today") {
+      fetch("/api/today").then(
+        resp => (
+          resp.text().then( newPath =>
+            history.push(newPath)
+          )
+        )
+      );
+    }
+
     fetch("/api" + path).then(
       resp => {
         if (!resp.ok) {
@@ -51,8 +62,8 @@ const View = () => {
   }
 
   useEffect(() => {
-    loadView(path);
-  }, [path]);
+    loadView(history, path);
+  }, [history, path]);
 
   if (notFound) {
     return "404"

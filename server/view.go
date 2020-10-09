@@ -8,6 +8,7 @@ import (
 	p "path/filepath"
 	"encoding/json"
 	"io/ioutil"
+	"time"
 )
 
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
@@ -142,3 +143,41 @@ func viewLinks(w http.ResponseWriter, r *http.Request) *Err {
 	}
 	return nil
 }
+
+func viewToday(w http.ResponseWriter, r *http.Request) *Err {
+	e := &Err{
+		Func: "viewToday",
+		Code: 500,
+	}
+
+	path, err := getCurrent()
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	fmt.Fprint(w, path)
+	return nil
+}
+
+func getCurrent() (string, error) {
+	path := currentDatePath()
+	_, err := os.Stat(path) 
+	if err != nil {
+		err := os.MkdirAll(ROOT + path, 0755)
+		if err != nil {
+			return "", err
+		}
+	}
+	return path, nil
+}
+
+
+func currentDatePath() string {
+	t := time.Now()
+	if t.Hour() < 6 {
+		t = time.Now().AddDate(0, 0, -1)
+	}
+	return fmt.Sprintf("/private/graph/%v", t.Format("06/06-01/02"))
+}
+

@@ -25,8 +25,10 @@ func main() {
 func routes() *mux.Router {
 	r := mux.NewRouter()
 
+
 	r.PathPrefix("/file/").HandlerFunc(h(serveStatic))
 	r.PathPrefix("/api/links").HandlerFunc(h(viewLinks))
+	r.HandleFunc("/api/today", h(viewToday))
 
 	api := r.PathPrefix("/api/").Subrouter()
 	api.Methods("GET").Queries("listing", "true").HandlerFunc(h(viewListing))
