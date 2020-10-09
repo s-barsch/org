@@ -12,13 +12,6 @@ import (
 	"strings"
 )
 
-type View struct {
-	File      *File   `json:"file"`
-	Parent    string  `json:"parent"`
-	Public    string  `json:"public"`
-	Neighbors []*File `json:"neighbors"`
-}
-
 func viewListing(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
 

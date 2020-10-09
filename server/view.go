@@ -11,6 +11,13 @@ import (
 	"time"
 )
 
+type View struct {
+	File      *File   `json:"file"`
+	Parent    string  `json:"parent"`
+	Switch    string  `json:"switch"`
+	Neighbors []*File `json:"neighbors"`
+}
+
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
 
@@ -38,7 +45,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 			Path: path,
 			Type: getFileType(path, fi.IsDir()),
 		},
-		Public:    getPublic(path),
+		Switch:    getSwitchPath(path),
 		Parent:    p.Dir(path),
 		Neighbors: neighbors,
 	}
@@ -52,22 +59,41 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func getPublic(path string) string {
-	public := strings.Replace(path, "private", "public", -1)
-
-	_, err := os.Stat(ROOT + public)
-	if err == nil {
-		return public
+func getSwitchPath(path string) string {
+	public := false
+	if l := len("/public"); len(path) > l {
+		public = path[:l] == "/public"
 	}
+	
+	var find, replace string
 
-	public = p.Dir(public)
-
-	_, err = os.Stat(ROOT + public)
-	if err == nil {
-		return public
+	if public {
+		find = "public"
+		replace = "private"
+	} else {
+		find = "private"
+		replace = "public"
 	}
+	
+	newPath := strings.Replace(path, find, replace, -1)
 
-	return ""
+	existent := findExistent(newPath)
+	
+	if existent == "/private" || existent == "/public" {
+		return ""
+	}
+	return existent
+}
+
+func findExistent(path string) string {
+	if path == "/" || path == "." {
+		return path
+	}
+	_, err := os.Stat(ROOT + path)
+	if err == nil {
+		return path
+	}
+	return findExistent(p.Dir(path))
 }
 
 func getNeighbors(path string) ([]*File, error) {

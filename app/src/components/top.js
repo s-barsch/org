@@ -133,18 +133,16 @@ const Top = ({view}) => {
     return <button onClick={clickFn}><TargetIcon /></button>
   }
 
-  console.log(view.public);
-  /*
-   */
+  console.log(view);
+
 
   return (
     <>
       <nav id="links">
         <span className="links__top">
           <LinkList links={links} />
-          {/*view.public*/}
         </span>
-        <span className="right">
+        <span id="targets" className="right">
           <TargetList
           links={targetList}
           page={location.pathname}
@@ -155,7 +153,10 @@ const Top = ({view}) => {
       </nav>
 
       <nav id="bar">
-        <CrumbNavigation neighbors={makeNeighborList(view.neighbors)} path={location.pathname} />
+        <CrumbNavigation
+          neighbors={makeNeighborList(view.neighbors)}
+          switchLink={view.switch}
+          path={location.pathname} />
         <span className="right">
           <TargetButton clickFn={setThisActive} />
           <button onClick={toggleTheme} ><ThemeIcon /></button>

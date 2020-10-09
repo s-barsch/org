@@ -140,9 +140,23 @@ textarea {
     font-family:monospace;
 }
 
+#targets a {
+    margin-right:0;
+    margin-left:1rem;
+}
+
 .links__top a {
     color:var(--color-fg);
     opacity:0.3;
+}
+
+a.switch-link {
+    margin-left:.25rem;
+    opacity:.8;
+}
+
+.switch-link span {
+    margin-right:.5rem;
 }
 
 button {
@@ -154,8 +168,7 @@ button {
 }
 
 .active {
-    background:red;
-    color:black;
+    color:red;
 }
 
 .neighbors {
@@ -172,3 +185,12 @@ button {
     color:var(--color-fg);
 }
 
+.crumbs .public,
+#links .public {
+    color:orange;
+}
+
+.crumbs .private,
+#links .private {
+    color:hsl(122, 63%, 47%)
+}

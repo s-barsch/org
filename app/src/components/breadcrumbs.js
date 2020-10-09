@@ -14,18 +14,18 @@ const Root = () => {
   )
 }
 
-const CrumbNavigation = ({path, neighbors}) => {
+const CrumbNavigation = ({path, neighbors, switchLink}) => {
   const deepDir = path.split("/").length > 4;
   return (
     <nav className="crumbs">
       <Root />
-      <CrumbList path={path} deepDir={deepDir}/>
+      <CrumbList path={path} switchLink={switchLink} deepDir={deepDir}/>
       { deepDir && <Neighbors links={neighbors} active={path} /> }
     </nav>
   )
 }
 
-const CrumbList = ({path, deepDir}) => {
+const CrumbList = ({path, deepDir, switchLink}) => {
   if (path === "/") {
     return null
   }
@@ -34,14 +34,31 @@ const CrumbList = ({path, deepDir}) => {
   if (deepDir) {
     items.pop(); // last element is replaced by neighbor nav
   }
-  let href = ""
+  let render = [];
+  let href = "";
+  for (let i = 0; i < items.length; i++) {
+    const name = items[i];
+    href += "/" + name
+    let className = ""
+    let itemHref = href
+    if ((name === "private" || name === "public") && switchLink !== "") {
+      className = name
+      itemHref = switchLink
+    }
+    render.push(<Crumb key={i} href={itemHref} name={name} className={className} />)
+  }
+  return <>{render}</>
+}
+
+const Crumb = ({href, name, className}) => {
   return (
-    items.map((name, i) => {
-      href += "/" + name
-      return <Crumb key={i} href={href} name={name} />
-    })
+    <>
+    <Spacer />
+    <Link className={className} to={href}>{name}</Link>
+    </>
   )
 }
+
 
 const Neighbors = ({links, active}) => {
   return (
@@ -65,15 +82,6 @@ const LinkList = ({links, active}) => {
   )
 }
 
-
-const Crumb = ({href, name}) => {
-  return (
-    <>
-    <Spacer />
-    <Link to={href}>{name}</Link>
-    </>
-  )
-}
 
 
 export default CrumbNavigation;
