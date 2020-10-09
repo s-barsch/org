@@ -2,24 +2,10 @@ import React from 'react';
 import { basename } from 'path';
 import { Link } from 'react-router-dom';
 import Del from './del';
-
-const getTarget = path => {
-  const i = path.lastIndexOf("/");
-  // /abc/bot/file.txt
-  if (i > 0 && path.length - i - 3) {
-    // /abc/bot
-    let cut = path.substr(0, i);
-    // bot
-    cut = cut.substr(cut.length-3);
-    if (cut === "bot") {
-      return "top"
-    }
-  }
-  return "bot"
-}
+import * as p from '../funcs/paths';
 
 const BotToggle = ({file, moveFn}) => {
-  const target = getTarget(file.path);
+  const target = p.Dir(p.Dir(file.path));
 
   const move = () => {
     const i = file.path.lastIndexOf("/")

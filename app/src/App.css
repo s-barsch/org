@@ -123,3 +123,25 @@ textarea {
 .info__del {
     float:right;
 }
+
+#links {
+    margin-bottom:.25rem;
+}
+
+#links a {
+    margin-right:.75rem;
+    font-family:monospace;
+}
+
+button {
+    border:none;
+    background:transparent;
+    color:var(--color-fg);
+    outline:none;
+    cursor: pointer;
+}
+
+.active {
+    background:red;
+    color:black;
+}

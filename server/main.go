@@ -8,7 +8,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var siteConfig *Config
+
 func main() {
+	c, err := loadConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	siteConfig = c
+
 	http.Handle("/", routes())
 	http.ListenAndServe(":8334", nil)
 }
@@ -17,6 +26,7 @@ func routes() *mux.Router {
 	r := mux.NewRouter()
 
 	r.PathPrefix("/file/").HandlerFunc(h(serveStatic))
+	r.PathPrefix("/api/links").HandlerFunc(h(viewLinks))
 
 	api := r.PathPrefix("/api/").Subrouter()
 	api.Methods("GET").Queries("listing", "true").HandlerFunc(h(viewListing))
