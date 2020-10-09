@@ -1,4 +1,7 @@
 const Base = path => {
+  if (path === "/") {
+    return "org"
+  }
   const i = path.lastIndexOf("/");
   if (i < 0 || path.length < i + 1) {
     return path
@@ -10,6 +13,9 @@ const Dir = path => {
   const i = path.lastIndexOf("/");
   if (i < 0) {
     return path
+  }
+  if (i === 0) {
+    return "/"
   }
   return path.substr(0, i)
 }

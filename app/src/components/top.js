@@ -7,10 +7,10 @@ import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
 import { readStateBool } from '../funcs/storage';
 import * as p from '../funcs/paths';
-import * as t from '../funcs/targets';
+import * as targets from '../funcs/targets';
 
-const DirName = () => {
-  const name = basename(useLocation().pathname);
+const DirName = ({path}) => {
+  const name = basename(path);
   if (name === "") {
     return "org"
   }
@@ -27,7 +27,7 @@ const Top = ({view}) => {
 
   const [darkTheme, setDarkTheme] = useState(readStateBool("dark-theme"));
   const [targetList, setTargetList] = useState([]);
-  const [targetFolder, setTargetFolder] = useState(false);
+  const [activeTarget, setActiveTarget] = useState("");
   const [links, setLinks] = useState([]);
 
   useEffect(() => {
@@ -44,18 +44,16 @@ const Top = ({view}) => {
     )
   }, [])
 
-  useEffect(() => {
-    setTargetFolder(t.isTarget(view.file.path));
-  }, [view])
+  const loadTargets = () => {
+    setActiveTarget(targets.getActive());
+    setTargetList(targets.getList())
+  }
 
+  let location = useLocation();
 
   useEffect(() => {
     loadTargets();
   }, [])
-
-  const loadTargets = () => {
-    setTargetList(t.getTargetList())
-  }
 
   /*
   const rename = newName => {
@@ -90,25 +88,23 @@ const Top = ({view}) => {
     localStorage.setItem("dark-theme", !darkTheme);
   }
 
-  const setTarget = path => {
-    if (!targetFolder) {
-      t.addTarget(path);
-    } else {
-      t.removeTarget(path);
-    }
-    setTargetFolder(!targetFolder);
+  const setActive = path => {
+    targets.setActive(path);
     loadTargets();
   }
 
-  const TargetButton = () => {
-    const clickFn = () => {
-      setTarget(view.file.path)
-    }
-    return (
-      <button className={targetFolder ? "active" : ""} onClick={clickFn}>
-        <TargetIcon />
-      </button>
-    )
+  const removeTarget = path => {
+    targets.removeTarget(path);
+    loadTargets();
+  }
+
+  const setThisActive = () => {
+    targets.setActive(view.file.path);
+    loadTargets();
+  }
+
+  const TargetButton = ({clickFn}) => {
+    return <button onClick={clickFn}><TargetIcon /></button>
   }
 
   return (
@@ -116,7 +112,12 @@ const Top = ({view}) => {
       <nav id="links">
         <LinkList links={links} />
       <span className="right">
-        <LinkList links={targetList} />
+    <TargetList
+    links={targetList}
+    page={location.pathname}
+    activeTarget={activeTarget}
+    setActiveFn={setActive}
+    removeFn={removeTarget} />
       </span>
       </nav>
 
@@ -124,7 +125,7 @@ const Top = ({view}) => {
         <Root />
         <Breadcrumbs />
         <span className="right">
-          <TargetButton />
+          <TargetButton clickFn={setThisActive} />
           <button onClick={toggleTheme} ><ThemeIcon /></button>
           <Del file={view.file} delFn={del} />
         </span>
@@ -132,16 +133,52 @@ const Top = ({view}) => {
 
       <h1 className="name">
         <Link className="parent" to={view.parent}>^</Link>
-        <DirName />
+        <DirName path={location.pathname} />
       </h1>
     </>
+  )
+}
+
+const TargetList = ({activeTarget, page, links, removeFn, setActiveFn}) => {
+  const onClick = evt => {
+    if (evt.shiftKey) {
+      evt.preventDefault();
+      setActiveFn(evt.target.pathname);
+    }
+  }
+  const onRightClick = evt => {
+    if (evt.shiftKey) {
+      evt.preventDefault();
+      removeFn(evt.target.pathname);
+    }
+  }
+  return (
+    links.map((l, i) => {
+      let className = ""
+      if (page === l) {
+        className = "current"
+      }
+      if (activeTarget === l) {
+        className = "active"
+      }
+      if (page === l && activeTarget === l) {
+        className = "active--page"
+      }
+      return (
+        <Link key={i} to={l}
+        className={className}
+        onClick={onClick} onContextMenu={onRightClick}>
+          {p.ExtendedBase(l)}
+        </Link>
+      )
+    })
   )
 }
 
 const LinkList = ({links}) => {
   return (
     links.map((l, i) => (
-      <Link key={i} to={l}>{p.ExtendedBase(l)}</Link>
+      <Link key={i} to={l}>{p.Base(l)}</Link>
     ))
   )
 }

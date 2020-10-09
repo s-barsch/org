@@ -1,45 +1,86 @@
+import { ExtendedBase } from './paths';
 
 const removeTarget = path => {
-  let l = getTargetList().filter( target => {
+  if (getActive() === path) {
+    unsetActive();
+  }
+  let l = getList().filter( target => {
     if (target !== path) {
       return true
     }
     return false
   });
-  setTargetList(l);
+  setList(l);
 }
 
-const isTarget = path => {
-  let l = getTargetList();
-  for (const target of l) {
-    if (target === path) {
-      return true
+const getActive = () => {
+  const str = localStorage.getItem("target");
+  if (str === null) {
+    return ""
+  }
+  return str
+}
+
+const nextActive = path => {
+  const list = getList();
+  const active = getActive();
+  let i = 0;
+  for (; i < list.length; i++) {
+    if (list[i] === active) {
+      break;
     }
   }
-  return false
+  if (list.length > i) {
+    return list[i+1]
+  }
+  if (list.length > 0) {
+    return list[0]
+  }
+  return ""
+}
+
+const unsetActive = () => {
+  localStorage.setItem("target", nextActive());
+}
+
+const setActive = path => {
+  addTarget(path);
+  localStorage.setItem("target", path);
 }
 
 const addTarget = path => {
-  let l = getTargetList();
+  let l = getList();
   for (const target of l) {
     if (target === path) {
       return
     }
   }
-  l.push(path)
-  setTargetList(l);
+  l.push(path);
+  setList(l);
 }
 
-const setTargetList = list => {
-  localStorage.setItem("targets", JSON.stringify(list))
+const setList = list => {
+  localStorage.setItem("targetList", JSON.stringify(list))
 }
 
-const getTargetList = () => {
-  const str = localStorage.getItem("targets");
+const getList = () => {
+  const str = localStorage.getItem("targetList");
   if (str === null) {
     return []
   }
-  return JSON.parse(str)
+  const list = JSON.parse(str);
+
+  return list.sort(function(a, b) {
+    const abase = ExtendedBase(a);
+    const bbase = ExtendedBase(b);
+    if (abase < bbase) {
+      return -1;
+    }
+    if (abase > bbase) {
+      return 1;
+    }
+    return 0;
+  })
 }
 
-export { addTarget, getTargetList, isTarget, removeTarget};
+export { setActive, getActive, getList, unsetActive, removeTarget };

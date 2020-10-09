@@ -142,6 +142,17 @@ button {
 }
 
 .active {
+    background:green;
+    color:black;
+}
+
+.current {
+    background:lightgrey;
+    color:black;
+}
+
+.active--page {
     background:red;
     color:black;
 }
+
