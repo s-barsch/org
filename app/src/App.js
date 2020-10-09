@@ -21,6 +21,7 @@ const emptyView = () => {
       path: "",
       type: ""
     },
+    neighbors: [],
     parent: "",
   }
 }

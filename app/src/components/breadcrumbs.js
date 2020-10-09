@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import * as p from '../funcs/paths';
 
 const Spacer = () => {
   return (
@@ -7,13 +8,32 @@ const Spacer = () => {
   )
 }
 
-const Breadcrumbs = () => {
-  let path = useLocation().pathname;
+const Root = () => {
+  return (
+    <Link to="/">org</Link>
+  )
+}
+
+const CrumbNavigation = ({path, neighbors}) => {
+  const dayDir = p.Base(path).length <= 4;
+  return (
+    <nav className="crumbs">
+      <Root />
+      <CrumbList path={path} dayDir={dayDir}/>
+      { dayDir && <Neighbors links={neighbors} active={path} /> }
+    </nav>
+  )
+}
+
+const CrumbList = ({path, dayDir}) => {
   if (path === "/") {
     return null
   }
 
   const items = path.substr(1).split("/");
+  if (dayDir) {
+    items.pop(); // last element is replaced by neighbor nav
+  }
   let href = ""
   return (
     items.map((name, i) => {
@@ -22,6 +42,29 @@ const Breadcrumbs = () => {
     })
   )
 }
+
+const Neighbors = ({links, active}) => {
+  return (
+    <>
+      <Spacer />
+      <nav className="neighbors">
+        <LinkList links={links} active={active} />
+      </nav>
+    </>
+  )
+}
+
+const LinkList = ({links, active}) => {
+  if (!links || links.length === 0) {
+    return null;
+  }
+  return (
+    links.map((l, i) => (
+      <Link key={i} to={l} className={active === l ? "active" : ""}>{p.Base(l)}</Link>
+    ))
+  )
+}
+
 
 const Crumb = ({href, name}) => {
   return (
@@ -33,4 +76,4 @@ const Crumb = ({href, name}) => {
 }
 
 
-export default Breadcrumbs;
+export default CrumbNavigation;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { basename } from 'path';
-import Breadcrumbs from './breadcrumbs';
+import CrumbNavigation from './breadcrumbs';
 import Del from './del';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
@@ -24,10 +24,14 @@ const PageTitle = path => {
   return DirName(path) + " - ORG";
 }
 
-const Root = () => {
-  return (
-    <Link to="/">org</Link>
-  )
+const makeNeighborList = files => {
+  let nu = [];
+  for (const f of files) {
+    if (f.type === "dir") {
+      nu.push(f.path);
+    }
+  }
+  return nu;
 }
 
 const Top = ({view}) => {
@@ -129,6 +133,9 @@ const Top = ({view}) => {
     return <button onClick={clickFn}><TargetIcon /></button>
   }
 
+  /*
+   */
+
   return (
     <>
       <nav id="links">
@@ -143,9 +150,8 @@ const Top = ({view}) => {
       </span>
       </nav>
 
-      <nav className="crumbs">
-        <Root />
-        <Breadcrumbs />
+      <nav id="bar">
+        <CrumbNavigation neighbors={makeNeighborList(view.neighbors)} path={location.pathname} />
         <span className="right">
           <TargetButton clickFn={setThisActive} />
           <button onClick={toggleTheme} ><ThemeIcon /></button>
@@ -201,10 +207,13 @@ const TargetList = ({activeTarget, page, links, removeFn, setActiveFn}) => {
   )
 }
 
-const LinkList = ({links}) => {
+const LinkList = ({links, active}) => {
+  if (!links || links.length === 0) {
+    return null;
+  }
   return (
     links.map((l, i) => (
-      <Link key={i} to={l}>{p.Base(l)}</Link>
+      <Link key={i} to={l} className={active === l ? "active" : ""}>{p.Base(l)}</Link>
     ))
   )
 }

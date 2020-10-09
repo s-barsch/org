@@ -13,8 +13,9 @@ import (
 )
 
 type View struct {
-	File   *File  `json:"file"`
-	Parent string `json:"parent"`
+	File      *File   `json:"file"`
+	Parent    string  `json:"parent"`
+	Neighbors []*File `json:"neighbors"`
 }
 
 func viewListing(w http.ResponseWriter, r *http.Request) *Err {
@@ -237,7 +238,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
 
 	e := &Err{
-		Func: "view",
+		Func: "viewFile",
 		Path: path,
 		Code: 500,
 	}
@@ -249,12 +250,19 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
+	neighbors, err := getNeighbors(path)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
 	v := &View{
 		File: &File{
 			Path: path,
 			Type: getFileType(path, fi.IsDir()),
 		},
-		Parent: p.Dir(path),
+		Parent:    p.Dir(path),
+		Neighbors: neighbors,
 	}
 
 	err = json.NewEncoder(w).Encode(v)
@@ -264,6 +272,37 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	return nil
+}
+
+func getNeighbors(path string) ([]*File, error) {
+	files, err := getFiles(p.Dir(path))
+	if err != nil {
+		return nil, err
+	}
+
+	c := 0
+	for i, f := range files {
+		if f.Path == path {
+			c = i
+			break
+		}
+	}
+
+	length := len(files)
+
+	start := 0
+	end := length
+
+	d := 2
+
+	if c + 1 + d < length {
+		end = c + 1 + d
+	}
+	if c - d > 0 {
+		start = c - d
+	}
+
+	return files[start:end], nil
 }
 
 func serveStatic(w http.ResponseWriter, r *http.Request) *Err {

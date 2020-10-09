@@ -86,6 +86,7 @@ h1 {
     font-family:monospace;
     font-size:1.5rem;
     background:#ffff9f;
+    color:black;
 }
 
 button {
@@ -128,6 +129,12 @@ textarea {
     margin-bottom:.25rem;
 }
 
+#neighbors {
+    display:inline;
+    margin-left:1rem;
+}
+
+#neighbors a,
 #links a {
     margin-right:.75rem;
     font-family:monospace;
@@ -146,4 +153,17 @@ button {
     color:black;
 }
 
+.neighbors {
+    display:inline;
+}
+.neighbors a {
+    margin-right:.625rem;
+    opacity:.5;
+}
+
+.neighbors .active {
+    opacity:1;
+    background:transparent;
+    color:var(--color-fg);
+}
 
