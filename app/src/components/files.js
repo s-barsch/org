@@ -97,11 +97,15 @@ const DirListing = () => {
         <AddDir submitFn={addNewDir} />
       </nav>
       <section id="files">
-        <>hi!</>
+        <AddText />
         <FileList files={filesOnly(files)} moveFn={move} delFn={del} />
       </section>
     </>
   )
+}
+
+const AddText = () => {
+  return <button>⁂</button>
 }
 
 const DirList = ({dirs}) => {
