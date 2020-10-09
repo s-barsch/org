@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { basename } from 'path';
 import Breadcrumbs from './breadcrumbs';
@@ -9,12 +9,19 @@ import { readStateBool } from '../funcs/storage';
 import * as p from '../funcs/paths';
 import * as targets from '../funcs/targets';
 
-const DirName = ({path}) => {
+const DirName = (path) => {
   const name = basename(path);
   if (name === "") {
     return "org"
   }
   return name
+}
+
+const PageTitle = path => {
+  if (path === "/") {
+    return "ORG"
+  }
+  return DirName(path) + " - ORG";
 }
 
 const Root = () => {
@@ -50,6 +57,21 @@ const Top = ({view}) => {
   }
 
   let location = useLocation();
+
+  document.title = PageTitle(location.pathname);
+
+  const handleStorageChange = useCallback(evt => {
+    loadTargets();
+    console.log("i fired");
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [handleStorageChange]);
 
   useEffect(() => {
     loadTargets();
@@ -133,7 +155,7 @@ const Top = ({view}) => {
 
       <h1 className="name">
         <Link className="parent" to={view.parent}>^</Link>
-        <DirName path={location.pathname} />
+        {DirName(location.pathname)}
       </h1>
     </>
   )
@@ -155,15 +177,19 @@ const TargetList = ({activeTarget, page, links, removeFn, setActiveFn}) => {
   return (
     links.map((l, i) => {
       let className = ""
+      /*
       if (page === l) {
         className = "current"
       }
+      */
       if (activeTarget === l) {
         className = "active"
       }
+      /*
       if (page === l && activeTarget === l) {
         className = "active--page"
       }
+      */
       return (
         <Link key={i} to={l}
         className={className}

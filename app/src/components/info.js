@@ -5,7 +5,7 @@ import Del from './del';
 import * as p from '../funcs/paths';
 
 const BotToggle = ({file, moveFn}) => {
-  const target = p.Dir(p.Dir(file.path));
+  const target = p.Base(p.Dir(file.path)) === "bot" ? "top" : "bot";
 
   const move = () => {
     const i = file.path.lastIndexOf("/")
