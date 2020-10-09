@@ -240,7 +240,13 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	if err != nil {
 		e.Err = fmt.Errorf("Not found %v", path)
 		e.Code = 404
-		return e
+		if p.Ext(path) != ".txt" {
+			return e
+		}
+		fi, err = os.Stat(p.Dir(ROOT+path))
+		if err != nil {
+			return e
+		}
 	}
 
 	v := &View{
