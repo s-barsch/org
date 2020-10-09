@@ -39,6 +39,7 @@ const View = () => {
           return;
         }
         resp.json().then(view => {
+          console.log(view);
           setView(view)
         })
       }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import Info from './info';
 
@@ -14,6 +14,14 @@ const Text = ({file, moveFn, delFn, single}) => {
       )
     );
   }, [file]);
+
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (single === true) {
+      ref.current.focus({preventScroll:true});
+    }
+  }, [single]);
 
   const handleTyping = event => {
     setBody(event.target.value);
@@ -39,6 +47,7 @@ const Text = ({file, moveFn, delFn, single}) => {
     <>
       { !single && <Info file={file} moveFn={moveFn} delFn={delFn} /> }
       <TextareaAutosize value={body}
+      ref={ref}
       minRows={minRows}
       onChange={handleTyping}
       onBlur={submit} />

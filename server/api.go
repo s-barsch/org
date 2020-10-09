@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -203,14 +204,19 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	// delete empty files
-	if len(body) == 0 {
+	// delete empty info files
+	if p.Ext(path) == ".info" && len(body) == 0 {
 		err := rmFile(ROOT + path)
 		if err != nil {
 			e.Err = err
 			return e
 		}
 		return nil
+	}
+
+	// handle newfile command
+	if bytes.Equal(body, []byte("newfile")) {
+		body = []byte{}
 	}
 
 	body = removeMultipleNewLines(body)
@@ -240,13 +246,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	if err != nil {
 		e.Err = fmt.Errorf("Not found %v", path)
 		e.Code = 404
-		if p.Ext(path) != ".txt" {
-			return e
-		}
-		fi, err = os.Stat(p.Dir(ROOT+path))
-		if err != nil {
-			return e
-		}
+		return e
 	}
 
 	v := &View{

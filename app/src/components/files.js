@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useHistory, Link } from 'react-router-dom';
 import Text from './text';
 import Info from './info';
 import Image from './image';
 import {basename} from 'path';
 import AddDir from './add-dir';
+import NewTimestamp from '../funcs/date';
 
 const FileEntry = ({ file, moveFn, delFn }) => {
   const drag = (ev) => {
@@ -33,6 +34,8 @@ const DirListing = () => {
   const [files, setFiles] = useState([]);
 
   const path = useLocation().pathname;
+  const history = useHistory();
+
 
   const loadFiles = (path) => {
     fetch("/api" + path + "?listing=true").then(
@@ -90,6 +93,18 @@ const DirListing = () => {
     })
   }
 
+  const newFile = () => {
+    const newPath = path + "/" + NewTimestamp() + ".txt";
+    fetch("/api" + newPath, {
+      method: "POST",
+      body: "newfile"
+    }).then(
+      history.push(newPath)
+    ).catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+
   return (
     <>
       <nav id="dirs">
@@ -97,15 +112,15 @@ const DirListing = () => {
         <AddDir submitFn={addNewDir} />
       </nav>
       <section id="files">
-        <AddText />
+        <AddText newFn={newFile} />
         <FileList files={filesOnly(files)} moveFn={move} delFn={del} />
       </section>
     </>
   )
 }
 
-const AddText = () => {
-  return <button>⁂</button>
+const AddText = ({newFn}) => {
+  return <button onClick={newFn}>⁂</button>
 }
 
 const DirList = ({dirs}) => {
