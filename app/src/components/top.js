@@ -133,6 +133,7 @@ const Top = ({view}) => {
     return <button onClick={clickFn}><TargetIcon /></button>
   }
 
+  console.log(view.public);
   /*
    */
 
@@ -140,6 +141,7 @@ const Top = ({view}) => {
     <>
       <nav id="links">
         <LinkList links={links} />
+    {view.public}
       <span className="right">
     <TargetList
     links={targetList}

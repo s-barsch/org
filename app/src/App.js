@@ -22,6 +22,7 @@ const emptyView = () => {
       type: ""
     },
     neighbors: [],
+    public: "",
     parent: "",
   }
 }

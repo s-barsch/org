@@ -15,23 +15,23 @@ const Root = () => {
 }
 
 const CrumbNavigation = ({path, neighbors}) => {
-  const dayDir = p.Base(path).length <= 4;
+  const deepDir = path.split("/").length > 4;
   return (
     <nav className="crumbs">
       <Root />
-      <CrumbList path={path} dayDir={dayDir}/>
-      { dayDir && <Neighbors links={neighbors} active={path} /> }
+      <CrumbList path={path} deepDir={deepDir}/>
+      { deepDir && <Neighbors links={neighbors} active={path} /> }
     </nav>
   )
 }
 
-const CrumbList = ({path, dayDir}) => {
+const CrumbList = ({path, deepDir}) => {
   if (path === "/") {
     return null
   }
 
   const items = path.substr(1).split("/");
-  if (dayDir) {
+  if (deepDir) {
     items.pop(); // last element is replaced by neighbor nav
   }
   let href = ""
