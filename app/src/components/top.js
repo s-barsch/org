@@ -189,20 +189,10 @@ const TargetList = ({activeTarget, page, links, removeFn, setActiveFn}) => {
   }
   return (
     links.map((l, i) => {
-      let className = ""
-      /*
-      if (page === l) {
-        className = "current"
-      }
-      */
+      let className = p.Section(l)
       if (activeTarget === l) {
-        className = "active"
+        className += " active"
       }
-      /*
-      if (page === l && activeTarget === l) {
-        className = "active--page"
-      }
-      */
       return (
         <Link key={i} to={l}
         className={className}

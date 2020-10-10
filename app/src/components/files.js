@@ -6,19 +6,14 @@ import Image from './image';
 import {basename} from 'path';
 import AddDir from './add-dir';
 import NewTimestamp from '../funcs/date';
-import { ReactSortable } from "react-sortablejs";
+import { ReactSortable } from 'react-sortablejs';
 import ReverseIcon from '@material-ui/icons/SwapVert';
+import * as p from '../funcs/paths';
 
 
 const FileEntry = ({ file, moveFn, delFn }) => {
-  const drag = (ev) => {
-    ev.dataTransfer.setData("text", file.path);
-  }
-
   return (
-    <div draggable="true" onDragStart={drag}>
-      <FileSwitch file={file} moveFn={moveFn} delFn={delFn} />
-    </div>
+    <FileSwitch file={file} moveFn={moveFn} delFn={delFn} />
   )
 }
 
@@ -31,27 +26,6 @@ const FileSwitch = ({file, moveFn, delFn, single}) => {
     default:
       return <Info file={file} moveFn={moveFn} delFn={delFn} />
   }
-}
-
-const section = path => {
-  if (path.substr(7) === "/public") {
-    return "public"
-  }
-  return "private"
-}
-
-const isPublic = path => {
-  if (section(path) === "public") {
-    return true
-  }
-  return false
-}
-
-const numerate = files => {
-  for (let i = 0; i < files.length; i++) {
-    files[i].id = i
-  }
-  return files;
 }
 
 const DirListing = () => {
@@ -72,14 +46,8 @@ const DirListing = () => {
     loadFiles(path);
   }, [path]);
 
-  const addNewDir = (name) => {
-    if (name === "") {
-      return;
-    }
-    if (path !== "/") {
-      name = "/" + name
-    }
-    fetch("/api" + path + name, {
+  const req = (path, obj) => {
+    fetch("/api" + path, {
       method: "POST"
     }).then( resp => {
       if (!resp.ok) {
@@ -90,50 +58,54 @@ const DirListing = () => {
     }
     ).catch(err => {
       alert(err);
-      console.log(err);
     })
+  }
+
+  const addNewDir = (name) => {
+    if (name === "") {
+      return;
+    }
+
+    if (path !== "/") {
+      name = "/" + name
+    }
+
+    req(
+      path + name,
+      { method: "POST" },
+      () => { loadFiles(path)}
+    )
   }
 
   const move = (filepath, newPath) => {
-    fetch("/api" + filepath, {
-      method: "PUT",
-      body: newPath
-    }).then(
-      loadFiles(path)
-    ).catch(err => {
-      alert(err);
-      console.log(err);
-    })
+    req(
+      filepath,
+      { method: "PUT", body: newPath },
+      () => { loadFiles(path)}
+    )
   }
 
   const del = filepath => {
-    fetch("/api" + filepath, {
-      method: "DELETE"
-    }).then(
-      loadFiles(path)
-    ).catch(err => {
-      alert(err);
-      console.log(err);
-    })
+    req(
+      filepath,
+      { method: "DELETE" },
+      () => { loadFiles(path)}
+    )
   }
 
   const newFile = () => {
     const newPath = path + "/" + NewTimestamp() + ".txt";
-    fetch("/api" + newPath, {
-      method: "POST",
-      body: "newfile"
-    }).then(
-      history.push(newPath)
-    ).catch((error) => {
-      console.error('Error:', error);
-    });
+    req(
+      newPath,
+      { method: "POST", body: "newfile" },
+      () => { history.push(newPath) }
+    )
   }
 
   const saveSorted = (part, type) => {
     let all = merge(files.slice(), part, type);
 
-
-    if (isPublic(path)) {
+    if (p.IsPublic(path)) {
     }
       fetch("/api/sort" + path, {
         method: "POST",
@@ -141,34 +113,6 @@ const DirListing = () => {
       })
 
     setFiles(all);
-  }
-
-  const makeArr = files => {
-    let arr = [];
-    for (const f of files) {
-      arr.push(f.name);
-    }
-    return arr
-  }
-
-  const merge = (all, part, type) => {
-    let diff = subtract(all, part)
-    if (type === "files") {
-      return diff.concat(part)
-    } 
-    return part.concat(diff)
-  }
-
-  const subtract = (base, other) => {
-    for (const f of other) {
-      for (let i = 0; i < base.length; i++) {
-        if (base[i].name === f.name) {
-          base.splice(i, 1)
-          break;
-        }
-      }
-    }
-    return base
   }
 
   return (
@@ -226,26 +170,6 @@ const FileList = ({files, moveFn, delFn, saveFn}) => {
     setState(files);
   }, [files])
   
-  const preSort = files => {
-    let info = [];
-    let sort = [];
-    let nu   = [];
-
-    for (const f of files) {
-      if (f.name === "info") {
-        info.push(f)
-        continue
-      }
-      if (f.name === ".sort") {
-        sort.push(f)
-        continue
-      }
-      nu.push(f)
-    }
-
-    return info.concat(nu).concat(sort);
-  }
-
   const reverseFiles = () => {
     const reverse = preSort(state.slice().reverse());
     saveFn(reverse, "files");
@@ -286,18 +210,59 @@ const filesOnly = (list) => {
   })
 }
 
-/*
-const NewDir = () => {
-  const [name, setName] = useState("");
-  const change = event => {
-    setName(event.target.value);
+const preSort = files => {
+  let info = [];
+  let sort = [];
+  let nu   = [];
+
+  for (const f of files) {
+    if (f.name === "info") {
+      info.push(f)
+      continue
+    }
+    if (f.name === ".sort") {
+      sort.push(f)
+      continue
+    }
+    nu.push(f)
   }
-  const submit = event => {
+
+  return info.concat(nu).concat(sort);
+}
+
+const numerate = files => {
+  for (let i = 0; i < files.length; i++) {
+    files[i].id = i
   }
-  return (
-    <input type="text" onChange={change} onBlur={submit} />
-  )
+  return files;
+}
+
+const makeArr = files => {
+  let arr = [];
+  for (const f of files) {
+    arr.push(f.name);
+  }
+  return arr
+}
+
+const merge = (all, part, type) => {
+  let diff = subtract(all, part)
+  if (type === "files") {
+    return diff.concat(part)
+  } 
+  return part.concat(diff)
+}
+
+const subtract = (base, other) => {
+  for (const f of other) {
+    for (let i = 0; i < base.length; i++) {
+      if (base[i].name === f.name) {
+        base.splice(i, 1)
+        break;
+      }
+    }
+  }
+  return base
 }
 
 
-*/

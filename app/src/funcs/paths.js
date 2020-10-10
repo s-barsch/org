@@ -28,4 +28,19 @@ const ExtendedBase = path => {
   return Base(Dir(path)) + "/" + base
 }
 
-export { ExtendedBase, Base, Dir };
+const Section = path => {
+  if (path.substr(7) === "/public") {
+    return "public"
+  }
+  return "private"
+}
+
+const IsPublic = path => {
+  if (Section(path) === "public") {
+    return true
+  }
+  return false
+}
+
+
+export { ExtendedBase, Base, Dir, Section, IsPublic};
