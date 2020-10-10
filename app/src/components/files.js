@@ -33,6 +33,20 @@ const FileSwitch = ({file, moveFn, delFn, single}) => {
   }
 }
 
+const section = path => {
+  if (path.substr(7) === "/public") {
+    return "public"
+  }
+  return "private"
+}
+
+const isPublic = path => {
+  if (section(path) === "public") {
+    return true
+  }
+  return false
+}
+
 const numerate = files => {
   for (let i = 0; i < files.length; i++) {
     files[i].id = i
@@ -115,19 +129,17 @@ const DirListing = () => {
     });
   }
 
-  const sortFiles = () => {
-    const reverse = files.slice().reverse()
-    setFiles(reverse);
-    console.log(reverse);
-  }
-
   const saveSorted = (part, type) => {
     let all = merge(files.slice(), part, type);
 
-    fetch("/api/sort" + path, {
-      method: "POST",
-      body: JSON.stringify(makeArr(all))
-    })
+    setFiles(all);
+
+    if (isPublic(path)) {
+      fetch("/api/sort" + path, {
+        method: "POST",
+        body: JSON.stringify(makeArr(all))
+      })
+    }
   }
 
   const makeArr = files => {
@@ -167,7 +179,6 @@ const DirListing = () => {
       <section id="files">
         <AddText newFn={newFile} />
         <span className="right">
-          <button onClick={sortFiles}><SortIcon /></button>
         </span>
         <FileList files={filesOnly(files)} saveFn={saveSorted} moveFn={move} delFn={del} />
       </section>
@@ -200,18 +211,48 @@ const FileList = ({files, moveFn, delFn, saveFn}) => {
     setState(files);
   }, [files])
   
+  const preSort = files => {
+    let info = [];
+    let sort = [];
+    let nu   = [];
+
+    for (const f of files) {
+      if (f.name === "info") {
+        info.push(f)
+        continue
+      }
+      if (f.name === ".sort") {
+        sort.push(f)
+        continue
+      }
+      nu.push(f)
+    }
+
+    return info.concat(nu).concat(sort);
+  }
+
+  const reverseFiles = () => {
+    const reverse = preSort(state.slice().reverse());
+    saveFn(reverse, "files");
+  }
+
   const callOnEnd = () => {
     saveFn(state, "files");
   };
 
   return (
-    <ReactSortable delay={10}
-    onEnd={callOnEnd}
-    animation={200} list={state} setList={setState}>
-    { state.map((file) => (
-      <FileEntry key={file.id} file={file} moveFn={moveFn} delFn={delFn} />
-    ))}
-    </ReactSortable>
+    <>
+      <span className="right">
+        <button onClick={reverseFiles}><SortIcon /></button>
+      </span>
+      <ReactSortable delay={10}
+      onEnd={callOnEnd}
+      animation={200} list={state} setList={setState}>
+      { state.map((file) => (
+        <FileEntry key={file.id} file={file} moveFn={moveFn} delFn={delFn} />
+      ))}
+      </ReactSortable>
+    </>
   );
 }
 
