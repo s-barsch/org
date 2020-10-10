@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useHistory, Link } from 'react-router-dom';
-import Text from './text';
-import Info from './info';
-import Image from './image';
+import Text from './types/text';
+import { Info } from './meta';
+import Image from './types/image';
 import {basename} from 'path';
 import AddDir from './add-dir';
 import NewTimestamp from '../funcs/date';

@@ -14,7 +14,7 @@ const Root = () => {
   )
 }
 
-const CrumbNavigation = ({path, neighbors, switchLink}) => {
+const CrumbNav = ({path, neighbors, switchLink}) => {
   const deepDir = path.split("/").length > 4;
   return (
     <nav className="crumbs">
@@ -84,4 +84,4 @@ const LinkList = ({links, active}) => {
 
 
 
-export default CrumbNavigation;
+export default CrumbNav;

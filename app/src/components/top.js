@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { basename } from 'path';
-import CrumbNavigation from './breadcrumbs';
-import Del from './del';
+import CrumbNav from './crumbs';
+import { Del } from './meta';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
 import SortIcon from '@material-ui/icons/SwapVert';
@@ -150,7 +150,7 @@ const Top = ({view}) => {
       </nav>
 
       <nav id="bar">
-        <CrumbNavigation
+        <CrumbNav
           neighbors={makeNeighborList(view.neighbors)}
           switchLink={view.switch}
           path={location.pathname} />

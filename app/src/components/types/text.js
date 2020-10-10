@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import Info from './info';
+import { Info } from '../meta';
 
 const Text = ({file, moveFn, delFn, single}) => {
   const [body, setBody] = useState("");

@@ -1,5 +1,5 @@
 import React from 'react';
-import Del from './del';
+import { Del } from '../meta';
 import Text from './text';
 
 const Image = ({file, delFn}) => {
