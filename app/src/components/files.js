@@ -195,12 +195,18 @@ const FileSwitch = ({file, moveFn, delFn, single}) => {
 export { DirView, FileSwitch };
 
 const dirsOnly = (list) => {
+  if (!list) {
+    return [];
+  }
   return list.filter((file) => {
     return file.type === "dir"
   })
 }
 
 const filesOnly = (list) => {
+  if (!list) {
+    return [];
+  }
   return list.filter((file) => {
     return file.type !== "dir"
   })
@@ -228,7 +234,7 @@ const preSort = files => {
 
 const numerate = files => {
   if (!files) {
-    return;
+    return [];
   }
   for (let i = 0; i < files.length; i++) {
     files[i].id = i
