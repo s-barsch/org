@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,6 +12,44 @@ import (
 	p "path/filepath"
 	"strings"
 )
+
+func writeSort(w http.ResponseWriter, r *http.Request) *Err {
+	path := r.URL.Path[len("/api/info"):]
+
+	e := &Err{
+		Func: "writeInfo",
+		Path: path,
+		Code: 500,
+	}
+
+	list := []string{}
+
+	err := json.NewDecoder(io.Reader(r.Body)).Decode(&list)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	sorted := makeFiles(path, list)
+
+	files, err := readFiles(path)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	all := separate(merge(sorted, files))
+
+	err = writeSortFile(path, all)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	println("written")
+
+	return nil
+}
 
 func viewListing(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]

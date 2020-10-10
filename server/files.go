@@ -6,7 +6,7 @@ import (
 	p "path/filepath"
 	"strings"
 	"sort"
-	//"fmt"
+	"fmt"
 )
 
 type File struct {
@@ -21,21 +21,20 @@ func getFiles(path string) ([]*File, error) {
 		return nil, err
 	}
 
-	if hasSort(path) {
+	if hasSort(path) && true {
 		sorted, err := parseSort(path)
 		if err != nil {
 			return nil, err
 		}
 
-		/*
-		for _, f := range sorted {
-			fmt.Println(f.Name)
-			fmt.Printf("\t%v\n", f.Type)
-		}
-		fmt.Println("-")
-		*/
+		freshSort := separate(merge(sorted, files))
 
-		return merge(files, sorted), nil
+		err = writeSortFile(path, freshSort)
+		if err != nil {
+			return nil, err
+		}
+
+		return freshSort, nil
 	}
 
 	return preSort(files), nil
@@ -73,20 +72,47 @@ func preSort(files []*File) []*File {
 		nu = append(nu, f)
 	}
 
-	sort.Sort(sort.Reverse(Asc(nu)))
-
-	return separate(nu)
+	return antoSort(nu)
 }
 
-func separate(all []*File) []*File {
-	var dirs, files []*File
+func printFiles(files []*File) {
+	for _, f := range files {
+		fmt.Println(f.Name)
+	}
+}
+
+func divide(all []*File) (dirs, files []*File) {
+	info := []*File{}
+	sort := []*File{}
 	for _, f := range all {
 		if f.Type == "dir" {
 			dirs = append(dirs, f)
 			continue
 		}
+		if f.Name == "info" {
+			info = append(info, f)
+			continue
+		}
+		if  f.Name == ".sort" {
+			sort = append(sort, f)
+			continue
+		}
 		files = append(files, f)
 	}
+	return dirs, append(info, append(files, sort...)...)
+}
+
+func antoSort(all []*File) []*File {
+	dirs, files := divide(all)
+
+	sort.Sort(Asc(dirs))
+	sort.Sort(sort.Reverse(Asc(files)))
+
+	return append(dirs, files...)
+}
+
+func separate(all []*File) []*File {
+	dirs, files := divide(all)
 	return append(dirs, files...)
 }
 

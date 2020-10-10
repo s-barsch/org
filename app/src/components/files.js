@@ -122,10 +122,20 @@ const DirListing = () => {
   }
 
   const saveSorted = (part, type) => {
-    const all = merge(files.slice(), part, type);
-    for (const f of all) {
-      console.log(f.name);
+    let all = merge(files.slice(), part, type);
+
+    fetch("/api/sort" + path, {
+      method: "POST",
+      body: JSON.stringify(makeArr(all))
+    })
+  }
+
+  const makeArr = files => {
+    let arr = [];
+    for (const f of files) {
+      arr.push(f.name);
     }
+    return arr
   }
 
   const merge = (all, part, type) => {

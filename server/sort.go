@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"io/ioutil"
 	p "path/filepath"
 	"os"
@@ -55,7 +56,7 @@ func hasSort(path string) bool {
 	return err == nil
 }
 
-func merge(files, sorted []*File) []*File {
+func merge(sorted, files []*File) []*File {
 	return append(sorted, subtract(files, sorted)...)
 }
 
@@ -71,17 +72,18 @@ func subtract(base, other []*File) []*File {
 	}
 	return base
 }
-/*
-func writeSort(path string, fs files) error {
-	path = filepath.Join(path, ".sort")
-	var buf bytes.Buffer
-	for _, f := range fs {
-		buf.WriteString(f.name)
+
+func writeSortFile(path string, files []*File) error {
+
+	buf := bytes.Buffer{}
+
+	for _, f := range files {
+		buf.WriteString(f.Name)
 		buf.WriteString("\n")
 	}
-	return ioutil.WriteFile(path, buf.Bytes(), 0755)
+
+	return ioutil.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
 }
-*/
 
 /*
 func renameSortEntry(oldpath, newpath string) error {
