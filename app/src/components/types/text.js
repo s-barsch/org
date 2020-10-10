@@ -6,13 +6,16 @@ const Text = ({file, moveFn, delFn, single}) => {
   const [body, setBody] = useState("");
 
   useEffect(() => {
-    fetch("/file" + file.path).then(
-      resp => resp.text().then(
-        textContent => {
-          setBody(textContent);
-        }
-      )
-    );
+    async function loadBody() {
+      try {
+        const resp = await fetch("/file" + file.path);
+        const text = await resp.text();
+        setBody(text);
+      } catch(err) {
+        alert(err)
+      }
+    }
+    loadBody();
   }, [file]);
 
   const ref = useRef(null);
