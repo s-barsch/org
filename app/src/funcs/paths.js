@@ -1,3 +1,34 @@
+
+/* date */
+
+const fill = str => {
+  return str.length < 2 ? "0" + str : str
+};
+
+const NewTimeStamp = () => {
+  let d = new Date();
+  return d.getFullYear().toString().substr(2) +
+    fill((d.getMonth() + 1).toString()) +
+    fill(d.getDate().toString()) +
+    "_" + 
+    fill(d.getHours().toString()) +
+    fill(d.getMinutes().toString()) +
+    fill(d.getSeconds().toString());
+}
+
+/* type */
+
+const FileType = path => {
+  switch (path.split('.').pop()) {
+    case "txt":
+      return "text"
+    default:
+      return "dir"
+  }
+}
+
+/* names */
+
 const Base = path => {
   if (path === "/") {
     return "org"
@@ -28,6 +59,8 @@ const ExtendedBase = path => {
   return Base(Dir(path)) + "/" + base
 }
 
+/* section */
+
 const Section = path => {
   if (path.substr(7) === "/public") {
     return "public"
@@ -43,4 +76,4 @@ const IsPublic = path => {
 }
 
 
-export { ExtendedBase, Base, Dir, Section, IsPublic};
+export { ExtendedBase, Base, Dir, Section, IsPublic, FileType, NewTimeStamp };

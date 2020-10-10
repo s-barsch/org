@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
-import { DirView, FileSwitch } from './components/files';
-import Top from './components/top';
+import { DirView, FileSwitch } from './components/dir/files';
+import Top from './components/top/top';
 
 const App = () => {
   return (

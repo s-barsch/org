@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
-import { basename } from 'path';
-import CrumbNav from './crumbs';
-import { Del } from './meta';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
 import SortIcon from '@material-ui/icons/SwapVert';
-import { readStateBool } from '../funcs/storage';
-import * as p from '../funcs/paths';
-import * as targets from '../funcs/targets';
+import { basename } from 'path';
+import CrumbNav from './crumbs';
+import { Del } from '../meta';
+import * as p from '../../funcs/paths';
+import * as targets from '../../funcs/targets';
 
 const DirName = (path) => {
   const name = basename(path);
@@ -33,6 +32,14 @@ const makeNeighborList = files => {
     }
   }
   return nu;
+}
+
+const readStateBool = key => {
+  const str = localStorage.getItem(key);
+  if (str == null) {
+    return false;
+  }
+  return str === "true";
 }
 
 const Top = ({view}) => {

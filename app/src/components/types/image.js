@@ -1,6 +1,6 @@
 import React from 'react';
-import { Del } from '../meta';
 import Text from './text';
+import { Del } from '../meta';
 
 const Image = ({file, delFn}) => {
   const info = {

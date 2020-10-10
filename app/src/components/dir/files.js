@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useHistory, Link } from 'react-router-dom';
-import Text from './types/text';
-import { Info } from './meta';
-import Image from './types/image';
+import Text from '../types/text';
+import Image from '../types/image';
+import { Info } from '../meta';
 import {basename} from 'path';
-import AddDir from './add-dir';
-import NewTimestamp from '../funcs/date';
+import AddDir from './add';
+import { NewTimeStamp } from '../../funcs/paths';
 import { ReactSortable } from 'react-sortablejs';
 import ReverseIcon from '@material-ui/icons/SwapVert';
 import NewTextIcon from '@material-ui/icons/Flare';
@@ -71,7 +71,7 @@ const DirView = () => {
   }
 
   const newFile = () => {
-    const newPath = path + "/" + NewTimestamp() + ".txt";
+    const newPath = path + "/" + NewTimeStamp() + ".txt";
     req(
       newPath,
       { method: "POST", body: "newfile" },

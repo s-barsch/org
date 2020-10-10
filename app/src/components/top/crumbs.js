@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import * as p from '../funcs/paths';
+import * as p from '../../funcs/paths';
 
 const Spacer = () => {
   return (
