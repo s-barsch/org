@@ -132,14 +132,14 @@ const DirListing = () => {
   const saveSorted = (part, type) => {
     let all = merge(files.slice(), part, type);
 
-    setFiles(all);
 
     if (isPublic(path)) {
+    }
       fetch("/api/sort" + path, {
         method: "POST",
         body: JSON.stringify(makeArr(all))
       })
-    }
+    setFiles(all);
   }
 
   const makeArr = files => {
@@ -173,7 +173,7 @@ const DirListing = () => {
   return (
     <>
       <nav id="dirs">
-        <DirList  dirs={dirsOnly(files)} />
+        <DirList  dirs={dirsOnly(files)} saveFn={saveSorted} />
         <AddDir submitFn={addNewDir} />
       </nav>
       <section id="files">
@@ -190,11 +190,25 @@ const AddText = ({newFn}) => {
   return <button onClick={newFn}>⁂</button>
 }
 
-const DirList = ({dirs}) => {
+const DirList = ({dirs, saveFn}) => {
+  const [state, setState] = useState(dirs);
+
+  useEffect(() => {
+    setState(dirs);
+  }, [dirs])
+
+  const callOnEnd = () => {
+    saveFn(state, "dirs");
+  };
+
   return (
-    dirs.map((dir, i) => (
-      <Dir key={i} dir={dir} />
-    ))
+    <ReactSortable delay={10}
+    onEnd={callOnEnd}
+    animation={200} list={state} setList={setState}>
+    {state.map((dir) => (
+      <Dir key={dir.id} dir={dir} />
+    ))}
+    </ReactSortable>
   )
 }
 
@@ -245,7 +259,7 @@ const FileList = ({files, moveFn, delFn, saveFn}) => {
       <span className="right">
         <button onClick={reverseFiles}><SortIcon /></button>
       </span>
-      <ReactSortable delay={10}
+      <ReactSortable delay={75}
       onEnd={callOnEnd}
       animation={200} list={state} setList={setState}>
       { state.map((file) => (
