@@ -6,6 +6,8 @@ import Image from './image';
 import {basename} from 'path';
 import AddDir from './add-dir';
 import NewTimestamp from '../funcs/date';
+import { ReactSortable } from "react-sortablejs";
+
 
 const FileEntry = ({ file, moveFn, delFn }) => {
   const drag = (ev) => {
@@ -138,10 +140,27 @@ const Dir = ({dir}) => {
 }
 
 const FileList = ({files, moveFn, delFn}) => {
+  const [state, setState] = useState(files);
+
+  useEffect(() => {
+    setState(files);
+  }, [files])
+  
+  const callOnEnd = () => {
+    for (const f of state) {
+      console.log(f.id);
+    }
+    console.log("-");
+  };
+
   return (
-    files.map((file, i) => (
-      <FileEntry key={i} file={file} moveFn={moveFn} delFn={delFn} />
-    ))
+    <ReactSortable delay={10}
+    onEnd={callOnEnd}
+    animation={200} list={state} setList={setState}>
+    { state.map((file, i) => (
+      <FileEntry key={file.id} file={file} moveFn={moveFn} delFn={delFn} />
+    ))}
+    </ReactSortable>
   );
 }
 

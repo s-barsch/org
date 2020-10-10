@@ -194,3 +194,15 @@ button {
 #links .private {
     color:hsl(122, 63%, 47%)
 }
+
+.sortable-ghost {
+    opacity:0;
+}
+
+.sortable-chosen {
+    border:0;
+}
+
+.sortable-drag {
+    background:var(--color-bg);
+}

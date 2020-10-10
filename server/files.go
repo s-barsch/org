@@ -8,6 +8,7 @@ import (
 )
 
 type File struct {
+	Id   int    `json:"id"`
 	Path string `json:"path"`
 	Type string `json:"type"`
 }
@@ -18,9 +19,10 @@ func getFiles(path string) ([]*File, error) {
 		return nil, err
 	}
 	files := []*File{}
-	for _, fi := range l {
+	for i, fi := range l {
 		fpath := p.Join(path, fi.Name())
 		files = append(files, &File{
+			Id:   i,
 			Path: fpath,
 			Type: getFileType(fpath, fi.IsDir()),
 		})

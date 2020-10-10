@@ -12,7 +12,9 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "react-textarea-autosize": "^8.2.0"
+    "react-sortablejs": "^6.0.0",
+    "react-textarea-autosize": "^8.2.0",
+    "sortablejs": "^1.12.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,5 +36,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/sortablejs": "^1.10.6"
   }
 }
