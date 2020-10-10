@@ -8,6 +8,7 @@ import AddDir from './add-dir';
 import NewTimestamp from '../funcs/date';
 import { ReactSortable } from 'react-sortablejs';
 import ReverseIcon from '@material-ui/icons/SwapVert';
+import NewTextIcon from '@material-ui/icons/Flare';
 //import * as p from '../funcs/paths';
 
 const DirView = () => {
@@ -110,7 +111,7 @@ const DirView = () => {
 }
 
 const AddText = ({newFn}) => {
-  return <button onClick={newFn}>⁂</button>
+  return <button onClick={newFn}><NewTextIcon /></button>
 }
 
 const DirList = ({dirs, saveFn}) => {
@@ -125,8 +126,7 @@ const DirList = ({dirs, saveFn}) => {
   };
 
   return (
-    <ReactSortable delay={10}
-    onEnd={callOnEnd}
+    <ReactSortable className="dirs__list" onEnd={callOnEnd}
     animation={200} list={state} setList={setState}>
     {state.map((dir) => (
       <Dir key={dir.id} dir={dir} />
@@ -227,6 +227,9 @@ const preSort = files => {
 }
 
 const numerate = files => {
+  if (!files) {
+    return;
+  }
   for (let i = 0; i < files.length; i++) {
     files[i].id = i
   }

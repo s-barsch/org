@@ -67,7 +67,6 @@ const Top = ({view}) => {
 
   const handleStorageChange = useCallback(evt => {
     loadTargets();
-    console.log("i fired");
   }, []);
 
   useEffect(() => {
@@ -133,9 +132,6 @@ const Top = ({view}) => {
   const TargetButton = ({clickFn}) => {
     return <button onClick={clickFn}><TargetIcon /></button>
   }
-
-  console.log(view);
-
 
   return (
     <>

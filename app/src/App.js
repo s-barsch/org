@@ -14,11 +14,11 @@ const App = () => {
 
 export default App;
 
-const emptyView = () => {
+const emptyView = (path) => {
   return {
     file:   {
       path: "",
-      type: ""
+      type: ( path.includes(".") ? "text" : "dir" )
     },
     neighbors: [],
     switch: "",
@@ -27,11 +27,11 @@ const emptyView = () => {
 }
 
 const View = () => {
-  const [view, setView] = useState(emptyView());
-  const [notFound, setNotFound] = useState(false);
-
   const path = useLocation().pathname;
   const history = useHistory();
+
+  const [view, setView] = useState(emptyView(path));
+  const [notFound, setNotFound] = useState(false);
 
   const loadView = (history, path) => {
     if (path === "/today") {
