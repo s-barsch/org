@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
-import { DirListing, FileSwitch } from './components/files';
+import { DirView, FileSwitch } from './components/files';
 import Top from './components/top';
-//import Filetype from './funcs/filetype';
 
 const App = () => {
   return (
@@ -82,7 +81,7 @@ const Main = ({view}) => {
     case "text":
       return <Single view={view} />
     case "dir":
-      return <DirListing view={view} />
+      return <DirView view={view} />
     default:
       return null
   }

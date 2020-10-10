@@ -8,27 +8,9 @@ import AddDir from './add-dir';
 import NewTimestamp from '../funcs/date';
 import { ReactSortable } from 'react-sortablejs';
 import ReverseIcon from '@material-ui/icons/SwapVert';
-import * as p from '../funcs/paths';
+//import * as p from '../funcs/paths';
 
-
-const FileEntry = ({ file, moveFn, delFn }) => {
-  return (
-    <FileSwitch file={file} moveFn={moveFn} delFn={delFn} />
-  )
-}
-
-const FileSwitch = ({file, moveFn, delFn, single}) => {
-  switch (file.type) {
-    case "text":
-      return <Text file={file} moveFn={moveFn} delFn={delFn} single={single} />
-    case "image":
-      return <Image file={file} moveFn={moveFn} delFn={delFn} />
-    default:
-      return <Info file={file} moveFn={moveFn} delFn={delFn} />
-  }
-}
-
-const DirListing = () => {
+const DirView = () => {
   const [files, setFiles] = useState([]);
 
   const path = useLocation().pathname;
@@ -46,15 +28,13 @@ const DirListing = () => {
     loadFiles(path);
   }, [path]);
 
-  const req = (path, obj) => {
-    fetch("/api" + path, {
-      method: "POST"
-    }).then( resp => {
+  const req = (path, options, callback) => {
+    fetch("/api" + path, options).then( resp => {
       if (!resp.ok) {
         alert(resp.statusText);
         return;
       }
-      loadFiles(path)
+      callback();
     }
     ).catch(err => {
       alert(err);
@@ -66,14 +46,10 @@ const DirListing = () => {
       return;
     }
 
-    if (path !== "/") {
-      name = "/" + name
-    }
-
     req(
-      path + name,
+      path + (path === "/" ? "" : "/") + name,
       { method: "POST" },
-      () => { loadFiles(path)}
+      () => { loadFiles(path) }
     )
   }
 
@@ -81,7 +57,7 @@ const DirListing = () => {
     req(
       filepath,
       { method: "PUT", body: newPath },
-      () => { loadFiles(path)}
+      () => { loadFiles(path) }
     )
   }
 
@@ -89,7 +65,7 @@ const DirListing = () => {
     req(
       filepath,
       { method: "DELETE" },
-      () => { loadFiles(path)}
+      () => { loadFiles(path) }
     )
   }
 
@@ -105,12 +81,14 @@ const DirListing = () => {
   const saveSorted = (part, type) => {
     let all = merge(files.slice(), part, type);
 
+    /*
     if (p.IsPublic(path)) {
     }
-      fetch("/api/sort" + path, {
-        method: "POST",
-        body: JSON.stringify(makeArr(all))
-      })
+    */
+    fetch("/api/sort" + path, {
+      method: "POST",
+      body: JSON.stringify(makeArr(all))
+    })
 
     setFiles(all);
   }
@@ -196,7 +174,25 @@ const FileList = ({files, moveFn, delFn, saveFn}) => {
   );
 }
 
-export { DirListing, FileSwitch };
+const FileEntry = ({ file, moveFn, delFn }) => {
+  return (
+    <FileSwitch file={file} moveFn={moveFn} delFn={delFn} />
+  )
+}
+
+const FileSwitch = ({file, moveFn, delFn, single}) => {
+  switch (file.type) {
+    case "text":
+      return <Text file={file} moveFn={moveFn} delFn={delFn} single={single} />
+    case "image":
+      return <Image file={file} moveFn={moveFn} delFn={delFn} />
+    default:
+      return <Info file={file} moveFn={moveFn} delFn={delFn} />
+  }
+}
+
+
+export { DirView, FileSwitch };
 
 const dirsOnly = (list) => {
   return list.filter((file) => {
