@@ -5,32 +5,62 @@ import (
 	"os"
 	p "path/filepath"
 	"strings"
+	"sort"
+	//"fmt"
 )
 
 type File struct {
-	Id   int    `json:"id"`
 	Path string `json:"path"`
+	Name string `json:"name"`
 	Type string `json:"type"`
 }
 
 func getFiles(path string) ([]*File, error) {
+	files, err := readFiles(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if hasSort(path) {
+		sorted, err := parseSort(path)
+		if err != nil {
+			return nil, err
+		}
+
+		/*
+		for _, f := range sorted {
+			fmt.Println(f.Name)
+			fmt.Printf("\t%v\n", f.Type)
+		}
+		fmt.Println("-")
+		*/
+
+		return merge(files, sorted), nil
+	}
+
+	return preSort(files), nil
+}
+
+
+
+func readFiles(path string) ([]*File, error) {
 	l, err := ioutil.ReadDir(p.Join(ROOT, path))
 	if err != nil {
 		return nil, err
 	}
 	files := []*File{}
-	for i, fi := range l {
+	for _, fi := range l {
 		fpath := p.Join(path, fi.Name())
 		files = append(files, &File{
-			Id:   i,
+			Name: fi.Name(),
 			Path: fpath,
 			Type: getFileType(fpath, fi.IsDir()),
 		})
 	}
-	return filterFiles(files), nil
+	return files, nil
 }
 
-func filterFiles(files []*File) []*File {
+func preSort(files []*File) []*File {
 	nu := []*File{}
 	for _, f := range files {
 		if p.Ext(f.Path) == ".info" && hasFile(files, stripExt(f.Path)) {
@@ -42,7 +72,22 @@ func filterFiles(files []*File) []*File {
 		}
 		nu = append(nu, f)
 	}
-	return nu
+
+	sort.Sort(sort.Reverse(Asc(nu)))
+
+	return separate(nu)
+}
+
+func separate(all []*File) []*File {
+	var dirs, files []*File
+	for _, f := range all {
+		if f.Type == "dir" {
+			dirs = append(dirs, f)
+			continue
+		}
+		files = append(files, f)
+	}
+	return append(dirs, files...)
 }
 
 func hasFile(files []*File, path string) bool {

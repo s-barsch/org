@@ -5,6 +5,7 @@ import CrumbNavigation from './breadcrumbs';
 import Del from './del';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
+import SortIcon from '@material-ui/icons/SwapVert';
 import { readStateBool } from '../funcs/storage';
 import * as p from '../funcs/paths';
 import * as targets from '../funcs/targets';
@@ -158,6 +159,7 @@ const Top = ({view}) => {
           switchLink={view.switch}
           path={location.pathname} />
         <span className="right">
+          <button><SortIcon /></button>
           <TargetButton clickFn={setThisActive} />
           <button onClick={toggleTheme} ><ThemeIcon /></button>
           <Del file={view.file} delFn={del} />

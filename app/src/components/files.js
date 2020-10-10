@@ -7,6 +7,7 @@ import {basename} from 'path';
 import AddDir from './add-dir';
 import NewTimestamp from '../funcs/date';
 import { ReactSortable } from "react-sortablejs";
+import SortIcon from '@material-ui/icons/SwapVert';
 
 
 const FileEntry = ({ file, moveFn, delFn }) => {
@@ -32,6 +33,13 @@ const FileSwitch = ({file, moveFn, delFn, single}) => {
   }
 }
 
+const numerate = files => {
+  for (let i = 0; i < files.length; i++) {
+    files[i].id = i
+  }
+  return files;
+}
+
 const DirListing = () => {
   const [files, setFiles] = useState([]);
 
@@ -42,7 +50,7 @@ const DirListing = () => {
   const loadFiles = (path) => {
     fetch("/api" + path + "?listing=true").then(
       resp => resp.json().then(
-        files => setFiles(files)
+        files => setFiles(numerate(files))
       ));
   }
 
@@ -107,6 +115,39 @@ const DirListing = () => {
     });
   }
 
+  const sortFiles = () => {
+    const reverse = files.slice().reverse()
+    setFiles(reverse);
+    console.log(reverse);
+  }
+
+  const saveSorted = (part, type) => {
+    const all = merge(files.slice(), part, type);
+    for (const f of all) {
+      console.log(f.name);
+    }
+  }
+
+  const merge = (all, part, type) => {
+    let diff = subtract(all, part)
+    if (type === "files") {
+      return diff.concat(part)
+    } 
+    return part.concat(diff)
+  }
+
+  const subtract = (base, other) => {
+    for (const f of other) {
+      for (let i = 0; i < base.length; i++) {
+        if (base[i].name === f.name) {
+          base.splice(i, 1)
+          break;
+        }
+      }
+    }
+    return base
+  }
+
   return (
     <>
       <nav id="dirs">
@@ -115,7 +156,10 @@ const DirListing = () => {
       </nav>
       <section id="files">
         <AddText newFn={newFile} />
-        <FileList files={filesOnly(files)} moveFn={move} delFn={del} />
+        <span className="right">
+          <button onClick={sortFiles}><SortIcon /></button>
+        </span>
+        <FileList files={filesOnly(files)} saveFn={saveSorted} moveFn={move} delFn={del} />
       </section>
     </>
   )
@@ -139,7 +183,7 @@ const Dir = ({dir}) => {
   )
 }
 
-const FileList = ({files, moveFn, delFn}) => {
+const FileList = ({files, moveFn, delFn, saveFn}) => {
   const [state, setState] = useState(files);
 
   useEffect(() => {
@@ -147,17 +191,14 @@ const FileList = ({files, moveFn, delFn}) => {
   }, [files])
   
   const callOnEnd = () => {
-    for (const f of state) {
-      console.log(f.id);
-    }
-    console.log("-");
+    saveFn(state, "files");
   };
 
   return (
     <ReactSortable delay={10}
     onEnd={callOnEnd}
     animation={200} list={state} setList={setState}>
-    { state.map((file, i) => (
+    { state.map((file) => (
       <FileEntry key={file.id} file={file} moveFn={moveFn} delFn={delFn} />
     ))}
     </ReactSortable>
