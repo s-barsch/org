@@ -7,7 +7,7 @@ import {basename} from 'path';
 import AddDir from './add-dir';
 import NewTimestamp from '../funcs/date';
 import { ReactSortable } from "react-sortablejs";
-import SortIcon from '@material-ui/icons/SwapVert';
+import ReverseIcon from '@material-ui/icons/SwapVert';
 
 
 const FileEntry = ({ file, moveFn, delFn }) => {
@@ -139,6 +139,7 @@ const DirListing = () => {
         method: "POST",
         body: JSON.stringify(makeArr(all))
       })
+
     setFiles(all);
   }
 
@@ -257,9 +258,10 @@ const FileList = ({files, moveFn, delFn, saveFn}) => {
   return (
     <>
       <span className="right">
-        <button onClick={reverseFiles}><SortIcon /></button>
+        <button onClick={reverseFiles}><ReverseIcon /></button>
       </span>
-      <ReactSortable delay={75}
+      <ReactSortable 
+      handle=".info__drag"
       onEnd={callOnEnd}
       animation={200} list={state} setList={setState}>
       { state.map((file) => (

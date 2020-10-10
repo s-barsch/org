@@ -200,10 +200,17 @@ button {
 }
 
 .sortable-chosen {
-    background:red;
-    border:0;
 }
 
 .sortable-drag {
     background:var(--color-bg);
+}
+
+.info__drag {
+    margin-right:1rem;
+}
+
+.info__drag svg {
+    height:1.25rem;
+    vertical-align:middle;
 }

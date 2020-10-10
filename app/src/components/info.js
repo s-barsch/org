@@ -3,6 +3,7 @@ import { basename } from 'path';
 import { Link } from 'react-router-dom';
 import Del from './del';
 import * as p from '../funcs/paths';
+import DragIcon from '@material-ui/icons/Menu';
 
 const BotToggle = ({file, moveFn}) => {
   const target = p.Base(p.Dir(file.path)) === "bot" ? "top" : "bot";
@@ -28,6 +29,7 @@ const BotToggle = ({file, moveFn}) => {
 const Info = ({file, moveFn, delFn}) => {
   return (
     <div className="info">
+      <span className="info__drag"><DragIcon /></span>
       <Link className="info__name" to={file.path}>{basename(file.path)}</Link>
       <span className="info__type">{file.type}</span>
       <BotToggle file={file} moveFn={moveFn} />
