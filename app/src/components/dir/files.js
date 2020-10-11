@@ -18,11 +18,12 @@ const FileSwitch = ({file, moveFile, delFile, duplicateFile, single, moveToTarge
   switch (file.type) {
     case "text":
       return <Text file={file} moveFile={moveFile} delFile={delFile}
-              single={single} moveToTarget={moveToTarget}/>
+              single={single} duplicateFile={duplicateFile} moveToTarget={moveToTarget}/>
     case "image":
       return <Image file={file} moveFile={moveFile} delFile={delFile} />
     default:
-      return <Info file={file} moveFile={moveFile} delFile={delFile} />
+      return <Info file={file} moveFile={moveFile} delFile={delFile}
+        duplicateFile={duplicateFile} moveToTarget={moveToTarget} />
   }
 }
 

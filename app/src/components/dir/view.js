@@ -108,10 +108,14 @@ function DirView({view}) {
     );
   }
 
-  /*
   const duplicateFile = filepath => {
+    request("/api/dupli" + filepath,
+      {},
+      function callBack() {
+        loadFiles(path);
+      }
+    );
   }
-  */
 
   const moveToTarget = (filepath, operation) => {
     const newPath = activeTarget + (activeTarget === "/" ? "" : "/") + basename(filepath);
@@ -165,7 +169,7 @@ function DirView({view}) {
       <section id="files">
         <AddText newFn={newFile} />
         <FileList files={filesOnly(files)} saveSort={saveSort} moveFile={moveFile} delFile={delFile} 
-          moveToTarget={moveToTarget} />
+          duplicateFile={duplicateFile} moveToTarget={moveToTarget} />
       </section>
     </>
   )

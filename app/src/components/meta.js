@@ -26,12 +26,15 @@ const BotToggle = ({file, moveFile}) => {
   return <button className="info__bot" onClick={move}>{target}</button>
 }
 
-const Info = ({file, moveFile, delFile, moveToTarget}) => {
+const Info = ({file, moveFile, delFile, duplicateFile, moveToTarget}) => {
   const moveFileToTarget = evt => {
-    moveToTarget(file.path, "move")
+    moveToTarget(file.path, "move");
   }
   const copyFileToTarget = evt => {
-    moveToTarget(file.path, "copy")
+    moveToTarget(file.path, "copy");
+  }
+  const dupli = evt => {
+    duplicateFile(file.path);
   }
   return (
     <div className="info">
@@ -40,6 +43,7 @@ const Info = ({file, moveFile, delFile, moveToTarget}) => {
         <span className="info__type">{file.type}</span>
       </span>
       <BotToggle file={file} moveFile={moveFile} />
+      <button onClick={dupli}>++</button>
       <img className="rarr" alt="Copy" src="/rarrc.svg" onClick={copyFileToTarget} />
       <img className="rarr" alt="Move" src="/rarr.svg" onClick={moveFileToTarget} />
       <span className="info__drag"></span>
