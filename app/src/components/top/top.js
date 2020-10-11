@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
-import SortIcon from '@material-ui/icons/SwapVert';
 import { basename } from 'path';
 import CrumbNav from './crumbs';
 import { Del } from '../meta';
@@ -162,7 +161,6 @@ const Top = ({view}) => {
           switchLink={view.switch}
           path={location.pathname} />
         <span className="right">
-          <button><SortIcon /></button>
           <TargetButton clickFn={setThisActive} />
           <button onClick={toggleTheme} ><ThemeIcon /></button>
           <Del file={view.file} delFn={del} />

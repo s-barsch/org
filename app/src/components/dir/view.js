@@ -95,10 +95,6 @@ function DirView({view}) {
   const saveSort = (part, type) => {
     let all = merge(files.slice(), part, type);
 
-    /*
-    if (p.IsPublic(path)) {
-    }
-    */
     request("/sort" + path, {
       method: "POST",
       body: JSON.stringify(makeArr(all))
