@@ -4,11 +4,14 @@ import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-d
 import DirView from './components/dir/view';
 import { FileSwitch } from './components/dir/files';
 import Top from './components/top/top';
+import TargetsProvider from "./targets";
 
 function App() {
   return (
     <Router>
-      <View />
+      <TargetsProvider>
+        <View />
+      </TargetsProvider>
     </Router>
   )
 }

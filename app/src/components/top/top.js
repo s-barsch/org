@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
@@ -6,7 +6,7 @@ import { basename } from 'path';
 import CrumbNav from './crumbs';
 import { Del } from '../meta';
 import * as p from '../../funcs/paths';
-import * as targets from '../../funcs/targets';
+import { TargetsContext } from '../../targets';
 
 const DirName = (path) => {
   const name = basename(path);
@@ -33,15 +33,8 @@ const makeNeighborList = files => {
   return nu;
 }
 
-const readStateBool = key => {
-  const str = localStorage.getItem(key);
-  if (str == null) {
-    return false;
-  }
-  return str === "true";
-}
-
 const Top = ({view}) => {
+  const { targetList, activeTarget, removeTarget, setActive } = useContext(TargetsContext);
 
   /* theme */
 
@@ -70,53 +63,13 @@ const Top = ({view}) => {
     )
   }, [])
 
-  /* targets */
-
-  const [targetList, setTargetList] = useState([]);
-  const [activeTarget, setActiveTarget] = useState("");
-
-  const loadTargets = () => {
-    setActiveTarget(targets.getActive());
-    setTargetList(targets.getList())
-  }
-
-  const listenForTargets = useCallback(evt => {
-    loadTargets();
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('storage', listenForTargets);
-
-    return () => {
-      window.removeEventListener('storage', listenForTargets);
-    };
-  }, [listenForTargets]);
-
-  useEffect(() => {
-    loadTargets();
-  }, [])
-
-  /* targets functions */
-
-  const setActive = path => {
-    targets.setActive(path);
-    loadTargets();
-  }
-
-  const removeTarget = path => {
-    targets.removeTarget(path);
-    loadTargets();
-  }
-
-  const setThisActive = () => {
-    targets.setActive(view.file.path);
-    loadTargets();
-  }
-
-  const TargetButton = ({clickFn}) => {
+   const TargetButton = ({clickFn}) => {
     return <button onClick={clickFn}><TargetIcon /></button>
   }
 
+  const setThisActive = () => {
+    setActive(view.file.path);
+  }
 
   /* path */
 
@@ -264,3 +217,12 @@ const LinkList = ({links, active}) => {
 }
 
 export default Top;
+
+const readStateBool = key => {
+  const str = localStorage.getItem(key);
+  if (str == null) {
+    return false;
+  }
+  return str === "true";
+}
+
