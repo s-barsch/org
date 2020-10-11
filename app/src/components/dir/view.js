@@ -1,39 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import AddDir from './add';
 import { NewTimeStamp } from '../../funcs/paths';
 import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
 
-const DirView = () => {
+function DirView({view}) {
+  const [path, setPath] = useState(view.file.path);
+
+  useEffect(() => {
+    setPath(view.file.path);
+  }, [view]);
+
   const [files, setFiles] = useState([]);
 
-  const path = useLocation().pathname;
-  const history = useHistory();
-
-
-  const loadFiles = (path) => {
-    fetch("/api" + path + "?listing=true").then(
-      resp => resp.json().then(
-        files => setFiles(numerate(files))
-      ));
+  async function loadFiles(path) {
+    try {
+      const resp = await fetch("/api" + path + "?listing=true");
+      const arr  = await resp.json();
+      setFiles(numerate(arr));
+    } catch(err) {
+      console.log(err);
+      alert("loadFiles error. path: " + path + "\nerr: " + err);
+    }
   }
 
   useEffect(() => {
     loadFiles(path);
   }, [path]);
 
-  const req = (path, options, callback) => {
-    fetch("/api" + path, options).then( resp => {
+  const history = useHistory();
+
+  async function req(path, options, callback) {
+    try {
+      const resp = await fetch("/api" + path, options);
       if (!resp.ok) {
         alert(resp.statusText);
         return;
       }
       callback();
-    }
-    ).catch(err => {
+    } catch(err) {
       alert(err);
-    })
+    }
   }
 
   const addNewDir = (name) => {

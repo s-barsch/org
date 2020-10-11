@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Info } from '../meta';
 
-const Text = ({file, moveFn, delFn, single}) => {
+const Text = ({file, moveFile, delFile, single}) => {
   const [body, setBody] = useState("");
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const Text = ({file, moveFn, delFn, single}) => {
   return (
     <>
     { !single &&
-      <Info file={file} moveFn={moveFn} delFn={delFn} />
+      <Info file={file} moveFile={moveFile} delFile={delFile} />
     }
       <TextareaAutosize value={body}
         ref={ref}

@@ -7,6 +7,26 @@ import { Info } from '../meta';
 import Text from '../types/text';
 import Image from '../types/image';
 
+const FileEntry = ({file, moveFile, delFile}) => {
+  return (
+    <FileSwitch file={file} moveFile={moveFile} delFile={delFile} />
+  )
+}
+
+const FileSwitch = ({file, moveFile, delFile, single}) => {
+  if (delFile === undefined) {
+    console.log("delfile undefined");
+  }
+  switch (file.type) {
+    case "text":
+      return <Text file={file} moveFile={moveFile} delFile={delFile} single={single} />
+    case "image":
+      return <Image file={file} moveFile={moveFile} delFile={delFile} />
+    default:
+      return <Info file={file} moveFile={moveFile} delFile={delFile} />
+  }
+}
+
 const FileList = ({files, saveSort, moveFile, delFile}) => {
   const [state, setState] = useState(files);
 
@@ -40,23 +60,6 @@ const FileList = ({files, saveSort, moveFile, delFile}) => {
   );
 }
 
-const FileEntry = ({ file, moveFile, delFile }) => {
-  return (
-    <FileSwitch file={file} moveFile={moveFile} delFile={delFile} />
-  )
-}
-
-const FileSwitch = ({file, moveFile, delFile, single}) => {
-  switch (file.type) {
-    case "text":
-      return <Text file={file} moveFile={moveFile} delFile={delFile} single={single} />
-    case "image":
-      return <Image file={file} moveFile={moveFile} delFile={delFile} />
-    default:
-      return <Info file={file} moveFile={moveFile} delFile={delFile} />
-  }
-}
-
 const Dir = ({dir}) => {
   return (
     <Link to={dir.path}>{basename(dir.path)}</Link>
@@ -84,7 +87,7 @@ const DirList = ({dirs, saveSort}) => {
   )
 }
 
-export { DirList, FileList, FileSwitch};
+export { DirList, FileList, FileSwitch };
 
 const preSort = files => {
   let info = [];

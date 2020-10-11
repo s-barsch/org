@@ -5,7 +5,7 @@ import DirView from './components/dir/view';
 import { FileSwitch } from './components/dir/files';
 import Top from './components/top/top';
 
-const App = () => {
+function App() {
   return (
     <Router>
       <View />
@@ -15,11 +15,11 @@ const App = () => {
 
 export default App;
 
-const emptyView = (path) => {
+function mockView(path) {
   return {
     file:   {
-      path: "",
-      type: ( path.includes(".") ? "text" : "dir" )
+      path: path,
+      type: path.includes(".") ? "text" : "dir"
     },
     neighbors: [],
     switch: "",
@@ -27,43 +27,44 @@ const emptyView = (path) => {
   }
 }
 
-const View = () => {
-  const path = useLocation().pathname;
-  const history = useHistory();
+async function todayRedirect(history) {
+    const resp = await fetch("/api/today");
+    const todayPath = resp.text();
+    history.push(todayPath)
+}
 
-  const [view, setView] = useState(emptyView(path));
+function View() {
+  const history = useHistory();
+  const path = useLocation().pathname;
+
+  const [view, setView] = useState(mockView(path));
   const [notFound, setNotFound] = useState(false);
 
-  const loadView = (history, path) => {
-    if (path === "/today") {
-      fetch("/api/today").then(
-        resp => (
-          resp.text().then( newPath =>
-            history.push(newPath)
-          )
-        )
-      );
-    }
+  async function loadView(path) {
+    try {
+      const resp = await fetch("/api" + path);
 
-    fetch("/api" + path).then(
-      resp => {
-        if (!resp.ok) {
-          setNotFound(true);
-          return;
-        }
-        resp.json().then(view => {
-          setView(view)
-        })
+      if (!resp.ok) {
+        setNotFound(true)
+        return;
       }
-    ).catch( err => {
-        console.log(err)
-        return null
-    })
+
+      const view = await resp.json();
+      setView(view);
+
+    } catch(err) {
+      console.log(err)
+    }
   }
 
   useEffect(() => {
-    loadView(history, path);
-  }, [history, path]);
+    loadView(path);
+  }, [path]);
+
+  if (view.path === "/today") {
+    todayRedirect(history);
+    return;
+  }
 
   if (notFound) {
     return "404"
@@ -77,7 +78,7 @@ const View = () => {
   )
 }
 
-const Main = ({view}) => {
+function Main({view}) {
   switch (view.file.type) {
     case "text":
       return <Single view={view} />
@@ -88,7 +89,7 @@ const Main = ({view}) => {
   }
 }
 
-const Single = ({view}) => {
+function Single({view}) {
   return (
     <>
       <FileSwitch file={view.file} single={true} />

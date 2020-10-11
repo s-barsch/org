@@ -5,7 +5,7 @@ import * as p from '../funcs/paths';
 import DragIcon from '@material-ui/icons/Menu';
 import DeleteIcon from '@material-ui/icons/ClearSharp';
 
-const BotToggle = ({file, moveFn}) => {
+const BotToggle = ({file, moveFile}) => {
   const target = p.Base(p.Dir(file.path)) === "bot" ? "top" : "bot";
 
   const move = () => {
@@ -19,33 +19,33 @@ const BotToggle = ({file, moveFn}) => {
         newPath = file.path.substr(0, i-4) + file.path.substr(i);
     }
 
-    moveFn(file.path, newPath);
+    moveFile(file.path, newPath);
     return;
   }
 
   return <button className="info__bot" onClick={move}>{target}</button>
 }
 
-const Info = ({file, moveFn, delFn}) => {
+const Info = ({file, moveFile, delFile}) => {
   return (
     <div className="info">
       <span className="info__drag"><DragIcon /></span>
       <Link className="info__name" to={file.path}>{basename(file.path)}</Link>
       <span className="info__type">{file.type}</span>
-      <BotToggle file={file} moveFn={moveFn} />
+      <BotToggle file={file} moveFile={moveFile} />
       <span className="info__del">
-        <Del file={file} delFn={delFn} />
+        <Del file={file} delFile={delFile} />
       </span>
     </div>
   )
 }
+  
 
 
-
-const Del = ({ file, delFn }) => {
+const Del = ({file, delFile}) => {
   const del = () => {
     if (window.confirm("Delete this " + file.type + "?")) {
-      delFn(file.path);
+      delFile(file.path);
     }
   }
   return <button className="del" onClick={del}><DeleteIcon /></button>
