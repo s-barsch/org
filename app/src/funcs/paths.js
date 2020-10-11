@@ -62,7 +62,7 @@ const ExtendedBase = path => {
 /* section */
 
 const Section = path => {
-  if (path.substr(7) === "/public") {
+  if (path.substr(0, 7) === "/public") {
     return "public"
   }
   return "private"
