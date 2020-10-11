@@ -216,14 +216,21 @@ button {
     color:var(--color-fg);
 }
 
+#targets .public.active,
 .crumbs .public,
 #links .public {
     color:orange;
 }
 
+#targets .private.active,
 .crumbs .private,
 #links .private {
     color:hsl(122, 63%, 47%)
+}
+
+#targets .public,
+#targets .private {
+    color:var(--color-fg);
 }
 
 .sortable-ghost {
