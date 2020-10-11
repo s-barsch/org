@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useLocation, useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
 import { basename } from 'path';
@@ -42,17 +42,15 @@ const readStateBool = key => {
 }
 
 const Top = ({view}) => {
-
   const [darkTheme, setDarkTheme] = useState(readStateBool("dark-theme"));
-  const [targetList, setTargetList] = useState([]);
-  const [activeTarget, setActiveTarget] = useState("");
-  const [links, setLinks] = useState([]);
 
   useEffect(() => {
     darkTheme
       ? document.body.dataset["theme"] = "dark"
       : document.body.dataset["theme"] = ""
   })
+
+  const [links, setLinks] = useState([]);
 
   useEffect(() => {
     fetch("/api/links").then(
@@ -62,14 +60,21 @@ const Top = ({view}) => {
     )
   }, [])
 
+  const [targetList, setTargetList] = useState([]);
+  const [activeTarget, setActiveTarget] = useState("");
+
   const loadTargets = () => {
     setActiveTarget(targets.getActive());
     setTargetList(targets.getList())
   }
 
-  let location = useLocation();
+  const [path, setPath] = useState(view.file.path);
 
-  document.title = PageTitle(location.pathname);
+  useEffect(() => {
+    setPath(view.file.path);
+  }, [view]);
+
+  document.title = PageTitle(path);
 
   const handleStorageChange = useCallback(evt => {
     loadTargets();
@@ -148,7 +153,7 @@ const Top = ({view}) => {
         <span id="targets" className="right">
           <TargetList
           links={targetList}
-          page={location.pathname}
+          page={path}
           activeTarget={activeTarget}
           setActiveFn={setActive}
           removeFn={removeTarget} />
@@ -159,7 +164,7 @@ const Top = ({view}) => {
         <CrumbNav
           neighbors={makeNeighborList(view.neighbors)}
           switchLink={view.switch}
-          path={location.pathname} />
+          path={path} />
         <span className="right">
           <TargetButton clickFn={setThisActive} />
           <button onClick={toggleTheme} ><ThemeIcon /></button>
@@ -169,7 +174,7 @@ const Top = ({view}) => {
 
       <h1 className="name">
         <Link className="parent" to={view.parent}>^</Link>
-        <input type="text" value={DirName(location.pathname)} />
+        <input type="text" value={DirName(path)} />
       </h1>
     </>
   )
