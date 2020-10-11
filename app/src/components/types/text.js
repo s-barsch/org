@@ -30,7 +30,7 @@ const Text = ({file, moveFn, delFn, single}) => {
     setBody(evt.target.value);
   }
 
-  const submit = async evt => {
+  const submit = async () => {
     try {
       await fetch("/api" + file.path, {
         method: "POST",
@@ -48,7 +48,7 @@ const Text = ({file, moveFn, delFn, single}) => {
     }
       <TextareaAutosize value={body}
         ref={ref}
-        minRows={single ? 1 : fullScreenRows()}
+        minRows={!single ? 1 : fullScreenRows()}
         onChange={handleTyping}
         onBlur={submit} />
     </>

@@ -2,19 +2,17 @@ import React, {useRef, useCallback, useState} from 'react';
 
 const AddDir = ({submitFn}) => {
   const [field, showField] = useState(false);
-
   const [fieldEl] = useHookWithRefCallback()
 
   const toggleField = () => {
     showField(!field);
   }
 
-  return (
-    <>
-      { !field && <AddButton clickFn={toggleField} /> }
-      { field  && <AddField fieldRef={fieldEl} submitFn={submitFn} toggleFn={toggleField} /> }
-    </>
-  )
+  if (field) {
+    return <AddField fieldRef={fieldEl} submitFn={submitFn} toggleFn={toggleField} />
+  }
+
+  return <AddButton clickFn={toggleField} />
 }
 
 const AddField = ({fieldRef, submitFn, toggleFn}) => {
