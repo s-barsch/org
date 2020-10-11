@@ -3,12 +3,12 @@ import * as targets from './funcs/targets';
 
 
 const TargetsProvider = ({ children }) => {
-  const [targetList, setTargetList] = useState([]);
-  const [activeTarget, setActiveTarget] = useState("");
+  const [list, setList] = useState([]);
+  const [active, setActive] = useState("");
 
   const loadTargets = () => {
-    setActiveTarget(targets.getActive());
-    setTargetList(targets.getList())
+    setActive(targets.getActive());
+    setList(targets.getList())
   }
 
   const listenForTargets = useCallback(evt => {
@@ -29,7 +29,7 @@ const TargetsProvider = ({ children }) => {
 
   /* targets functions */
 
-  const setActive = path => {
+  const setActiveTarget = path => {
     targets.setActive(path);
     loadTargets();
   }
@@ -39,9 +39,12 @@ const TargetsProvider = ({ children }) => {
     loadTargets();
   }
 
+  let targetList = list
+  let activeTarget = active
+
   return (
     <TargetsContext.Provider value={{ 
-      targetList, activeTarget, removeTarget, setActive
+      targetList, activeTarget, removeTarget, setActiveTarget
     }}>
       {children}
     </TargetsContext.Provider>

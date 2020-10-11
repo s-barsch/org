@@ -34,7 +34,7 @@ const makeNeighborList = files => {
 }
 
 const Top = ({view}) => {
-  const { targetList, activeTarget, removeTarget, setActive } = useContext(TargetsContext);
+  const { targetList, activeTarget, removeTarget, setActiveTarget } = useContext(TargetsContext);
 
   /* theme */
 
@@ -68,7 +68,7 @@ const Top = ({view}) => {
   }
 
   const setThisActive = () => {
-    setActive(view.file.path);
+    setActiveTarget(view.file.path);
   }
 
   /* path */
@@ -123,7 +123,7 @@ const Top = ({view}) => {
             links={targetList}
             page={path}
             activeTarget={activeTarget}
-            setActiveFn={setActive}
+            setActiveFn={setActiveTarget}
             removeFn={removeTarget} />
         </span>
       </nav>
