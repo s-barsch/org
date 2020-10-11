@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import AddDir from './add';
 import { NewTimeStamp } from '../../funcs/paths';
@@ -22,13 +22,24 @@ function DirView({view}) {
     loadFiles(path);
   }, [path]);
 
+  const listenForWrite = useCallback(evt => {
+    loadFiles(path);
+  }, [path]);
+
+  useEffect(() => {
+    window.addEventListener('storage', listenForWrite);
+
+    return () => {
+      window.removeEventListener('storage', listenForWrite);
+    };
+  }, [listenForWrite]);
+
   async function loadFiles(path) {
     try {
       const resp = await fetch("/api" + path + "?listing=true");
       const arr  = await resp.json();
       setFiles(numerate(arr));
     } catch(err) {
-      console.log(err);
       alert("loadFiles error. path: " + path + "\nerr: " + err);
     }
   }
@@ -63,11 +74,18 @@ function DirView({view}) {
     )
   }
 
+  const setWriteTime = () => {
+    localStorage.setItem("write", Date.now())
+  }
   const copyFile = (filepath, newPath) => {
     request(filepath, {
       method: "PATCH",
       body: newPath
-    })
+    },
+      function callBack() {
+        setWriteTime();
+      }
+    );
   }
 
   const moveFile = (filepath, newPath) => {
@@ -76,7 +94,8 @@ function DirView({view}) {
       body: newPath
     },
       function callBack() {
-        loadFiles(path)
+        loadFiles(path);
+        setWriteTime();
       }
     );
   }

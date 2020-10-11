@@ -40,8 +40,8 @@ const Info = ({file, moveFile, delFile, moveToTarget}) => {
         <span className="info__type">{file.type}</span>
       </span>
       <BotToggle file={file} moveFile={moveFile} />
-      <img className="rarr" alt="Move" src="/rarr.svg" onClick={moveFileToTarget} />
       <img className="rarr" alt="Copy" src="/rarrc.svg" onClick={copyFileToTarget} />
+      <img className="rarr" alt="Move" src="/rarr.svg" onClick={moveFileToTarget} />
       <span className="info__drag"></span>
       <span className="info__del">
         <Del file={file} delFile={delFile} />
