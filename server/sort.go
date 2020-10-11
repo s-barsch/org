@@ -52,7 +52,11 @@ func readSort(path string) ([]string, error) {
 }
 
 func hasSort(path string) bool {
-	_, err := os.Stat(ROOT + path + "/.sort")
+	return exists(p.Join(ROOT, path, ".sort"))
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
 	return err == nil
 }
 
@@ -85,39 +89,33 @@ func writeSortFile(path string, files []*File) error {
 	return ioutil.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
 }
 
-/*
-func renameSortEntry(oldpath, newpath string) error {
-	dir := filepath.Dir(oldpath)
-	if !exists(filepath.Join(dir, ".sort")) {
+// makes sure file keeps its sorting position
+func renameSortEntry(oldPath, newPath string) error {
+	oldDir := p.Dir(oldPath)
+	if !hasSort(oldDir) {
 		return nil
 	}
-	if dir != filepath.Dir(newpath) {
-		// the respective sort files in each dir
-		// will do the right job
+
+	// has no sorting position in new directory
+	if newDir := p.Dir(newPath); oldDir != newDir {
 		return nil
 	}
-	sorted, err := parseSort(dir)
-	if err != nil {
-	    println("here")
-		return err
-	}
-	fi, err := os.Stat(oldpath)
+
+	sorted, err := parseSort(oldDir)
 	if err != nil {
 		return err
 	}
-	f := &file{
-		name: filepath.Base(newpath),
-		path: newpath,
-		isdir: fi.IsDir(),
-	}
+
+	f := NewFile(newPath)
+
 	for i, v := range sorted {
-		if v.path == oldpath {
+		if v.Path == oldPath {
 			sorted[i] = f
 		}
 	}
-	return writeSort(dir, sorted)
+	
+	return writeSortFile(oldDir, sorted)
 }
-*/
 
 
 type Asc []*File

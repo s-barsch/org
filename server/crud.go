@@ -90,16 +90,19 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	newPath = ROOT+newPath
-	oldPath := ROOT+path
-
 	err = createBot(newPath)
 	if err != nil {
 		e.Err = err
 		return e
 	}
+	
+	err = renameSortEntry(path, newPath)
+	if err != nil {
+		e.Err = err
+		return e
+	}
 
-	err = os.Rename(oldPath, newPath)
+	err = os.Rename(ROOT+path, ROOT+newPath)
 	if err != nil {
 		e.Err = err
 		return e
@@ -158,6 +161,8 @@ func getRenamePath(r *http.Request) (string, error) {
 	// TODO: make sure it’s a valid path
 
 	path := string(body)
+
+	println("renamePath", path);
 
 	return path, nil
 }

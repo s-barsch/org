@@ -15,6 +15,14 @@ type File struct {
 	Type string `json:"type"`
 }
 
+func NewFile(path string) *File {
+	return &File{
+		Name: p.Base(path),
+		Path: path,
+		Type: fileType(ROOT+path),
+	}
+}
+
 func getFiles(path string) ([]*File, error) {
 	files, err := readFiles(path)
 	if err != nil {
