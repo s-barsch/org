@@ -169,7 +169,7 @@ const Top = ({view}) => {
 
       <h1 className="name">
         <Link className="parent" to={view.parent}>^</Link>
-        {DirName(location.pathname)}
+        <input type="text" value={DirName(location.pathname)} />
       </h1>
     </>
   )
