@@ -42,6 +42,9 @@ const readStateBool = key => {
 }
 
 const Top = ({view}) => {
+
+  /* theme */
+
   const [darkTheme, setDarkTheme] = useState(readStateBool("dark-theme"));
 
   useEffect(() => {
@@ -49,6 +52,13 @@ const Top = ({view}) => {
       ? document.body.dataset["theme"] = "dark"
       : document.body.dataset["theme"] = ""
   })
+
+  function toggleTheme() {
+    setDarkTheme(!darkTheme);
+    localStorage.setItem("dark-theme", !darkTheme);
+  }
+
+  /* links */
 
   const [links, setLinks] = useState([]);
 
@@ -60,6 +70,8 @@ const Top = ({view}) => {
     )
   }, [])
 
+  /* targets */
+
   const [targetList, setTargetList] = useState([]);
   const [activeTarget, setActiveTarget] = useState("");
 
@@ -68,62 +80,23 @@ const Top = ({view}) => {
     setTargetList(targets.getList())
   }
 
-  const [path, setPath] = useState(view.file.path);
-
-  useEffect(() => {
-    setPath(view.file.path);
-  }, [view]);
-
-  document.title = PageTitle(path);
-
-  const handleStorageChange = useCallback(evt => {
+  const listenForTargets = useCallback(evt => {
     loadTargets();
   }, []);
 
   useEffect(() => {
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storage', listenForTargets);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('storage', listenForTargets);
     };
-  }, [handleStorageChange]);
+  }, [listenForTargets]);
 
   useEffect(() => {
     loadTargets();
   }, [])
 
-  /*
-  const rename = newName => {
-  }
-  */
-
-  const history = useHistory();
-
-  const del = path => {
-    fetch("/api" + path, {
-      method: "DELETE"
-    }).then(resp => {
-      if (!resp.ok) {
-        resp.text().then(
-          msg => {
-            alert(msg)
-            return;
-            //throw Error(msg);
-          }
-        );
-        return;
-      };
-      history.push(view.parent);
-    }).catch(err => {
-      alert(err);
-      console.log(err);
-    })
-  }
-
-  const toggleTheme = () => {
-    setDarkTheme(!darkTheme);
-    localStorage.setItem("dark-theme", !darkTheme);
-  }
+  /* targets functions */
 
   const setActive = path => {
     targets.setActive(path);
@@ -144,6 +117,40 @@ const Top = ({view}) => {
     return <button onClick={clickFn}><TargetIcon /></button>
   }
 
+
+  /* path */
+
+  const [path, setPath] = useState(view.file.path);
+
+  useEffect(() => {
+    setPath(view.file.path);
+  }, [view]);
+
+  document.title = PageTitle(path);
+
+  /*
+  const rename = newName => {
+  }
+  */
+
+  const history = useHistory();
+
+  async function delFile(path) {
+    try {
+      const resp = await fetch("/api" + path, { method: "DELETE" });
+      if (!resp.ok) {
+        alert(
+          "DELETE FAILED: " + path +
+          "\nreason: " +resp.statusText
+        );
+        return;
+      }
+      history.push(view.parent);
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
   return (
     <>
       <nav id="links">
@@ -152,11 +159,11 @@ const Top = ({view}) => {
         </span>
         <span id="targets" className="right">
           <TargetList
-          links={targetList}
-          page={path}
-          activeTarget={activeTarget}
-          setActiveFn={setActive}
-          removeFn={removeTarget} />
+            links={targetList}
+            page={path}
+            activeTarget={activeTarget}
+            setActiveFn={setActive}
+            removeFn={removeTarget} />
         </span>
       </nav>
 
@@ -168,7 +175,7 @@ const Top = ({view}) => {
         <span className="right">
           <TargetButton clickFn={setThisActive} />
           <button onClick={toggleTheme} ><ThemeIcon /></button>
-          <Del file={view.file} delFn={del} />
+          <Del file={view.file} delFile={delFile} />
         </span>
       </nav>
 
