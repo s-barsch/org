@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import ReverseIcon from '@material-ui/icons/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
@@ -6,6 +6,7 @@ import { basename } from 'path';
 import { Info } from '../meta';
 import Text from '../types/text';
 import Image from '../types/image';
+import { TargetsContext } from '../../targets';
 
 const FileEntry = ({file, moveFile, delFile}) => {
   return (
@@ -62,8 +63,15 @@ const FileList = ({files, saveSort, moveFile, delFile}) => {
 }
 
 const Dir = ({dir}) => {
+  const { setActiveTarget } = useContext(TargetsContext);
+  const setTarget = evt => {
+    if (evt.shiftKey) {
+      evt.preventDefault();
+      setActiveTarget(evt.target.pathname);
+    }
+  }
   return (
-    <Link to={dir.path}>{basename(dir.path)}</Link>
+    <Link to={dir.path} onClick={setTarget}>{basename(dir.path)}</Link>
   )
 }
 
