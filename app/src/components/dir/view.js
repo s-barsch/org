@@ -14,6 +14,10 @@ function DirView({view}) {
 
   const [files, setFiles] = useState([]);
 
+  useEffect(() => {
+    loadFiles(path);
+  }, [path]);
+
   async function loadFiles(path) {
     try {
       const resp = await fetch("/api" + path + "?listing=true");
@@ -25,59 +29,66 @@ function DirView({view}) {
     }
   }
 
-  useEffect(() => {
-    loadFiles(path);
-  }, [path]);
-
   const history = useHistory();
 
-  async function req(path, options, callback) {
+  async function request(path, options, callback) {
     try {
       const resp = await fetch("/api" + path, options);
       if (!resp.ok) {
-        alert(resp.statusText);
+        alert("fetch failed: " + path + "\nreason: " +resp.statusText);
         return;
       }
       callback();
     } catch(err) {
-      alert(err);
+      console.log(err)
     }
   }
 
-  const addNewDir = (name) => {
+  const addNewDir = async (name) => {
     if (name === "") {
       return;
     }
 
-    req(
-      path + (path === "/" ? "" : "/") + name,
-      { method: "POST" },
-      () => { loadFiles(path) }
+    const newPath = path + (path === "/" ? "" : "/") + name;
+    request(newPath, {
+      method: "POST"
+    },
+      function callBack() {
+        loadFiles(path);
+      }
     )
   }
 
   const moveFile = (filepath, newPath) => {
-    req(
-      filepath,
-      { method: "PUT", body: newPath },
-      () => { loadFiles(path) }
-    )
+    request(filepath, {
+      method: "PUT",
+      body: newPath
+    },
+      function callBack() {
+        loadFiles(path)
+      }
+    );
   }
 
   const delFile = filepath => {
-    req(
-      filepath,
-      { method: "DELETE" },
-      () => { loadFiles(path) }
+    request(filepath, {
+      method: "DELETE"
+    },
+      function callBack() {
+        loadFiles(path)
+      }
     )
   }
 
   const newFile = () => {
     const newPath = path + "/" + NewTimeStamp() + ".txt";
-    req(
-      newPath,
-      { method: "POST", body: "newfile" },
-      () => { history.push(newPath) }
+    request(newPath, {
+      method: "POST",
+      body: "newfile"
+    },
+      function callBack() {
+        history.push(newPath)
+      }
     )
   }
 
@@ -88,12 +99,14 @@ function DirView({view}) {
     if (p.IsPublic(path)) {
     }
     */
-    fetch("/api/sort" + path, {
+    request("/sort" + path, {
       method: "POST",
       body: JSON.stringify(makeArr(all))
-    })
-
-    setFiles(all);
+    },
+      function callBack() {
+        setFiles(all);
+      }
+    )
   }
 
   return (
