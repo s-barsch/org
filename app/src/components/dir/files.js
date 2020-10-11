@@ -16,7 +16,8 @@ const FileEntry = ({file, moveFile, delFile, moveToTarget}) => {
 const FileSwitch = ({file, moveFile, delFile, single, moveToTarget}) => {
   switch (file.type) {
     case "text":
-      return <Text file={file} moveFile={moveFile} delFile={delFile} single={single} moveToTarget={moveToTarget}/>
+      return <Text file={file} moveFile={moveFile} delFile={delFile}
+              single={single} moveToTarget={moveToTarget}/>
     case "image":
       return <Image file={file} moveFile={moveFile} delFile={delFile} />
     default:

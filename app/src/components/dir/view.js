@@ -34,6 +34,7 @@ function DirView({view}) {
     };
   }, [listenForWrite]);
 
+
   async function loadFiles(path) {
     try {
       const resp = await fetch("/api" + path + "?listing=true");
@@ -42,6 +43,13 @@ function DirView({view}) {
     } catch(err) {
       alert("loadFiles error. path: " + path + "\nerr: " + err);
     }
+
+    let favicon = document.querySelector('link[rel="icon"]');
+    favicon.href = "/blue.svg";
+
+    setTimeout(() => {
+      favicon.href = "/favicon.ico";
+    }, 1)
   }
 
   const history = useHistory();
@@ -50,7 +58,8 @@ function DirView({view}) {
     try {
       const resp = await fetch("/api" + path, options);
       if (!resp.ok) {
-        alert("fetch failed: " + path + "\nreason: " +resp.statusText);
+        const text = await resp.text();
+        alert("fetch failed: /api" + path + "\nreason: " + text);
         return;
       }
       callback();

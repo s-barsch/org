@@ -98,7 +98,7 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 
 	err = ioutil.WriteFile(ROOT+newPath, b, 0644)
 	if err != nil {
-		e.Err = err
+		e.Err = fmt.Errorf("Faulty target path: %v", newPath)
 		return e
 	}
 
@@ -192,8 +192,6 @@ func getRenamePath(r *http.Request) (string, error) {
 	// TODO: make sure it’s a valid path
 
 	path := string(body)
-
-	println("renamePath", path);
 
 	return path, nil
 }
