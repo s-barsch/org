@@ -68,6 +68,7 @@ h1 input {
     background:transparent;
     color:var(--color-fg);
     vertical-align:bottom;
+    width:75%;
 }
 
 .parent {

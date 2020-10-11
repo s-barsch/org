@@ -128,21 +128,29 @@ const Top = ({view}) => {
 
   document.title = PageTitle(path);
 
-  /*
-  const rename = newName => {
-  }
-  */
-
   const history = useHistory();
+
+  async function renameFile(newPath) {
+    try {
+      const resp = await fetch("/api" + path, {
+        method: "PUT",
+        body: newPath
+      });
+      if (!resp.ok) {
+        alert( "Rename failed: " + path + "\nreason: " +resp.statusText);
+        return;
+      }
+      history.push(newPath)
+    } catch(err) {
+      console.log(err);
+    }
+  }
 
   async function delFile(path) {
     try {
       const resp = await fetch("/api" + path, { method: "DELETE" });
       if (!resp.ok) {
-        alert(
-          "DELETE FAILED: " + path +
-          "\nreason: " +resp.statusText
-        );
+        alert( "Delete failed: " + path + "\nreason: " +resp.statusText);
         return;
       }
       history.push(view.parent);
@@ -181,9 +189,36 @@ const Top = ({view}) => {
 
       <h1 className="name">
         <Link className="parent" to={view.parent}>^</Link>
-        <input type="text" value={DirName(path)} />
+        <RenameInput path={path} renameFile={renameFile} />
       </h1>
     </>
+  )
+}
+
+const RenameInput = ({path, renameFile}) => {
+  const [name, setName] = useState(DirName(path));
+
+  useEffect(() => {
+    setName(DirName(path));
+  }, [path]);
+
+  function handleTyping(evt) {
+    setName(evt.target.value);
+  }
+
+  function submit() {
+    const old = DirName(path);
+    if (old === name) {
+      return;
+    }
+    const dir = p.Dir(path);
+    renameFile(dir + (dir === "/" ? "" : "/") + name);
+  }
+
+  return (
+    <input type="text" value={name}
+      disabled={name === "org" ? "disabled" : ""}
+      onChange={handleTyping} onBlur={submit} />
   )
 }
 
