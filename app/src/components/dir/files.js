@@ -14,9 +14,6 @@ const FileEntry = ({file, moveFile, delFile}) => {
 }
 
 const FileSwitch = ({file, moveFile, delFile, single}) => {
-  if (delFile === undefined) {
-    console.log("delfile undefined");
-  }
   switch (file.type) {
     case "text":
       return <Text file={file} moveFile={moveFile} delFile={delFile} single={single} />
@@ -43,13 +40,17 @@ const FileList = ({files, saveSort, moveFile, delFile}) => {
     saveSort(state, "files");
   };
 
+  if (!files || files.length === 0) {
+    return null
+  }
+
   return (
     <>
       <span className="right">
         <button onClick={reverseFiles}><ReverseIcon /></button>
       </span>
       <ReactSortable 
-      handle=".info__drag"
+      handle=".info__drag" filter=".no-sort"
       onEnd={callOnEnd}
       animation={200} list={state} setList={setState}>
       { state.map((file) => (

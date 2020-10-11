@@ -116,9 +116,31 @@ img {
 textarea {
 }
 
+.info__file {
+    min-width:13rem;
+    display:inline-block;
+}
+
+.no-sort .info__drag {
+    display:none;
+}
+
+.info__drag {
+    background:grey;
+    height:1.5rem;
+    width:6rem;
+    display:inline-block;
+    vertical-align:middle;
+    cursor:row-resize;
+}
+
 .info__bot,
 .info__type {
     margin-left:1rem;
+}
+
+.info__bot {
+    margin-right:2rem;
 }
 
 .info__del {

@@ -2,7 +2,7 @@ import React from 'react';
 import { basename } from 'path';
 import { Link } from 'react-router-dom';
 import * as p from '../funcs/paths';
-import DragIcon from '@material-ui/icons/Menu';
+//import DragIcon from '@material-ui/icons/Menu';
 import DeleteIcon from '@material-ui/icons/ClearSharp';
 
 const BotToggle = ({file, moveFile}) => {
@@ -29,10 +29,12 @@ const BotToggle = ({file, moveFile}) => {
 const Info = ({file, moveFile, delFile}) => {
   return (
     <div className="info">
-      <span className="info__drag"><DragIcon /></span>
-      <Link className="info__name" to={file.path}>{basename(file.path)}</Link>
-      <span className="info__type">{file.type}</span>
+      <span className="info__file">
+        <Link className="info__name" to={file.path}>{basename(file.path)}</Link>
+        <span className="info__type">{file.type}</span>
+      </span>
       <BotToggle file={file} moveFile={moveFile} />
+      <span className="info__drag"></span>
       <span className="info__del">
         <Del file={file} delFile={delFile} />
       </span>

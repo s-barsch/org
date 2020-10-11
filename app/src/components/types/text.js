@@ -42,7 +42,7 @@ const Text = ({file, moveFile, delFile, single}) => {
   }
 
   return (
-    <>
+    <div className={"text" + (isNoSort(file.name) ? " no-sort" : "")}>
     { !single &&
       <Info file={file} moveFile={moveFile} delFile={delFile} />
     }
@@ -51,8 +51,18 @@ const Text = ({file, moveFile, delFile, single}) => {
         minRows={!single ? 1 : fullScreenRows()}
         onChange={handleTyping}
         onBlur={submit} />
-    </>
+    </div>
   )
+}
+
+function isNoSort(name) {
+  switch (name) {
+    case "info":
+    case ".sort":
+      return true;
+    default:
+      return false;
+  }
 }
 
 function fullScreenRows() {
