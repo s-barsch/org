@@ -81,7 +81,7 @@ function DirView({view}) {
   }
 
   const newFile = () => {
-    const newPath = path + "/" + NewTimeStamp() + ".txt";
+    const newPath = path + path === "/" ? "" : "/" + NewTimeStamp() + ".txt";
     request(newPath, {
       method: "POST",
       body: "newfile"
