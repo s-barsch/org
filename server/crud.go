@@ -75,6 +75,37 @@ func viewListing(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
+func copyFile(w http.ResponseWriter, r *http.Request) *Err {
+	path := r.URL.Path[len("/api"):]
+
+	e := &Err{
+		Func: "copyFile",
+		Path: path,
+		Code: 500,
+	}
+
+	newPath, err := getRenamePath(r)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	b, err := ioutil.ReadFile(ROOT+path)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	err = ioutil.WriteFile(ROOT+newPath, b, 0644)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+
+	return nil
+}
+
 func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api"):]
 

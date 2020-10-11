@@ -26,7 +26,13 @@ const BotToggle = ({file, moveFile}) => {
   return <button className="info__bot" onClick={move}>{target}</button>
 }
 
-const Info = ({file, moveFile, delFile}) => {
+const Info = ({file, moveFile, delFile, moveToTarget}) => {
+  const moveFileToTarget = evt => {
+    moveToTarget(file.path, "move")
+  }
+  const copyFileToTarget = evt => {
+    moveToTarget(file.path, "copy")
+  }
   return (
     <div className="info">
       <span className="info__file">
@@ -34,6 +40,8 @@ const Info = ({file, moveFile, delFile}) => {
         <span className="info__type">{file.type}</span>
       </span>
       <BotToggle file={file} moveFile={moveFile} />
+      <img className="rarr" alt="Move" src="/rarr.svg" onClick={moveFileToTarget} />
+      <img className="rarr" alt="Copy" src="/rarrc.svg" onClick={copyFileToTarget} />
       <span className="info__drag"></span>
       <span className="info__del">
         <Del file={file} delFile={delFile} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReverseIcon from '@material-ui/icons/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
@@ -6,18 +6,17 @@ import { basename } from 'path';
 import { Info } from '../meta';
 import Text from '../types/text';
 import Image from '../types/image';
-import { TargetsContext } from '../../targets';
 
-const FileEntry = ({file, moveFile, delFile}) => {
+const FileEntry = ({file, moveFile, delFile, moveToTarget}) => {
   return (
-    <FileSwitch file={file} moveFile={moveFile} delFile={delFile} />
+    <FileSwitch file={file} moveFile={moveFile} delFile={delFile} moveToTarget={moveToTarget} />
   )
 }
 
-const FileSwitch = ({file, moveFile, delFile, single}) => {
+const FileSwitch = ({file, moveFile, delFile, single, moveToTarget}) => {
   switch (file.type) {
     case "text":
-      return <Text file={file} moveFile={moveFile} delFile={delFile} single={single} />
+      return <Text file={file} moveFile={moveFile} delFile={delFile} single={single} moveToTarget={moveToTarget}/>
     case "image":
       return <Image file={file} moveFile={moveFile} delFile={delFile} />
     default:
@@ -25,7 +24,7 @@ const FileSwitch = ({file, moveFile, delFile, single}) => {
   }
 }
 
-const FileList = ({files, saveSort, moveFile, delFile}) => {
+const FileList = ({files, saveSort, moveFile, delFile, moveToTarget}) => {
   const [state, setState] = useState(files);
 
   useEffect(() => {
@@ -55,15 +54,14 @@ const FileList = ({files, saveSort, moveFile, delFile}) => {
       onEnd={callOnEnd}
       animation={200} list={state} setList={setState}>
       { state.map((file) => (
-        <FileEntry key={file.id} file={file} moveFile={moveFile} delFile={delFile} />
+        <FileEntry key={file.id} file={file} moveFile={moveFile} delFile={delFile} moveToTarget={moveToTarget}/>
       ))}
       </ReactSortable>
     </>
   );
 }
 
-const Dir = ({dir}) => {
-  const { setActiveTarget } = useContext(TargetsContext);
+const Dir = ({dir, setActiveTarget}) => {
   const setTarget = evt => {
     if (evt.shiftKey) {
       evt.preventDefault();
@@ -75,7 +73,7 @@ const Dir = ({dir}) => {
   )
 }
 
-const DirList = ({dirs, saveSort}) => {
+const DirList = ({dirs, saveSort, setActiveTarget }) => {
   const [state, setState] = useState(dirs);
 
   useEffect(() => {
@@ -90,7 +88,7 @@ const DirList = ({dirs, saveSort}) => {
     <ReactSortable className="dirs__list" onEnd={callOnEnd}
     animation={200} list={state} setList={setState}>
     {state.map((dir) => (
-      <Dir key={dir.id} dir={dir} />
+      <Dir key={dir.id} dir={dir} setActiveTarget={setActiveTarget} />
     ))}
     </ReactSortable>
   )

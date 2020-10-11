@@ -36,6 +36,7 @@ func routes() *mux.Router {
 	api.Methods("GET").HandlerFunc(h(viewFile))
 	api.Methods("POST").HandlerFunc(h(writeSwitch))
 	api.Methods("PUT").HandlerFunc(h(renameFile))
+	api.Methods("PATCH").HandlerFunc(h(copyFile))
 	api.Methods("DELETE").HandlerFunc(h(deleteFile))
 
 

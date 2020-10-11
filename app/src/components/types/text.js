@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Info } from '../meta';
 
-const Text = ({file, moveFile, delFile, single}) => {
+const Text = ({file, moveFile, delFile, single, moveToTarget}) => {
   const [body, setBody] = useState("");
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const Text = ({file, moveFile, delFile, single}) => {
   return (
     <div className={"text" + (isNoSort(file.name) ? " no-sort" : "")}>
     { !single &&
-      <Info file={file} moveFile={moveFile} delFile={delFile} />
+      <Info file={file} moveFile={moveFile} delFile={delFile} moveToTarget={moveToTarget}/>
     }
       <TextareaAutosize value={body}
         ref={ref}

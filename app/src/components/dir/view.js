@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import AddDir from './add';
 import { NewTimeStamp } from '../../funcs/paths';
 import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
+import { TargetsContext } from '../../targets';
+import { basename } from 'path';
 
 function DirView({view}) {
+  const { setActiveTarget, activeTarget } = useContext(TargetsContext);
+
   const [path, setPath] = useState(view.file.path);
 
   useEffect(() => {
@@ -59,6 +63,13 @@ function DirView({view}) {
     )
   }
 
+  const copyFile = (filepath, newPath) => {
+    request(filepath, {
+      method: "PATCH",
+      body: newPath
+    })
+  }
+
   const moveFile = (filepath, newPath) => {
     request(filepath, {
       method: "PUT",
@@ -68,6 +79,15 @@ function DirView({view}) {
         loadFiles(path)
       }
     );
+  }
+
+  const moveToTarget = (filepath, operation) => {
+    const newPath = activeTarget + (activeTarget === "/" ? "" : "/") + basename(filepath);
+    if (operation === "copy") {
+      copyFile(filepath, newPath);
+      return;
+    }
+    moveFile(filepath, newPath);
   }
 
   const delFile = filepath => {
@@ -108,12 +128,13 @@ function DirView({view}) {
   return (
     <>
       <nav id="dirs">
-        <DirList  dirs={dirsOnly(files)} saveSort={saveSort} />
+        <DirList  dirs={dirsOnly(files)} saveSort={saveSort} setActiveTarget={setActiveTarget} />
         <AddDir submitFn={addNewDir} />
       </nav>
       <section id="files">
         <AddText newFn={newFile} />
-        <FileList files={filesOnly(files)} saveSort={saveSort} moveFile={moveFile} delFile={delFile} />
+        <FileList files={filesOnly(files)} saveSort={saveSort} moveFile={moveFile} delFile={delFile} 
+          moveToTarget={moveToTarget} />
       </section>
     </>
   )
