@@ -37,7 +37,7 @@ function DirView({view}) {
 
   async function loadFiles(path) {
     try {
-      const resp = await fetch("/api" + path + "?listing=true");
+      const resp = await fetch("/api/list" + path);
       const arr  = await resp.json();
       setFiles(numerate(arr));
     } catch(err) {
@@ -56,10 +56,10 @@ function DirView({view}) {
 
   async function request(path, options, callback) {
     try {
-      const resp = await fetch("/api" + path, options);
+      const resp = await fetch(path, options);
       if (!resp.ok) {
         const text = await resp.text();
-        alert("fetch failed: /api" + path + "\nreason: " + text);
+        alert("fetch failed: " + path + "\nreason: " + text);
         return;
       }
       callback();
@@ -74,9 +74,8 @@ function DirView({view}) {
     }
 
     const newPath = path + (path === "/" ? "" : "/") + name;
-    request(newPath, {
-      method: "POST"
-    },
+    request("/api/write" + newPath,
+      {},
       function callBack() {
         loadFiles(path);
       }
@@ -87,8 +86,8 @@ function DirView({view}) {
     localStorage.setItem("write", Date.now())
   }
   const copyFile = (filepath, newPath) => {
-    request(filepath, {
-      method: "PATCH",
+    request("/api/copy" + filepath, {
+      method: "POST",
       body: newPath
     },
       function callBack() {
@@ -98,8 +97,8 @@ function DirView({view}) {
   }
 
   const moveFile = (filepath, newPath) => {
-    request(filepath, {
-      method: "PUT",
+    request("/api/move" + filepath, {
+      method: "POST",
       body: newPath
     },
       function callBack() {
@@ -108,6 +107,11 @@ function DirView({view}) {
       }
     );
   }
+
+  /*
+  const duplicateFile = filepath => {
+  }
+  */
 
   const moveToTarget = (filepath, operation) => {
     const newPath = activeTarget + (activeTarget === "/" ? "" : "/") + basename(filepath);
@@ -119,9 +123,8 @@ function DirView({view}) {
   }
 
   const delFile = filepath => {
-    request(filepath, {
-      method: "DELETE"
-    },
+    request("/api/delete" + filepath,
+      {},
       function callBack() {
         loadFiles(path)
       }
@@ -130,7 +133,7 @@ function DirView({view}) {
 
   const newFile = () => {
     const newPath = path + (path === "/" ? "" : "/") + NewTimeStamp() + ".txt";
-    request(newPath, {
+    request("/api/write" + newPath, {
       method: "POST",
       body: "newfile"
     },
@@ -143,7 +146,7 @@ function DirView({view}) {
   const saveSort = (part, type) => {
     let all = merge(files.slice(), part, type);
 
-    request("/sort" + path, {
+    request("/api/sort" + path, {
       method: "POST",
       body: JSON.stringify(makeArr(all))
     },

@@ -32,7 +32,7 @@ const Text = ({file, moveFile, delFile, single, moveToTarget}) => {
 
   const submit = async () => {
     try {
-      await fetch("/api" + file.path, {
+      await fetch("/api/write" + file.path, {
         method: "POST",
         body:   body
       });

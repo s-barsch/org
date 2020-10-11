@@ -45,7 +45,7 @@ function View() {
 
   async function loadView(path) {
     try {
-      const resp = await fetch("/api" + path);
+      const resp = await fetch("/api/view" + path);
 
       if (!resp.ok) {
         setNotFound(true)

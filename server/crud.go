@@ -52,7 +52,7 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func viewListing(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api"):]
+	path := r.URL.Path[len("/api/list"):]
 
 	e := &Err{
 		Func: "dirListing",
@@ -76,7 +76,7 @@ func viewListing(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func copyFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api"):]
+	path := r.URL.Path[len("/api/copy"):]
 
 	e := &Err{
 		Func: "copyFile",
@@ -107,7 +107,7 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func renameFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api"):]
+	path := r.URL.Path[len("/api/move"):]
 
 	e := &Err{
 		Func: "renameFile",
@@ -197,7 +197,7 @@ func getRenamePath(r *http.Request) (string, error) {
 }
 
 func deleteFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api"):]
+	path := r.URL.Path[len("/api/delete"):]
 
 	e := &Err{
 		Func: "deleteFile",
@@ -223,7 +223,7 @@ func rmFile(path string) error {
 }
 
 func writeSwitch(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api"):]
+	path := r.URL.Path[len("/api/write"):]
 
 	if strings.Contains(path, ".") || p.Base(path) == "info" {
 		return writeFile(w, r)
@@ -232,7 +232,7 @@ func writeSwitch(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func createDir(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api"):]
+	path := r.URL.Path[len("/api/write"):]
 
 	e := &Err{
 		Func: "createDir",
@@ -258,7 +258,7 @@ func createDir(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func writeFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api"):]
+	path := r.URL.Path[len("/api/write"):]
 
 	e := &Err{
 		Func: "writeFile",

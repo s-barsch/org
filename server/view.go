@@ -19,7 +19,7 @@ type View struct {
 }
 
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api"):]
+	path := r.URL.Path[len("/api/view"):]
 
 	e := &Err{
 		Func: "viewFile",

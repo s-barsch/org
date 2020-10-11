@@ -85,8 +85,8 @@ const Top = ({view}) => {
 
   async function renameFile(newPath) {
     try {
-      const resp = await fetch("/api" + path, {
-        method: "PUT",
+      const resp = await fetch("/api/move" + path, {
+        method: "POST",
         body: newPath
       });
       if (!resp.ok) {
@@ -101,7 +101,7 @@ const Top = ({view}) => {
 
   async function delFile(path) {
     try {
-      const resp = await fetch("/api" + path, { method: "DELETE" });
+      const resp = await fetch("/api/delete" + path);
       if (!resp.ok) {
         alert( "Delete failed: " + path + "\nreason: " +resp.statusText);
         return;

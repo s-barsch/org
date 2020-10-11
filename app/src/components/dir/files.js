@@ -7,13 +7,14 @@ import { Info } from '../meta';
 import Text from '../types/text';
 import Image from '../types/image';
 
-const FileEntry = ({file, moveFile, delFile, moveToTarget}) => {
+const FileEntry = ({file, moveFile, delFile, duplicateFile, moveToTarget}) => {
   return (
-    <FileSwitch file={file} moveFile={moveFile} delFile={delFile} moveToTarget={moveToTarget} />
+    <FileSwitch file={file} moveFile={moveFile} delFile={delFile}
+      duplicateFile={duplicateFile} moveToTarget={moveToTarget} />
   )
 }
 
-const FileSwitch = ({file, moveFile, delFile, single, moveToTarget}) => {
+const FileSwitch = ({file, moveFile, delFile, duplicateFile, single, moveToTarget}) => {
   switch (file.type) {
     case "text":
       return <Text file={file} moveFile={moveFile} delFile={delFile}
@@ -25,7 +26,7 @@ const FileSwitch = ({file, moveFile, delFile, single, moveToTarget}) => {
   }
 }
 
-const FileList = ({files, saveSort, moveFile, delFile, moveToTarget}) => {
+const FileList = ({files, saveSort, moveFile, delFile, duplicateFile, moveToTarget}) => {
   const [state, setState] = useState(files);
 
   useEffect(() => {
@@ -55,7 +56,8 @@ const FileList = ({files, saveSort, moveFile, delFile, moveToTarget}) => {
       onEnd={callOnEnd}
       animation={200} list={state} setList={setState}>
       { state.map((file) => (
-        <FileEntry key={file.id} file={file} moveFile={moveFile} delFile={delFile} moveToTarget={moveToTarget}/>
+        <FileEntry key={file.id} file={file} moveFile={moveFile} delFile={delFile} 
+        duplicateFile={duplicateFile} moveToTarget={moveToTarget}/>
       ))}
       </ReactSortable>
     </>
