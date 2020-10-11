@@ -25,8 +25,11 @@ func main() {
 func routes() *mux.Router {
 	r := mux.NewRouter()
 
-
 	r.PathPrefix("/file/").HandlerFunc(h(serveStatic))
+
+	r.HandleFunc("/api/links", h(viewLinks))
+	r.HandleFunc("/api/today", h(viewToday))
+
 	r.PathPrefix("/api/sort").HandlerFunc(h(writeSort))
 	r.PathPrefix("/api/copy").HandlerFunc(h(copyFile))
 	r.PathPrefix("/api/move").HandlerFunc(h(renameFile))
@@ -36,8 +39,6 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
 	r.PathPrefix("/api/dupli").HandlerFunc(h(duplicateFile))
 
-	r.HandleFunc("/api/links", h(viewLinks))
-	r.HandleFunc("/api/today", h(viewToday))
 
 	/*
 	api := r.PathPrefix("/api").Subrouter()

@@ -43,10 +43,14 @@ func readSort(path string) ([]string, error) {
 	list := []string{}
 	dupli := make(map[string]bool)
 	for _, name := range strings.Split(string(b), "\n") {
-		if name == "" || dupli[name] == true {
+		if name == "" || dupli[name] == true || dupli[stripExt(name)] == true {
 			continue
 		}
 		list = append(list, name)
+		dupli[name] = true
+		if p.Ext(name) == ".info" {
+			dupli[stripExt(name)] = true
+		}
 	}
 	return list, nil
 }

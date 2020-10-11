@@ -30,12 +30,6 @@ function mockView(path) {
   }
 }
 
-async function todayRedirect(history) {
-    const resp = await fetch("/api/today");
-    const todayPath = resp.text();
-    history.push(todayPath)
-}
-
 function View() {
   const history = useHistory();
   const path = useLocation().pathname;
@@ -43,7 +37,13 @@ function View() {
   const [view, setView] = useState(mockView(path));
   const [notFound, setNotFound] = useState(false);
 
-  async function loadView(path) {
+  async function loadView(path, history) {
+    if (path === "/today") {
+      const resp = await fetch("/api/today");
+      const todayPath = await resp.text();
+      history.push(todayPath)
+      return;
+    }
     try {
       const resp = await fetch("/api/view" + path);
 
@@ -61,13 +61,15 @@ function View() {
   }
 
   useEffect(() => {
-    loadView(path);
-  }, [path]);
+    loadView(path, history);
+  }, [history, path]);
 
-  if (view.path === "/today") {
+  /*
+  if (path === "/today") {
     todayRedirect(history);
-    return;
+    return null;
   }
+  */
 
   if (notFound) {
     return "404"

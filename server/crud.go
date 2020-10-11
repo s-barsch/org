@@ -46,8 +46,6 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	println("written")
-
 	return nil
 }
 
