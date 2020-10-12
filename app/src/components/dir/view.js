@@ -37,19 +37,32 @@ function DirView({view}) {
 
   async function loadFiles(path) {
     try {
+      let favicon = document.querySelector('link[rel="icon"]');
+      favicon.href = "/blue.svg";
+
       const resp = await fetch("/api/list" + path);
       const arr  = await resp.json();
       setFiles(numerate(arr));
+
+      setTimeout(() => {
+        favicon.href = "/favicon.ico";
+      }, 10);
     } catch(err) {
-      alert("loadFiles error. path: " + path + "\nerr: " + err);
+      console.log("loadFiles error. path: " + path + "\nerr: " + err);
     }
 
-    let favicon = document.querySelector('link[rel="icon"]');
-    favicon.href = "/blue.svg";
+
+    /*
+    setTimeout(() => {
+      document.title = title
+    }, 50)
+    */
+    /*
 
     setTimeout(() => {
       favicon.href = "/favicon.ico";
     }, 1)
+    */
   }
 
   const history = useHistory();
@@ -73,8 +86,7 @@ function DirView({view}) {
       return;
     }
 
-    const newPath = path + (path === "/" ? "" : "/") + name;
-    request("/api/write" + newPath,
+    request("/api/write" + join(path, name),
       {},
       function callBack() {
         loadFiles(path);
@@ -117,13 +129,16 @@ function DirView({view}) {
     );
   }
 
+  const join = (trunk, base) => {
+    return trunk + (trunk === "/" ? "" : "/") + base
+  }
+
+  const copyToTarget = (filepath) => {
+    copyFile(filepath, join(activeTarget, basename(filepath)));
+  }
+
   const moveToTarget = (filepath, operation) => {
-    const newPath = activeTarget + (activeTarget === "/" ? "" : "/") + basename(filepath);
-    if (operation === "copy") {
-      copyFile(filepath, newPath);
-      return;
-    }
-    moveFile(filepath, newPath);
+    moveFile(filepath, join(activeTarget, basename(filepath)));
   }
 
   const delFile = filepath => {
@@ -160,6 +175,14 @@ function DirView({view}) {
     )
   }
 
+  const modFuncs = {
+    duplicateFile: duplicateFile,
+    delFile: delFile,
+    moveFile: moveFile,
+    copyToTarget: copyToTarget,
+    moveToTarget: moveToTarget
+  }
+
   return (
     <>
       <nav id="dirs">
@@ -168,8 +191,7 @@ function DirView({view}) {
       </nav>
       <section id="files">
         <AddText newFn={newFile} />
-        <FileList files={filesOnly(files)} saveSort={saveSort} moveFile={moveFile} delFile={delFile} 
-          duplicateFile={duplicateFile} moveToTarget={moveToTarget} />
+        <FileList files={filesOnly(files)} modFuncs={modFuncs} saveSort={saveSort} />
       </section>
     </>
   )

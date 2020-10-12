@@ -26,15 +26,15 @@ const BotToggle = ({file, moveFile}) => {
   return <button className="info__bot" onClick={move}>{target}</button>
 }
 
-const Info = ({file, moveFile, delFile, duplicateFile, moveToTarget}) => {
-  const moveFileToTarget = evt => {
-    moveToTarget(file.path, "move");
+const Info = ({file, modFuncs}) => {
+  const moveToTarget = evt => {
+    modFuncs.moveToTarget(file.path);
   }
-  const copyFileToTarget = evt => {
-    moveToTarget(file.path, "copy");
+  const copyToTarget = evt => {
+    modFuncs.copyToTarget(file.path);
   }
-  const dupli = evt => {
-    duplicateFile(file.path);
+  const duplicateFile = evt => {
+    modFuncs.duplicateFile(file.path);
   }
   return (
     <div className="info">
@@ -42,13 +42,13 @@ const Info = ({file, moveFile, delFile, duplicateFile, moveToTarget}) => {
         <Link className="info__name" to={file.path}>{basename(file.path)}</Link>
         <span className="info__type">{file.type}</span>
       </span>
-      <BotToggle file={file} moveFile={moveFile} />
-      <button onClick={dupli}>++</button>
-      <img className="rarr" alt="Copy" src="/rarrc.svg" onClick={copyFileToTarget} />
-      <img className="rarr" alt="Move" src="/rarr.svg" onClick={moveFileToTarget} />
+      <BotToggle file={file} moveFile={modFuncs.moveFile} />
+      <button onClick={duplicateFile}>++</button>
+      <img className="rarr" alt="Copy" src="/rarrc.svg" onClick={copyToTarget} />
+      <img className="rarr" alt="Move" src="/rarr.svg" onClick={moveToTarget} />
       <span className="info__drag"></span>
       <span className="info__del">
-        <Del file={file} delFile={delFile} />
+        <Del file={file} delFile={modFuncs.delFile} />
       </span>
     </div>
   )
