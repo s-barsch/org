@@ -1,5 +1,4 @@
-import React from 'react';
-import { basename } from 'path';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import * as p from '../funcs/paths';
 //import DragIcon from '@material-ui/icons/Menu';
@@ -36,12 +35,10 @@ const Info = ({file, modFuncs}) => {
   const duplicateFile = evt => {
     modFuncs.duplicateFile(file.path);
   }
+
   return (
     <div className="info">
-      <span className="info__file">
-        <Link className="info__name" to={file.path}>{basename(file.path)}</Link>
-        <span className="info__type">{file.type}</span>
-      </span>
+      <FileName file={file} moveFile={modFuncs.moveFile} /> 
       <BotToggle file={file} moveFile={modFuncs.moveFile} />
       <button onClick={duplicateFile}>++</button>
       <img className="rarr" alt="Copy" src="/rarrc.svg" onClick={copyToTarget} />
@@ -54,7 +51,56 @@ const Info = ({file, modFuncs}) => {
   )
 }
   
+const FileName = ({file, moveFile}) => {
+  const [edit, setEdit] = useState(false);
 
+  const [name, setName] = useState("");
+
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!file) {
+      return;
+    }
+    setName(file.name);
+  }, [file]);
+
+  useEffect(() => {
+    if (edit) {
+      ref.current.focus({preventScroll:true})
+    }
+  }, [edit]);
+
+  const handleTyping = evt => {
+    setName(evt.target.value);
+  }
+
+  const toggleEdit = evt => {
+    setEdit(!edit);
+  }
+
+  const renameFile = evt => {
+    setEdit(false);
+    if (name === file.Name) {
+      return;
+    }
+    moveFile(file.path, p.Join(p.Dir(file.path), name));
+  }
+
+  return (
+    <span className="info__file">
+      <FileLink file={file} isEdit={edit}>
+        <input disabled={edit ? "" : "disabled"} size={name.length} value={name} onChange={handleTyping} ref={ref} onBlur={renameFile} className="info__rename" />
+      </FileLink>
+      <button onClick={toggleEdit}>✎</button>
+      <span className="info__type">{file.type}</span>
+    </span>
+  )
+}
+
+const FileLink = ({ file, isEdit, children }) => {
+  return isEdit ? children : <Link className="info__name" to={file.path}>{children}</Link>
+}
 
 const Del = ({file, delFile}) => {
   const del = () => {

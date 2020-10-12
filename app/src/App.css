@@ -68,7 +68,6 @@ h1 input {
     background:transparent;
     color:var(--color-fg);
     vertical-align:bottom;
-    width:75%;
 }
 
 .parent {
@@ -255,4 +254,18 @@ button {
 
 .dirs__list {
     display:inline-block;
+}
+
+.info__name input {
+    cursor:pointer;
+}
+
+.info__rename {
+    background:#ffffb5;
+    color:black;
+}
+
+.info__rename:disabled {
+    background:transparent;
+    color:var(--color-fg);
 }

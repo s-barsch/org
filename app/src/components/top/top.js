@@ -169,7 +169,7 @@ const RenameInput = ({path, renameFile}) => {
   }
 
   return (
-    <input type="text" value={name}
+    <input type="text" value={name} size={name.length}
       disabled={name === "org" ? "disabled" : ""}
       onChange={handleTyping} onBlur={submit} />
   )

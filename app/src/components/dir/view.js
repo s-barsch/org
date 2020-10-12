@@ -6,6 +6,7 @@ import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
 import { TargetsContext } from '../../targets';
 import { basename } from 'path';
+import * as p from '../../funcs/paths';
 
 function DirView({view}) {
   const { setActiveTarget, activeTarget } = useContext(TargetsContext);
@@ -86,7 +87,7 @@ function DirView({view}) {
       return;
     }
 
-    request("/api/write" + join(path, name),
+    request("/api/write" + p.Join(path, name),
       {},
       function callBack() {
         loadFiles(path);
@@ -129,16 +130,12 @@ function DirView({view}) {
     );
   }
 
-  const join = (trunk, base) => {
-    return trunk + (trunk === "/" ? "" : "/") + base
-  }
-
   const copyToTarget = (filepath) => {
-    copyFile(filepath, join(activeTarget, basename(filepath)));
+    copyFile(filepath, p.Join(activeTarget, basename(filepath)));
   }
 
   const moveToTarget = (filepath, operation) => {
-    moveFile(filepath, join(activeTarget, basename(filepath)));
+    moveFile(filepath, p.Join(activeTarget, basename(filepath)));
   }
 
   const delFile = filepath => {

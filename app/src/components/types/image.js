@@ -1,11 +1,13 @@
 import React from 'react';
 import Text from './text';
 import { Del } from '../meta';
+import { basename } from 'path';
 
 const Image = ({file, modFuncs}) => {
-
+  const path = file.path + ".info"
   const info = {
-    path: file.path + ".info",
+    path: path,
+    name: basename(path),
     type: "info"
   }
 

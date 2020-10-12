@@ -76,4 +76,8 @@ const IsPublic = path => {
 }
 
 
-export { ExtendedBase, Base, Dir, Section, IsPublic, FileType, NewTimeStamp };
+const Join = (trunk, base) => {
+  return trunk + (trunk === "/" ? "" : "/") + base
+}
+
+export { ExtendedBase, Base, Dir, Join, Section, IsPublic, FileType, NewTimeStamp };
