@@ -48,13 +48,6 @@ a {
     font-family:monospace;
 }
 
-textarea {
-    background:transparent;
-    color:var(--color-fg);
-    font-size:2.25rem;
-    width:100%;
-}
-
 h1 {
     margin:0 0 1rem;
     font-weight:normal;
@@ -124,17 +117,16 @@ img {
 textarea {
 }
 
-.info__file {
-    min-width:13rem;
-    display:inline-block;
-}
-
 .no-sort .info__drag {
     display:none;
 }
 
 .info__drag {
-    background:grey;
+    /* background:var(--color-fg);
+     *
+    opacity:.3;
+    */
+    border:1px white solid;
     height:1.5rem;
     width:6rem;
     display:inline-block;
@@ -142,13 +134,17 @@ textarea {
     cursor:row-resize;
 }
 
-.info__bot,
-.info__type {
-    margin-left:1rem;
+.info button {
+    padding:0;
 }
 
-.info__bot {
-    margin-right:2rem;
+.info__edit,
+.rarr,
+.info__drag,
+.info__bot,
+.info__dupli,
+.info__type {
+    margin-left:1.5rem;
 }
 
 .info__del {
@@ -268,4 +264,60 @@ button {
 .info__rename:disabled {
     background:transparent;
     color:var(--color-fg);
+}
+
+.text {
+    margin:0 0 2rem;
+}
+
+.text {
+    max-width:60rem;
+}
+
+.info__type {
+    display:none;
+}
+
+.info button,
+.info input,
+.info {
+    font-size:1.25rem;
+    font-family:monospace;
+}
+
+.info__edit svg {
+    height:1rem;
+}
+
+.rarr {
+    height:.7rem;
+}
+
+.info {
+    margin-bottom:.375rem;
+}
+
+.info__drag {
+    margin-left:10rem;
+}
+
+.info input {
+    padding:2px 4px;
+}
+
+textarea {
+    background:transparent;
+    color:var(--color-fg);
+    font-size:2.25rem;
+    width:100%;
+    overflow:hidden;
+}
+
+.text textarea {
+    padding:0;
+    /*
+    background: var(--color-textarea);
+    */
+    outline:none;
+    border:none;
 }

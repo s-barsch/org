@@ -15,7 +15,7 @@ const FileEntry = ({file, modFuncs}) => {
 
 const FileSwitch = ({file, modFuncs, single}) => {
   if (file.name === ".sort") {
-    return <Info file={file} modFuncs={modFuncs} />
+    return <div className="no-sort"><Info file={file} modFuncs={modFuncs} /></div>
   }
   switch (file.type) {
     case "text":
@@ -46,14 +46,14 @@ const FileList = ({files, saveSort, modFuncs}) => {
   if (!files || files.length === 0) {
     return null
   }
-
+  // filter=".no-sort"
   return (
     <>
       <span className="right">
         <button onClick={reverseFiles}><ReverseIcon /></button>
       </span>
       <ReactSortable 
-      handle=".info__drag" filter=".no-sort"
+      handle=".info__drag" 
       onEnd={callOnEnd}
       animation={200} list={state} setList={setState}>
       { state.map((file) => (

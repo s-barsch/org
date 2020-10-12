@@ -16,7 +16,7 @@ const Root = () => {
 }
 
 const CrumbNav = ({path, neighbors, switchLink}) => {
-  const deepDir = path.split("/").length > 4 && neighbors.length > 0;
+  const deepDir = path.split("/").length > 4 && path.indexOf(".") < 0;
   return (
     <nav className="crumbs">
       <Root />
@@ -32,26 +32,34 @@ const CrumbList = ({path, deepDir, switchLink}) => {
   }
 
   const items = path.substr(1).split("/");
+
+  // last element is replaced by neighbor nav
   if (deepDir) {
-    items.pop(); // last element is replaced by neighbor nav
+    items.pop();
   }
-  let render = [];
+
   let href = "";
-  for (let i = 0; i < items.length; i++) {
-    const name = items[i];
-    href += "/" + name
-    let className = ""
-    let itemHref = href
-    if ((name === "private" || name === "public") && switchLink !== "") {
+  return items.map((name, i) => {
+    href += "/" + name;
+
+    let cHref = href;
+    let className = "";
+
+    if (!switchLink !== "" && (name === "private" || name === "public")) {
+      cHref = switchLink
       className = name
-      itemHref = switchLink
     }
-    render.push(<Crumb key={i} href={itemHref} name={name} className={className} />)
-  }
-  return <>{render}</>
+
+    return (
+      <span key={i}>
+        <Spacer />
+        <CrumbLink href={cHref} name={name} className={className} />
+      </span>
+    )
+  })
 }
 
-const Crumb = ({href, name, className}) => {
+const CrumbLink = ({href, name, className, isActive}) => {
   const { setActiveTarget } = useContext(TargetsContext);
   const setTarget = evt => {
     if (evt.shiftKey) {
@@ -59,11 +67,11 @@ const Crumb = ({href, name, className}) => {
       setActiveTarget(evt.target.pathname);
     }
   }
+  if (isActive) {
+    className += " active"
+  }
   return (
-    <>
-    <Spacer />
     <Link className={className} to={href} onClick={setTarget}>{name}</Link>
-    </>
   )
 }
 
@@ -73,24 +81,13 @@ const Neighbors = ({links, active}) => {
     <>
       <Spacer />
       <nav className="neighbors">
-        <LinkList links={links} active={active} />
+      { links.map((l, i) => (
+        <CrumbLink key={i} href={l} name={p.Base(l)} isActive={active === l} />
+      ))}
       </nav>
     </>
   )
 }
-
-const LinkList = ({links, active}) => {
-  if (!links || links.length === 0) {
-    return null;
-  }
-
-  return (
-    links.map((l, i) => (
-      <Link key={i} to={l} className={active === l ? "active" : ""}>{p.Base(l)}</Link>
-    ))
-  )
-}
-
 
 
 export default CrumbNav;

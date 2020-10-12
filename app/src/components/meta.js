@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import * as p from '../funcs/paths';
 //import DragIcon from '@material-ui/icons/Menu';
 import DeleteIcon from '@material-ui/icons/ClearSharp';
+import EditIcon from '@material-ui/icons/Edit';
 
 const BotToggle = ({file, moveFile}) => {
   const target = p.Base(p.Dir(file.path)) === "bot" ? "top" : "bot";
@@ -40,7 +41,7 @@ const Info = ({file, modFuncs}) => {
     <div className="info">
       <FileName file={file} moveFile={modFuncs.moveFile} /> 
       <BotToggle file={file} moveFile={modFuncs.moveFile} />
-      <button onClick={duplicateFile}>++</button>
+      <button className="info__dupli" onClick={duplicateFile}>⧺</button>
       <img className="rarr" alt="Copy" src="/rarrc.svg" onClick={copyToTarget} />
       <img className="rarr" alt="Move" src="/rarr.svg" onClick={moveToTarget} />
       <span className="info__drag"></span>
@@ -92,7 +93,7 @@ const FileName = ({file, moveFile}) => {
       <FileLink file={file} isEdit={edit}>
         <input disabled={edit ? "" : "disabled"} size={name.length} value={name} onChange={handleTyping} ref={ref} onBlur={renameFile} className="info__rename" />
       </FileLink>
-      <button onClick={toggleEdit}>✎</button>
+    <button onClick={toggleEdit} className="info__edit"><EditIcon /></button>
       <span className="info__type">{file.type}</span>
     </span>
   )
