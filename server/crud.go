@@ -220,8 +220,7 @@ func deleteBot(path string) error {
 }
 
 func createBot(path string) error {
-
-	dir := p.Dir(path)
+	dir := ROOT + p.Dir(path)
 	if p.Base(dir) != "bot" {
 		return nil
 	}
