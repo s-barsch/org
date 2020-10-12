@@ -38,6 +38,10 @@ a {
     text-decoration:none;
 }
 
+.crumbs {
+    display:inline;
+}
+
 .crumbs a {
     color:var(--color-fg);
 }
@@ -160,6 +164,7 @@ textarea {
     margin-left:1rem;
 }
 
+#targets a,
 #neighbors a,
 #links a {
     margin-right:.75rem;

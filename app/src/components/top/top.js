@@ -118,13 +118,10 @@ const Top = ({view}) => {
         <span className="links__top">
           <LinkList links={links} />
         </span>
-        <span id="targets" className="right">
-          <TargetList
-            links={targetList}
-            page={path}
-            activeTarget={activeTarget}
-            setActiveFn={setActiveTarget}
-            removeFn={removeTarget} />
+        <span className="right">
+          <TargetButton clickFn={setThisActive} />
+          <button onClick={toggleTheme} ><ThemeIcon /></button>
+          <Del file={view.file} delFile={delFile} />
         </span>
       </nav>
 
@@ -134,9 +131,12 @@ const Top = ({view}) => {
           switchLink={view.switch}
           path={path} />
         <span className="right">
-          <TargetButton clickFn={setThisActive} />
-          <button onClick={toggleTheme} ><ThemeIcon /></button>
-          <Del file={view.file} delFile={delFile} />
+          <TargetList
+            links={targetList}
+            page={path}
+            activeTarget={activeTarget}
+            setActiveFn={setActiveTarget}
+            removeFn={removeTarget} />
         </span>
       </nav>
 
@@ -189,19 +189,22 @@ const TargetList = ({activeTarget, page, links, removeFn, setActiveFn}) => {
     }
   }
   return (
-    links.map((l, i) => {
-      let className = p.Section(l)
-      if (activeTarget === l) {
-        className += " active"
-      }
-      return (
-        <Link key={i} to={l}
-        className={className}
-        onClick={onClick} onContextMenu={onRightClick}>
-          {p.ExtendedBase(l)}
-        </Link>
-      )
-    })
+    <span id="targets">
+    { links.map((l, i) => {
+        let className = p.Section(l)
+        if (activeTarget === l) {
+          className += " active"
+        }
+        return (
+          <Link key={i} to={l}
+          className={className}
+          onClick={onClick} onContextMenu={onRightClick}>
+            {p.ExtendedBase(l)}
+          </Link>
+        )
+      })
+    }
+    </span>
   )
 }
 
