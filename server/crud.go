@@ -11,6 +11,7 @@ import (
 	"os"
 	p "path/filepath"
 	"strings"
+	"time"
 )
 
 func writeSort(w http.ResponseWriter, r *http.Request) *Err {
@@ -304,8 +305,31 @@ func createDir(w http.ResponseWriter, r *http.Request) *Err {
 		e.Err = err
 		return e
 	}
+
+	err = createInfo(path)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
 	return nil
 }
+
+func createInfo(path string) error {
+	name := p.Base(path)
+	if name == "bot" || !strings.Contains(path, "/public") {
+		return nil
+	}
+
+	str := fmt.Sprintf(
+		"title: %v\ndate:  %v\n",
+		strings.Title(name),
+		time.Now().Format("060102_150405"),
+	)
+
+	return ioutil.WriteFile(ROOT + path + "/info", []byte(str), 0755)
+}
+
 
 func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api/write"):]
