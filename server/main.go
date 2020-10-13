@@ -33,11 +33,9 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/sort").HandlerFunc(h(writeSort))
 	r.PathPrefix("/api/copy").HandlerFunc(h(copyFile))
 	r.PathPrefix("/api/move").HandlerFunc(h(renameFile))
-	r.PathPrefix("/api/list").HandlerFunc(h(viewListing))
 	r.PathPrefix("/api/delete").HandlerFunc(h(deleteFile))
 	r.PathPrefix("/api/write").HandlerFunc(h(writeSwitch))
 	r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
-	r.PathPrefix("/api/dupli").HandlerFunc(h(duplicateFile))
 
 
 	r.PathPrefix("/").HandlerFunc(serveBuild)

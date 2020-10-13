@@ -50,6 +50,7 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
+/*
 func viewListing(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api/list"):]
 
@@ -73,58 +74,7 @@ func viewListing(w http.ResponseWriter, r *http.Request) *Err {
 
 	return nil
 }
-
-func duplicateFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/dupli"):]
-
-	e := &Err{
-		Func: "duplicateFile",
-		Path: path,
-		Code: 500,
-	}
-
-	newPath, err := createDupliPath(path)
-	if err != nil {
-		e.Err = err; return e
-	}
-	println(newPath)
-
-	err = copyFileFunc(path, newPath)
-	if err != nil {
-		e.Err = err; return e
-	}
-	
-	return nil
-}
-
-func createDupliPath(path string) (string, error) {
-	trunk, ext := splitExt(path)
-	
-	i := strings.Index(path, "+")
-	if i > 0 {
-		trunk = trunk[:i]
-	}
-
-	for i := 1; i <= 9; i++ {
-		path := fmt.Sprintf("%v+%d%v", trunk, i, ext)
-		_, err := os.Stat(ROOT + path)
-		if err != nil {
-			return path, nil
-		}
-	}
-
-	return "", fmt.Errorf("cannot create duplicate path: %v", path)
-}
-
-func splitExt(path string) (string, string) {
-	i := strings.LastIndex(path, ".")
-	if i <= 0 {
-		return path, ""
-	}
-	return path[:i], path[i:]
-}
-
-
+*/
 func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api/copy"):]
 

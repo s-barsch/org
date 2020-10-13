@@ -1,5 +1,9 @@
 
 function orgSort(unsort) {
+  if (!unsort) {
+    return [];
+  }
+
   let dirs = [];
   let info = [];
   let files = [];
@@ -13,6 +17,7 @@ function orgSort(unsort) {
       case '.sort':
         sort.push(f);
         continue;
+      default:
     }
     if (f.type === 'dir') {
       dirs.push(f);
@@ -21,10 +26,20 @@ function orgSort(unsort) {
     files.push(f);
   }
 
-  dirs.sort();
-  files.sort().reverse();
+  dirs.sort(sortFn);
+  files.sort(sortFn).reverse();
 
   return dirs.concat(info).concat(files).concat(sort);
+}
+
+function sortFn(a, b) {
+  if (a.name < b.name) {
+    return -1;
+  }
+  if (a.name > b.name) {
+    return 1;
+  }
+  return 0;
 }
 
 export { orgSort };

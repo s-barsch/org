@@ -10,6 +10,7 @@ import (
 )
 
 type File struct {
+	Num  int    `json:"id"`
 	Path string `json:"path"`
 	Name string `json:"name"`
 	Type string `json:"type"`
@@ -33,21 +34,21 @@ func (f *File) Read() error {
 	return nil
 }
 
-func getFiles(path string) ([]*File, error) {
-	files, err := readFiles(path)
+func getFiles(path string) (files []*File, sorted bool, err error) {
+	files, err = readFiles(path)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	for _, f := range files {
 		if f.Type == "text" {
 			err = f.Read()
 			if err != nil {
-				return nil, err
+				return
 			}
 		}
 	}
-	return files, err
+	return files, false, err
 	/*
 	if hasSort(path) && true {
 		sorted, err := parseSort(path)
@@ -77,9 +78,10 @@ func readFiles(path string) ([]*File, error) {
 		return nil, err
 	}
 	files := []*File{}
-	for _, fi := range l {
+	for i, fi := range l {
 		fpath := p.Join(path, fi.Name())
 		files = append(files, &File{
+			Num:  i,
 			Name: fi.Name(),
 			Path: fpath,
 			Type: getFileType(fpath, fi.IsDir()),

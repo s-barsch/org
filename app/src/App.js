@@ -22,11 +22,14 @@ function mockView(path) {
   return {
     file:   {
       path: path,
-      type: path.includes(".") ? "text" : "dir"
+      type: path.includes(".") ? "text" : "dir",
+      body: ""
     },
+    parent:   "",
+    switch:   "",
     siblings: [],
-    switch: "",
-    parent: "",
+    files:    [],
+    sorted:   false
   }
 }
 
@@ -51,6 +54,7 @@ function View() {
         setNotFound(true)
         return;
       }
+      setNotFound(false);
 
       const view = await resp.json();
       setView(view);

@@ -14,6 +14,8 @@ type View struct {
 	File     *File    `json:"file"`
 	Parent   string   `json:"parent"`
 	Switch   string   `json:"switch"`
+	Files    []*File  `json:"files"`
+	Sorted   bool     `json:"sorted"`
 	Siblings []*File  `json:"siblings"`
 	Links    []string `json:"links"`
 }
@@ -40,14 +42,25 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
+	files, sorted, err := getFiles(path)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
 	v := &View{
 		File: &File{
 			Path: path,
 			Type: getFileType(path, fi.IsDir()),
 		},
-		Switch:   getSwitchPath(path),
 		Parent:   p.Dir(path),
-		siblings: siblings,
+
+		Switch:   getSwitchPath(path),
+		Siblings: siblings,
+
+		Files:  files,
+		Sorted: sorted,
+
 		Links:    siteConfig.Links,
 	}
 
@@ -98,7 +111,7 @@ func findExistent(path string) string {
 }
 
 func getSiblings(path string) ([]*File, error) {
-	files, err := getFiles(p.Dir(path))
+	files, _, err := getFiles(p.Dir(path))
 	if err != nil {
 		return nil, err
 	}

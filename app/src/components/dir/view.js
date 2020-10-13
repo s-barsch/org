@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import AddDir from './add';
 import { NewTimeStamp } from '../../funcs/paths';
 import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
 import { TargetsContext } from '../../targets';
-import { basename } from 'path';
+import { basename, dirname, extname } from 'path';
 import * as p from '../../funcs/paths';
 import { orgSort } from '../../funcs/sort';
 
@@ -39,55 +39,13 @@ function DirView({view}) {
   }, [view]);
 
   const [files, setFiles] = useState(mockFiles());
+  const [sorted, setSorted] = useState(false);
 
   useEffect(() => {
-    loadFiles(path);
-  }, [path]);
+    setFiles(orgSort(view.files));
+    setSorted(view.sorted);
+  }, [view]);
 
-  const listenForWrite = useCallback(evt => {
-    loadFiles(path);
-  }, [path]);
-
-  useEffect(() => {
-    window.addEventListener('storage', listenForWrite);
-
-    return () => {
-      window.removeEventListener('storage', listenForWrite);
-    };
-  }, [listenForWrite]);
-
-
-  async function loadFiles(path) {
-    try {
-      console.log("LOAD FILES");
-      let favicon = document.querySelector('link[rel="icon"]');
-      favicon.href = "/blue.svg";
-
-      const resp = await fetch("/api/list" + path);
-      const arr  = await resp.json();
-
-      setFiles(numerate(orgSort(arr)));
-
-      setTimeout(() => {
-        favicon.href = "/" + p.Section(path) + ".svg";
-      }, 10);
-    } catch(err) {
-      console.log("loadFiles error. path: " + path + "\nerr: " + err);
-    }
-
-
-    /*
-    setTimeout(() => {
-      document.title = title
-    }, 50)
-    */
-    /*
-
-    setTimeout(() => {
-      favicon.href = "/favicon.ico";
-    }, 1)
-    */
-  }
 
   const history = useHistory();
 
@@ -99,7 +57,9 @@ function DirView({view}) {
         alert("fetch failed: " + path + "\nreason: " + text);
         return;
       }
-      callback();
+      if (callback) {
+        callback();
+      }
     } catch(err) {
       console.log(err)
     }
@@ -142,12 +102,64 @@ function DirView({view}) {
     );
   }
 
-  const duplicateFile = filepath => {
-    request("/api/dupli" + filepath,
-      {},
-      function callBack() {
+  // 120912+2.txt -> 120912.txt
+  const splitName = name => {
+    let ext = extname(name);
+    let trunk = name.substr(0, name.length-ext.length);
+
+    const x = trunk.indexOf("+");
+    if (x >= 0) {
+      trunk = trunk.substr(0, x);
+    }
+    return {
+      trunk: trunk,
+      ext: ext
+    }
+  }
+
+  const isPresent = (files, name) => {
+    for (const f of files) {
+      if (f.name === name) {
+        return true
       }
-    );
+    }
+    return false
+  }
+
+  const createDuplicate = (file, files) => {
+    let f = Object.assign({}, file);
+
+    let name = splitName(f.name);
+    for (let i = 1; i < 10; i++) {
+      const newName = name.trunk + "+" + i + name.ext; 
+      if (!isPresent(files, newName)) {
+        f.id = files.length + 100;
+        f.name = newName;
+        f.path = dirname(f.path) + "/" + newName;
+        console.log(file.path);
+        console.log(f.path);
+
+        return f;
+      }
+    }
+  }
+
+  const duplicateFile = file => {
+    const newFile = createDuplicate(file, files);
+    if (!newFile) {
+      alert("Couldn’t create duplicate: no free name available.");
+      return;
+    }
+    let newFiles = files.slice().concat(newFile);
+    if (!sorted) {
+      newFiles = orgSort(newFiles)
+    }
+    setFiles(newFiles);
+
+    request("/api/write" + newFile.path, {
+      method: "POST",
+      body: newFile.body
+    });
   }
 
   const copyToTarget = (filepath) => {
@@ -248,16 +260,8 @@ const filesOnly = (list) => {
   })
 }
 
-const numerate = files => {
-  if (!files) {
-    return [];
-  }
-  for (let i = 0; i < files.length; i++) {
-    files[i].id = i
-  }
-  return files;
-}
 
+/*
 const makeArr = files => {
   let arr = [];
   for (const f of files) {
@@ -286,4 +290,51 @@ const subtract = (base, other) => {
   return base
 }
 
+*/
 
+  /*
+  async function loadFiles(path) {
+    try {
+      console.log("LOAD FILES");
+      let favicon = document.querySelector('link[rel="icon"]');
+      favicon.href = "/blue.svg";
+
+      const resp = await fetch("/api/list" + path);
+      const arr  = await resp.json();
+
+      setFiles(orgSort(arr));
+
+      setTimeout(() => {
+        favicon.href = "/" + p.Section(path) + ".svg";
+      }, 10);
+    } catch(err) {
+      console.log("loadFiles error. path: " + path + "\nerr: " + err);
+    }
+  }
+  */
+  /*
+  const listenForWrite = useCallback(evt => {
+    loadFiles(path);
+  }, [path]);
+
+  useEffect(() => {
+    window.addEventListener('storage', listenForWrite);
+
+    return () => {
+      window.removeEventListener('storage', listenForWrite);
+    };
+  }, [listenForWrite]);
+  */
+
+
+/*
+const numerate = files => {
+  if (!files) {
+    return [];
+  }
+  for (let i = 0; i < files.length; i++) {
+    files[i].id = i
+  }
+  return files;
+}
+*/

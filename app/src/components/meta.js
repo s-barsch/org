@@ -34,7 +34,7 @@ const Info = ({file, modFuncs}) => {
     modFuncs.copyToTarget(file.path);
   }
   const duplicateFile = evt => {
-    modFuncs.duplicateFile(file.path);
+    modFuncs.duplicateFile(file);
   }
 
   return (
