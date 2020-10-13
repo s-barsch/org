@@ -21,7 +21,9 @@ const Text = ({file, modFuncs, single}) => {
     setBody(evt.target.value);
   }
 
-  const submit = async () => {
+  const submit = () => {
+    file.body = body;
+    modFuncs.writeFile(file);
   }
 
   return (

@@ -96,6 +96,12 @@ function DirView({view}) {
     localStorage.setItem("write", Date.now())
   }
 
+  const writeFile = file => {
+    request("/api/write" + file.path, {
+      method: "POST",
+      body:   file.body
+    });
+  }
 
   const copyFile = (filepath, newPath) => {
     request("/api/copy" + filepath, {
@@ -239,6 +245,7 @@ function DirView({view}) {
   }
 
   const modFuncs = {
+    writeFile: writeFile,
     duplicateFile: duplicateFile,
     deleteFile: deleteFile,
     moveFile: moveFile,
