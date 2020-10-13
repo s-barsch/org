@@ -5,9 +5,9 @@ import { NewTimeStamp } from '../../funcs/paths';
 import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
 import { TargetsContext } from '../../targets';
-import { basename, dirname, extname } from 'path';
+import { basename, dirname, extname, join } from 'path';
 import * as p from '../../funcs/paths';
-import { orgSort } from '../../funcs/sort';
+import { separate, orgSort } from '../../funcs/sort';
 
 const mockFiles = () => {
   const name = p.NewTimeStamp();
@@ -69,17 +69,34 @@ function DirView({view}) {
     if (name === "") {
       return;
     }
+    if (isPresent(files, name)) {
+      alert("Dir with this name already exists.");
+      return;
+    }
 
-    request("/api/write" + p.Join(path, name),
-      {},
-      function callBack() {
-      }
-    )
+    let f = {
+      id: files.length+100,
+      name: name,
+      path: join(path, name),
+      type: "dir"
+    }
+
+    let added = files.slice().concat(f);
+
+    if (sorted) {
+      setFiles(separate(added));
+    } else {
+      setFiles(orgSort(added));
+    }
+
+    request("/api/write" + join(path, name));
   }
 
   const setWriteTime = () => {
     localStorage.setItem("write", Date.now())
   }
+
+
   const copyFile = (filepath, newPath) => {
     request("/api/copy" + filepath, {
       method: "POST",
@@ -144,17 +161,24 @@ function DirView({view}) {
     }
   }
 
+  const insert = (files, file, newFile) => {
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].name === file.name) {
+        files.splice(i, 0, newFile)
+        return files;
+      }
+    }
+    alert("Couldn’t insert duplicate.");
+    return;
+  }
+
   const duplicateFile = file => {
     const newFile = createDuplicate(file, files);
     if (!newFile) {
       alert("Couldn’t create duplicate: no free name available.");
       return;
     }
-    let newFiles = files.slice().concat(newFile);
-    if (!sorted) {
-      newFiles = orgSort(newFiles)
-    }
-    setFiles(newFiles);
+    setFiles(insert(files.slice(), file, newFile))
 
     request("/api/write" + newFile.path, {
       method: "POST",

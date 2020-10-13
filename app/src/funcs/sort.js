@@ -1,5 +1,5 @@
 
-function orgSort(unsort) {
+function divide(unsort) {
   if (!unsort) {
     return [];
   }
@@ -25,11 +25,38 @@ function orgSort(unsort) {
     }
     files.push(f);
   }
+  
+  return {
+    dirs: dirs,
+    info: info,
+    files: files,
+    sort: sort
+  }
+}
 
-  dirs.sort(sortFn);
-  files.sort(sortFn).reverse();
+function join(a) {
+  return a.dirs.concat(a.info).concat(a.files).concat(a.sort);
+}
 
-  return dirs.concat(info).concat(files).concat(sort);
+function separate(unsort) {
+  if (!unsort) {
+    return [];
+  }
+
+  return join(divide(unsort));
+}
+
+function orgSort(unsort) {
+  if (!unsort) {
+    return [];
+  }
+
+  let a = divide(unsort)
+
+  a.dirs.sort(sortFn);
+  a.files.sort(sortFn).reverse();
+
+  return join(a)
 }
 
 function sortFn(a, b) {
@@ -42,4 +69,4 @@ function sortFn(a, b) {
   return 0;
 }
 
-export { orgSort };
+export { separate, orgSort };
