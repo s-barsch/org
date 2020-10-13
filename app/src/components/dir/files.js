@@ -40,7 +40,7 @@ const FileList = ({files, saveSort, modFuncs}) => {
   }
 
   const callOnEnd = () => {
-    saveSort(state, "files");
+    //saveSort(state, "files");
   };
 
   if (!files || files.length === 0) {

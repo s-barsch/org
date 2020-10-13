@@ -10,16 +10,19 @@ import * as p from '../../funcs/paths';
 import { orgSort } from '../../funcs/sort';
 
 const mockFiles = () => {
+  const name = p.NewTimeStamp();
   let arr = [];
   const file = {
-    path: "/sample/file.txt",
-    name: "file.txt",
+    path: "/sample/",
+    name: "",
     type: "text",
     body: ""
   }
   for (let i = 0; i <= 2; i++) {
     let f = Object.assign({}, file);
     f.id = i;
+    f.name = name + "+" + i + ".txt";
+    f.path = f.path + f.name;
     arr.push(f);
   }
   return arr
