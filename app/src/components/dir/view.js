@@ -7,6 +7,7 @@ import { DirList, FileList } from './files';
 import { TargetsContext } from '../../targets';
 import { basename } from 'path';
 import * as p from '../../funcs/paths';
+import { orgSort } from '../../funcs/sort';
 
 const mockFiles = () => {
   let arr = [];
@@ -16,7 +17,7 @@ const mockFiles = () => {
     type: "text",
     body: ""
   }
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i <= 2; i++) {
     let f = Object.assign({}, file);
     f.id = i;
     arr.push(f);
@@ -61,7 +62,8 @@ function DirView({view}) {
 
       const resp = await fetch("/api/list" + path);
       const arr  = await resp.json();
-      setFiles(numerate(arr));
+
+      setFiles(numerate(orgSort(arr)));
 
       setTimeout(() => {
         favicon.href = "/" + p.Section(path) + ".svg";
