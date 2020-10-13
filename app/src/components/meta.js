@@ -46,7 +46,7 @@ const Info = ({file, modFuncs}) => {
       <img className="rarr" alt="Move" src="/rarr.svg" onClick={moveToTarget} />
       <span className="info__drag"></span>
       <span className="info__del">
-        <Del file={file} delFile={modFuncs.delFile} />
+        <Del file={file} deleteFile={modFuncs.deleteFile} />
       </span>
     </div>
   )
@@ -103,10 +103,10 @@ const FileLink = ({ file, isEdit, children }) => {
   return isEdit ? children : <Link className="info__name" to={file.path}>{children}</Link>
 }
 
-const Del = ({file, delFile}) => {
+const Del = ({file, deleteFile}) => {
   const del = () => {
     if (window.confirm("Delete this " + file.type + "?")) {
-      delFile(file.path);
+      deleteFile(file);
     }
   }
   return <button className="del" onClick={del}><DeleteIcon /></button>

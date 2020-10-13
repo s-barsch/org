@@ -10,15 +10,16 @@ import * as p from '../../funcs/paths';
 
 const mockFiles = () => {
   let arr = [];
-  const path = "/sample/file.txt";
   const file = {
-    path: path,
+    path: "/sample/file.txt",
     name: "file.txt",
     type: "text",
     body: ""
   }
   for (let i = 0; i < 10; i++) {
-    arr.push(file);
+    let f = Object.assign({}, file);
+    f.id = i;
+    arr.push(f);
   }
   return arr
 }
@@ -152,12 +153,19 @@ function DirView({view}) {
     moveFile(filepath, p.Join(activeTarget, basename(filepath)));
   }
 
-  const delFile = filepath => {
-    request("/api/delete" + filepath,
-      {},
-      function callBack() {
+  const removeFromArr = (files, name) => {
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].name === name) {
+        files.splice(i, 1)
+        break;
       }
-    )
+    }
+    return files;
+  }
+
+  const deleteFile = file => {
+    setFiles(removeFromArr(files.slice(), file.name));
+    request("/api/delete" + file.path)
   }
 
   const newFile = () => {
@@ -191,7 +199,7 @@ function DirView({view}) {
 
   const modFuncs = {
     duplicateFile: duplicateFile,
-    delFile: delFile,
+    deleteFile: deleteFile,
     moveFile: moveFile,
     copyToTarget: copyToTarget,
     moveToTarget: moveToTarget

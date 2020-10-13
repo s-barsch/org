@@ -21,7 +21,7 @@ const CrumbNav = ({path, siblings, switchLink}) => {
     <nav className="crumbs">
       <Root />
       <CrumbList path={path} switchLink={switchLink} deepDir={deepDir} />
-      { deepDir && <siblings links={siblings} active={path} /> }
+      { deepDir && <Siblings links={siblings} active={path} /> }
     </nav>
   )
 }
@@ -76,7 +76,7 @@ const CrumbLink = ({href, name, className, isActive}) => {
 }
 
 
-const siblings = ({links, active}) => {
+const Siblings = ({links, active}) => {
   return (
     <>
       <Spacer />

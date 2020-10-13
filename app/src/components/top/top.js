@@ -23,7 +23,10 @@ const PageTitle = path => {
   return DirName(path) + " - ORG";
 }
 
-const makeNeighborList = files => {
+const makeSiblingsList = files => {
+  if (!files) {
+    return [];
+  }
   let nu = [];
   for (const f of files) {
     if (f.type === "dir") {
@@ -51,19 +54,13 @@ const Top = ({view}) => {
     localStorage.setItem("dark-theme", !darkTheme);
   }
 
-  /* links */
-
   const [links, setLinks] = useState([]);
+  const [siblings, setSiblings] = useState([]);
 
   useEffect(() => {
-    /*
-    fetch("/api/links").then(
-      resp => resp.json().then(
-        links => setLinks(links)
-      )
-    )
-    */
-  }, [])
+    setLinks(view.links);
+    setSiblings(view.siblings);
+  }, [view])
 
    const TargetButton = ({clickFn}) => {
     return <button onClick={clickFn}><TargetIcon /></button>
@@ -104,7 +101,7 @@ const Top = ({view}) => {
     }
   }
 
-  async function delFile(path) {
+  async function deleteFile(path) {
     try {
       const resp = await fetch("/api/delete" + path);
       if (!resp.ok) {
@@ -126,13 +123,14 @@ const Top = ({view}) => {
         <span className="right">
           <TargetButton clickFn={setThisActive} />
           <button onClick={toggleTheme} ><ThemeIcon /></button>
-          <Del file={view.file} delFile={delFile} />
+          <Del file={view.file} deleteFile={deleteFile} />
         </span>
       </nav>
-
+    {/* 
+          */}
       <nav id="bar">
         <CrumbNav
-          siblings={makeNeighborList(view.siblings)}
+          siblings={makeSiblingsList(siblings)}
           switchLink={view.switch}
           path={path} />
         <span className="right">
