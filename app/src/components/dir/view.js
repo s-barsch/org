@@ -107,7 +107,6 @@ function DirView({view}) {
     request("/api/write" + p.Join(path, name),
       {},
       function callBack() {
-        loadFiles(path);
       }
     )
   }
@@ -132,7 +131,6 @@ function DirView({view}) {
       body: newPath
     },
       function callBack() {
-        loadFiles(path);
         setWriteTime();
       }
     );
@@ -142,7 +140,6 @@ function DirView({view}) {
     request("/api/dupli" + filepath,
       {},
       function callBack() {
-        loadFiles(path);
       }
     );
   }
@@ -159,7 +156,6 @@ function DirView({view}) {
     request("/api/delete" + filepath,
       {},
       function callBack() {
-        loadFiles(path)
       }
     )
   }

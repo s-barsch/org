@@ -15,13 +15,13 @@ const Root = () => {
   )
 }
 
-const CrumbNav = ({path, neighbors, switchLink}) => {
+const CrumbNav = ({path, siblings, switchLink}) => {
   const deepDir = path.split("/").length > 4 && path.indexOf(".") < 0;
   return (
     <nav className="crumbs">
       <Root />
       <CrumbList path={path} switchLink={switchLink} deepDir={deepDir} />
-      { deepDir && <Neighbors links={neighbors} active={path} /> }
+      { deepDir && <siblings links={siblings} active={path} /> }
     </nav>
   )
 }
@@ -76,11 +76,11 @@ const CrumbLink = ({href, name, className, isActive}) => {
 }
 
 
-const Neighbors = ({links, active}) => {
+const siblings = ({links, active}) => {
   return (
     <>
       <Spacer />
-      <nav className="neighbors">
+      <nav className="siblings">
       { links.map((l, i) => (
         <CrumbLink key={i} href={l} name={p.Base(l)} isActive={active === l} />
       ))}

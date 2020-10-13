@@ -56,11 +56,13 @@ const Top = ({view}) => {
   const [links, setLinks] = useState([]);
 
   useEffect(() => {
+    /*
     fetch("/api/links").then(
       resp => resp.json().then(
         links => setLinks(links)
       )
     )
+    */
   }, [])
 
    const TargetButton = ({clickFn}) => {
@@ -130,7 +132,7 @@ const Top = ({view}) => {
 
       <nav id="bar">
         <CrumbNav
-          neighbors={makeNeighborList(view.neighbors)}
+          siblings={makeNeighborList(view.siblings)}
           switchLink={view.switch}
           path={path} />
         <span className="right">

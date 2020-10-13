@@ -24,7 +24,7 @@ function mockView(path) {
       path: path,
       type: path.includes(".") ? "text" : "dir"
     },
-    neighbors: [],
+    siblings: [],
     switch: "",
     parent: "",
   }

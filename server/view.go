@@ -1,20 +1,21 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
-	"fmt"
-	"strings"
 	p "path/filepath"
-	"encoding/json"
+	"strings"
 	"time"
 )
 
 type View struct {
-	File      *File   `json:"file"`
-	Parent    string  `json:"parent"`
-	Switch    string  `json:"switch"`
-	Neighbors []*File `json:"neighbors"`
+	File     *File    `json:"file"`
+	Parent   string   `json:"parent"`
+	Switch   string   `json:"switch"`
+	Siblings []*File  `json:"siblings"`
+	Links    []string `json:"links"`
 }
 
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
@@ -33,7 +34,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	neighbors, err := getNeighbors(path)
+	siblings, err := getSiblings(path)
 	if err != nil {
 		e.Err = err
 		return e
@@ -44,9 +45,10 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 			Path: path,
 			Type: getFileType(path, fi.IsDir()),
 		},
-		Switch:    getSwitchPath(path),
-		Parent:    p.Dir(path),
-		Neighbors: neighbors,
+		Switch:   getSwitchPath(path),
+		Parent:   p.Dir(path),
+		siblings: siblings,
+		Links:    siteConfig.Links,
 	}
 
 	err = json.NewEncoder(w).Encode(v)
@@ -63,7 +65,7 @@ func getSwitchPath(path string) string {
 	if l := len("/public"); len(path) > l {
 		public = path[:l] == "/public"
 	}
-	
+
 	var find, replace string
 
 	if public {
@@ -73,11 +75,11 @@ func getSwitchPath(path string) string {
 		find = "private"
 		replace = "public"
 	}
-	
+
 	newPath := strings.Replace(path, find, replace, -1)
 
 	existent := findExistent(newPath)
-	
+
 	if existent == "/private" || existent == "/public" {
 		return ""
 	}
@@ -95,7 +97,7 @@ func findExistent(path string) string {
 	return findExistent(p.Dir(path))
 }
 
-func getNeighbors(path string) ([]*File, error) {
+func getSiblings(path string) ([]*File, error) {
 	files, err := getFiles(p.Dir(path))
 	if err != nil {
 		return nil, err
@@ -116,10 +118,10 @@ func getNeighbors(path string) ([]*File, error) {
 
 	d := 2
 
-	if c + 1 + d < length {
+	if c+1+d < length {
 		end = c + 1 + d
 	}
-	if c - d > 0 {
+	if c-d > 0 {
 		start = c - d
 	}
 
@@ -130,26 +132,26 @@ func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/file"):]
 
 	/*
-	e := &Err{
-		Func: "serveStatic",
-		Path: path,
-		Code: 500,
-	}
-
-	if fileType(path) == "text" {
-		b, err := ioutil.ReadFile(ROOT + path)
-		if err != nil {
-			if p.Ext(path) == ".info" {
-				// dummy requests arrive, because of attached info field
-				return nil
-			}
-			e.Err = err
-			return e
+		e := &Err{
+			Func: "serveStatic",
+			Path: path,
+			Code: 500,
 		}
 
-		fmt.Fprintf(w, "%s", removeNewLine(b))
-		return nil
-	}
+		if fileType(path) == "text" {
+			b, err := ioutil.ReadFile(ROOT + path)
+			if err != nil {
+				if p.Ext(path) == ".info" {
+					// dummy requests arrive, because of attached info field
+					return nil
+				}
+				e.Err = err
+				return e
+			}
+
+			fmt.Fprintf(w, "%s", removeNewLine(b))
+			return nil
+		}
 	*/
 
 	http.ServeFile(w, r, ROOT+path)
@@ -189,16 +191,15 @@ func viewToday(w http.ResponseWriter, r *http.Request) *Err {
 
 func getCurrent() (string, error) {
 	path := currentDatePath()
-	_, err := os.Stat(path) 
+	_, err := os.Stat(path)
 	if err != nil {
-		err := os.MkdirAll(ROOT + path, 0755)
+		err := os.MkdirAll(ROOT+path, 0755)
 		if err != nil {
 			return "", err
 		}
 	}
 	return path, nil
 }
-
 
 func currentDatePath() string {
 	t := time.Now()
@@ -207,4 +208,3 @@ func currentDatePath() string {
 	}
 	return fmt.Sprintf("/private/graph/%v", t.Format("06/06-01/02"))
 }
-
