@@ -8,6 +8,22 @@ import { TargetsContext } from '../../targets';
 import { basename } from 'path';
 import * as p from '../../funcs/paths';
 
+const mockFiles = () => {
+  let arr = [];
+  const path = "/sample/file.txt";
+  const file = {
+    path: path,
+    name: "file.txt",
+    type: "text",
+    body: ""
+  }
+  for (let i = 0; i < 10; i++) {
+    arr.push(file);
+  }
+  return arr
+}
+
+
 function DirView({view}) {
   const { setActiveTarget, activeTarget } = useContext(TargetsContext);
 
@@ -17,7 +33,7 @@ function DirView({view}) {
     setPath(view.file.path);
   }, [view]);
 
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState(mockFiles());
 
   useEffect(() => {
     loadFiles(path);
