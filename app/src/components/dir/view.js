@@ -46,7 +46,7 @@ function DirView({view}) {
       setFiles(numerate(arr));
 
       setTimeout(() => {
-        favicon.href = "/favicon.ico";
+        favicon.href = "/" + p.Section(path) + ".svg";
       }, 10);
     } catch(err) {
       console.log("loadFiles error. path: " + path + "\nerr: " + err);
