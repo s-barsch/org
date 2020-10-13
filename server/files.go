@@ -13,6 +13,7 @@ type File struct {
 	Path string `json:"path"`
 	Name string `json:"name"`
 	Type string `json:"type"`
+	Body string `json:"body"`
 }
 
 func NewFile(path string) *File {
@@ -23,12 +24,31 @@ func NewFile(path string) *File {
 	}
 }
 
+func (f *File) Read() error {
+	b, err := ioutil.ReadFile(ROOT + f.Path)
+	if err != nil {
+		return err
+	}
+	f.Body = string(removeNewLine(b))
+	return nil
+}
+
 func getFiles(path string) ([]*File, error) {
 	files, err := readFiles(path)
 	if err != nil {
 		return nil, err
 	}
 
+	for _, f := range files {
+		if f.Type == "text" {
+			err = f.Read()
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	return files, err
+	/*
 	if hasSort(path) && true {
 		sorted, err := parseSort(path)
 		if err != nil {
@@ -46,6 +66,7 @@ func getFiles(path string) ([]*File, error) {
 	}
 
 	return preSort(files), nil
+	*/
 }
 
 

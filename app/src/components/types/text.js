@@ -3,19 +3,10 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { Info } from '../meta';
 
 const Text = ({file, modFuncs, single}) => {
-  const [body, setBody] = useState("");
+  const [body, setBody] = useState(file.body);
 
   useEffect(() => {
-    async function loadBody() {
-      try {
-        const resp = await fetch("/file" + file.path);
-        const text = await resp.text();
-        setBody(text);
-      } catch(err) {
-        alert(err)
-      }
-    }
-    loadBody();
+    setBody(file.body);
   }, [file]);
 
   const ref = useRef(null);
@@ -31,14 +22,6 @@ const Text = ({file, modFuncs, single}) => {
   }
 
   const submit = async () => {
-    try {
-      await fetch("/api/write" + file.path, {
-        method: "POST",
-        body:   body
-      });
-    } catch(err) {
-      alert(err);
-    }
   }
 
   return (

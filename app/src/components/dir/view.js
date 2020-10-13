@@ -38,6 +38,7 @@ function DirView({view}) {
 
   async function loadFiles(path) {
     try {
+      console.log("LOAD FILES");
       let favicon = document.querySelector('link[rel="icon"]');
       favicon.href = "/blue.svg";
 
@@ -160,16 +161,20 @@ function DirView({view}) {
   }
 
   const saveSort = (part, type) => {
+    /*
     let all = merge(files.slice(), part, type);
+    setFiles(all);
+    */
 
+    /*
     request("/api/sort" + path, {
       method: "POST",
       body: JSON.stringify(makeArr(all))
     },
       function callBack() {
-        setFiles(all);
       }
     )
+    */
   }
 
   const modFuncs = {

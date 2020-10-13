@@ -7,7 +7,6 @@ import (
 	"strings"
 	p "path/filepath"
 	"encoding/json"
-	"io/ioutil"
 	"time"
 )
 
@@ -130,6 +129,7 @@ func getNeighbors(path string) ([]*File, error) {
 func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/file"):]
 
+	/*
 	e := &Err{
 		Func: "serveStatic",
 		Path: path,
@@ -150,6 +150,7 @@ func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
 		fmt.Fprintf(w, "%s", removeNewLine(b))
 		return nil
 	}
+	*/
 
 	http.ServeFile(w, r, ROOT+path)
 

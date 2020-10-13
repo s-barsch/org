@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
@@ -40,6 +41,7 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/dupli").HandlerFunc(h(duplicateFile))
 
 
+	r.PathPrefix("/").HandlerFunc(serveBuild)
 	/*
 	api := r.PathPrefix("/api").Subrouter()
 	api.Methods("GET").HandlerFunc(h(viewFile))
@@ -49,6 +51,20 @@ func routes() *mux.Router {
 
 
 	return r
+}
+
+const BUILD = "app/build"
+
+func serveBuild(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		file := BUILD + r.URL.Path
+		_, err := os.Stat(file)
+		if err == nil {
+			http.ServeFile(w, r, file)
+			return
+		}
+	}
+	http.ServeFile(w, r, BUILD+"/index.html")
 }
 
 func h(fn func(http.ResponseWriter, *http.Request) *Err) http.HandlerFunc {
