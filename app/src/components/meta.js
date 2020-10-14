@@ -83,7 +83,7 @@ const FileName = ({file, renameFile, moveFile}) => {
 
   const rename = evt => {
     setEdit(false);
-    if (name === file.Name) {
+    if (name === file.name) {
       return;
     }
     const oldPath = file.path;

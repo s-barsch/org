@@ -14,9 +14,11 @@ const FileEntry = ({file, modFuncs}) => {
 }
 
 const FileSwitch = ({file, modFuncs, single}) => {
+  /*
   if (file.name === ".sort") {
     return <div className="no-sort"><Info file={file} modFuncs={modFuncs} /></div>
   }
+  */
   switch (file.type) {
     case "text":
       return <Text file={file} modFuncs={modFuncs} single={single}/>
@@ -40,7 +42,7 @@ const FileList = ({files, saveSort, modFuncs}) => {
   }
 
   const callOnEnd = () => {
-    //saveSort(state, "files");
+    saveSort(state, "files");
   };
 
   if (!files || files.length === 0) {

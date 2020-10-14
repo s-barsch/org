@@ -48,6 +48,8 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
+	//for _, f := range files { fmt.Printf("%d:\n\t%v\n", f.Num, f.Name) }
+
 	v := &View{
 		File: &File{
 			Path: path,

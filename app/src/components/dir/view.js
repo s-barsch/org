@@ -42,10 +42,12 @@ function DirView({view}) {
   const [sorted, setSorted] = useState(false);
 
   useEffect(() => {
-    setFiles(orgSort(view.files));
     setSorted(view.sorted);
-  }, [view]);
+    setFiles(view.files);
+  }, [view, sorted]);
 
+
+  console.log(sorted);
 
   const history = useHistory();
 
@@ -65,7 +67,22 @@ function DirView({view}) {
     }
   }
 
-  const addNewDir = async (name) => {
+  const update = (files, isSorted) => {
+    if (isSorted === undefined) {
+      alert('invalid sorted attribute.');
+    }
+    if (!isSorted) {
+      setFiles(orgSort(files));
+      return;
+    }
+    setFiles(files);
+    request("/api/sort" + path, {
+      method: "POST",
+      body: JSON.stringify(makeArr(files))
+    });
+  }
+
+  const addNewDir = name => {
     if (name === "") {
       return;
     }
@@ -75,19 +92,13 @@ function DirView({view}) {
     }
 
     let f = {
-      id: files.length+100,
+      id:   Date.now(),
       name: name,
       path: join(path, name),
       type: "dir"
     }
 
-    let added = files.slice().concat(f);
-
-    if (sorted) {
-      setFiles(separate(added));
-    } else {
-      setFiles(orgSort(added));
-    }
+    update(separate(files.slice().concat(f)), sorted)
 
     request("/api/write" + join(path, name));
   }
@@ -105,63 +116,13 @@ function DirView({view}) {
 
   // doesn’t leave the directory.
   const renameFile = (oldPath, file) => {
+    console.log(oldPath);
+    console.log(file.path);
+    update(files.slice(), sorted);
     request("/api/move" + oldPath, {
       method: "POST",
       body: file.path
     });
-  }
-
-  // 120912+2.txt -> 120912.txt
-  const splitName = name => {
-    let ext = extname(name);
-    let trunk = name.substr(0, name.length-ext.length);
-
-    const x = trunk.indexOf("+");
-    if (x >= 0) {
-      trunk = trunk.substr(0, x);
-    }
-    return {
-      trunk: trunk,
-      ext: ext
-    }
-  }
-
-  const isPresent = (files, name) => {
-    for (const f of files) {
-      if (f.name === name) {
-        return true
-      }
-    }
-    return false
-  }
-
-  const createDuplicate = (file, files) => {
-    let f = Object.assign({}, file);
-
-    let name = splitName(f.name);
-    for (let i = 1; i < 10; i++) {
-      const newName = name.trunk + "+" + i + name.ext; 
-      if (!isPresent(files, newName)) {
-        f.id = files.length + 100;
-        f.name = newName;
-        f.path = dirname(f.path) + "/" + newName;
-        console.log(file.path);
-        console.log(f.path);
-
-        return f;
-      }
-    }
-  }
-
-  const insert = (files, file, newFile) => {
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].name === file.name) {
-        files.splice(i, 0, newFile)
-        return files;
-      }
-    }
-    alert("Couldn’t insert duplicate.");
-    return;
   }
 
   const duplicateFile = file => {
@@ -170,7 +131,12 @@ function DirView({view}) {
       alert("Couldn’t create duplicate: no free name available.");
       return;
     }
-    setFiles(insert(files.slice(), file, newFile))
+
+    if (sorted) {
+      update(insert(files.slice(), file, newFile), sorted);
+    } else {
+      update(files.slice().concat(newFile), sorted);
+    }
 
     request("/api/write" + newFile.path, {
       method: "POST",
@@ -209,48 +175,38 @@ function DirView({view}) {
     moveFile(file, p.Join(activeTarget, file.name));
   }
 
-  const removeFromArr = (files, name) => {
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].name === name) {
-        files.splice(i, 1)
-        break;
-      }
-    }
-    return files;
-  }
-
   const deleteFile = file => {
     setFiles(removeFromArr(files.slice(), file.name));
     request("/api/delete" + file.path)
   }
 
-  const newFile = () => {
-    const newPath = path + (path === "/" ? "" : "/") + NewTimeStamp() + ".txt";
+  const createNewFile = () => {
+    const name = NewTimeStamp() + ".txt";
+    const f = {
+      id: Date.now(),
+      name: name,
+      path: path + (path === "/" ? "" : "/") + name,
+      type: "text"
+    }
+
+    update(separate(files.slice().concat(f)), sorted)
+
+      /*
     request("/api/write" + newPath, {
       method: "POST",
       body: "newfile"
-    },
+    });
       function callBack() {
         history.push(newPath)
       }
     )
+    */
   }
 
-  const saveSort = (part, type) => {
-    /*
-    let all = merge(files.slice(), part, type);
-    setFiles(all);
-    */
-
-    /*
-    request("/api/sort" + path, {
-      method: "POST",
-      body: JSON.stringify(makeArr(all))
-    },
-      function callBack() {
-      }
-    )
-    */
+  const saveSort = async (part, type) => {
+    setSorted(true);
+    const New = merge(files.slice(), part, type);
+    update(New, true);
   }
 
   const modFuncs = {
@@ -270,7 +226,7 @@ function DirView({view}) {
         <AddDir submitFn={addNewDir} />
       </nav>
       <section id="files">
-        <AddText newFn={newFile} />
+        <AddText newFn={createNewFile} />
         <FileList files={filesOnly(files)} modFuncs={modFuncs} saveSort={saveSort} />
       </section>
     </>
@@ -302,7 +258,6 @@ const filesOnly = (list) => {
 }
 
 
-/*
 const makeArr = files => {
   let arr = [];
   for (const f of files) {
@@ -331,6 +286,7 @@ const subtract = (base, other) => {
   return base
 }
 
+/*
 */
 
   /*
@@ -379,3 +335,62 @@ const numerate = files => {
   return files;
 }
 */
+  const removeFromArr = (files, name) => {
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].name === name) {
+        files.splice(i, 1)
+        break;
+      }
+    }
+    return files;
+  }
+
+  const insert = (files, file, newFile) => {
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].name === file.name) {
+        files.splice(i, 0, newFile)
+        return files;
+      }
+    }
+    alert("Couldn’t insert duplicate.");
+    return;
+  }
+
+  const createDuplicate = (file, files) => {
+    let f = Object.assign({}, file);
+
+    let name = splitName(f.name);
+    for (let i = 1; i < 10; i++) {
+      const newName = name.trunk + "+" + i + name.ext; 
+      if (!isPresent(files, newName)) {
+        f.id = Date.now();
+        f.name = newName;
+        f.path = dirname(f.path) + "/" + newName;
+        return f;
+      }
+    }
+  }
+
+ // 120912+2.txt -> 120912.txt
+  const splitName = name => {
+    let ext = extname(name);
+    let trunk = name.substr(0, name.length-ext.length);
+
+    const x = trunk.indexOf("+");
+    if (x >= 0) {
+      trunk = trunk.substr(0, x);
+    }
+    return {
+      trunk: trunk,
+      ext: ext
+    }
+  }
+
+  const isPresent = (files, name) => {
+    for (const f of files) {
+      if (f.name === name) {
+        return true
+      }
+    }
+    return false
+  }

@@ -31,7 +31,10 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	sorted := makeFiles(path, list)
+	fmt.Println(list)
+	/*
+
+	sorted, err := makeFiles(path, list)
 
 	files, err := readFiles(path)
 	if err != nil {
@@ -40,8 +43,9 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	all := separate(merge(sorted, files))
+	*/
 
-	err = writeSortFile(path, all)
+	err = writeSortFile(path, list)
 	if err != nil {
 		e.Err = err
 		return e
@@ -122,6 +126,9 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 		e.Err = err
 		return e
 	}
+
+	println(path)
+	println(newPath)
 
 	err = createBot(newPath)
 	if err != nil {

@@ -34,42 +34,51 @@ func (f *File) Read() error {
 	return nil
 }
 
-func getFiles(path string) (files []*File, sorted bool, err error) {
-	files, err = readFiles(path)
+func getFiles(path string) ([]*File, bool, error) {
+	files, err := readFiles(path)
 	if err != nil {
-		return
+		return nil, false, err
 	}
 
 	for _, f := range files {
 		if f.Type == "text" {
 			err = f.Read()
 			if err != nil {
-				return
+				return nil, false, err
 			}
 		}
 	}
-	return files, false, err
-	/*
-	if hasSort(path) && true {
-		sorted, err := parseSort(path)
-		if err != nil {
-			return nil, err
-		}
-
-		freshSort := separate(merge(sorted, files))
-
-		err = writeSortFile(path, freshSort)
-		if err != nil {
-			return nil, err
-		}
-
-		return freshSort, nil
+	if !hasSort(path) {
+		return files, false, err
 	}
 
-	return preSort(files), nil
+	sorted, err := parseSort(path)
+	if err != nil {
+		return nil, false, err
+	}
+
+	fresh := merge(sorted, files)
+
+	return renumerate(fresh), true, nil
+	/*
+	err = writeSortFile(path, freshSort)
+	if err != nil {
+		return nil, err
+	}
+	*/
+
+	/*
+
 	*/
 }
 
+
+func renumerate(files []*File) []*File {
+	for i, f := range files {
+		f.Num = i
+	}
+	return files
+}
 
 
 func readFiles(path string) ([]*File, error) {

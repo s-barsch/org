@@ -50,8 +50,7 @@ function View() {
       return;
     }
     try {
-      let favicon = document.querySelector('link[rel="icon"]');
-      favicon.href = "/blue.svg";
+
 
       const resp = await fetch("/api/view" + path);
 
@@ -63,16 +62,18 @@ function View() {
 
       const view = await resp.json();
       setView(view);
-      setTimeout(() => {
-        favicon.href = "/" + Section(path) + ".svg";
-        console.log("/" + Section(path) + ".svg");
-      }, 100);
     } catch(err) {
       console.log(err)
     }
   }
 
   useEffect(() => {
+    let favicon = document.querySelector('link[rel="icon"]');
+    favicon.href = "/blue.svg";
+    setTimeout(() => {
+      favicon.href = "/" + Section(path) + ".svg";
+      console.log("/" + Section(path) + ".svg");
+    }, 100);
     loadView(path, history);
   }, [history, path]);
 
