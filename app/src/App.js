@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import './App.css';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
 import DirView from './components/dir/view';
 import { FileSwitch } from './components/dir/files';
 import Top from './components/top/top';
-import TargetsProvider from "./targets";
+import TargetsProvider, { TargetsContext } from "./targets";
+import { Section } from './funcs/paths';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function mockView(path) {
 }
 
 function View() {
+  const { activeTarget } = useContext(TargetsContext);
   const history = useHistory();
   const path = useLocation().pathname;
 
@@ -48,6 +50,9 @@ function View() {
       return;
     }
     try {
+      let favicon = document.querySelector('link[rel="icon"]');
+      favicon.href = "/blue.svg";
+
       const resp = await fetch("/api/view" + path);
 
       if (!resp.ok) {
@@ -58,7 +63,10 @@ function View() {
 
       const view = await resp.json();
       setView(view);
-
+      setTimeout(() => {
+        favicon.href = "/" + Section(path) + ".svg";
+        console.log("/" + Section(path) + ".svg");
+      }, 100);
     } catch(err) {
       console.log(err)
     }
@@ -67,6 +75,20 @@ function View() {
   useEffect(() => {
     loadView(path, history);
   }, [history, path]);
+
+  const listenForWrite = useCallback(evt => {
+    if (path === activeTarget) {
+      loadView(path, history);
+    }
+  }, [activeTarget, path, history]);
+
+  useEffect(() => {
+    window.addEventListener('storage', listenForWrite);
+
+    return () => {
+      window.removeEventListener('storage', listenForWrite);
+    };
+  }, [listenForWrite]);
 
   /*
   if (path === "/today") {

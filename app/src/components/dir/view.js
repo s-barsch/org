@@ -93,7 +93,7 @@ function DirView({view}) {
   }
 
   const setWriteTime = () => {
-    localStorage.setItem("write", Date.now())
+    localStorage.setItem("write", Date.now());
   }
 
   const writeFile = file => {
@@ -101,17 +101,6 @@ function DirView({view}) {
       method: "POST",
       body:   file.body
     });
-  }
-
-  const copyFile = (file, newPath) => {
-    request("/api/copy" + file.path, {
-      method: "POST",
-      body: newPath
-    },
-      function callBack() {
-        setWriteTime();
-      }
-    );
   }
 
   // doesn’t leave the directory.
@@ -187,6 +176,17 @@ function DirView({view}) {
       method: "POST",
       body: newFile.body
     });
+  }
+
+  const copyFile = (file, newPath) => {
+    request("/api/copy" + file.path, {
+      method: "POST",
+      body: newPath
+    },
+      function callBack() {
+        setWriteTime();
+      }
+    );
   }
 
   const moveFile = (file, newPath) => {
