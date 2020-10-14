@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import AddDir from './add';
-import { NewTimeStamp } from '../../funcs/paths';
+import Text from '../types/text';
 import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
 import { TargetsContext } from '../../targets';
-import { dirname, extname, join } from 'path';
-import * as p from '../../funcs/paths';
+import { basename, extname, dirname, join } from 'path';
+import { newTimestamp, isText } from '../../funcs/paths';
 import { separate, orgSort } from '../../funcs/sort';
 
 const mockFiles = () => {
-  const name = p.NewTimeStamp();
+  const name = newTimestamp();
   let arr = [];
   const file = {
     path: "/sample/",
@@ -29,25 +29,18 @@ const mockFiles = () => {
 }
 
 
-function DirView({view}) {
+function FileView({viewPath, view, setView}) {
   const { setActiveTarget, activeTarget } = useContext(TargetsContext);
 
-  const [path, setPath] = useState(view.file.path);
-
-  useEffect(() => {
-    setPath(view.file.path);
-  }, [view]);
-
+  const [path, setPath] = useState(viewPath);
   const [files, setFiles] = useState(mockFiles());
   const [sorted, setSorted] = useState(false);
 
   useEffect(() => {
+    setPath(viewPath);
     setSorted(view.sorted);
     setFiles(view.files);
-  }, [view, sorted]);
-
-
-  console.log(sorted);
+  }, [viewPath, view])
 
   const history = useHistory();
 
@@ -67,19 +60,29 @@ function DirView({view}) {
     }
   }
 
-  const update = (files, isSorted) => {
+  const update = (newFiles, isSorted) => {
     if (isSorted === undefined) {
       alert('invalid sorted attribute.');
     }
+
     if (!isSorted) {
-      setFiles(orgSort(files));
-      return;
+      newFiles = orgSort(newFiles);
     }
-    setFiles(files);
-    request("/api/sort" + path, {
-      method: "POST",
-      body: JSON.stringify(makeArr(files))
+
+    setFiles(newFiles);
+    setSorted(isSorted);
+    setView({
+      path:   viewPath,
+      files:  newFiles,
+      sorted: isSorted,
     });
+
+    if (isSorted) {
+      request("/api/sort" + path, {
+        method: "POST",
+        body: JSON.stringify(makeArr(newFiles))
+      });
+    }
   }
 
   const addNewDir = name => {
@@ -116,8 +119,6 @@ function DirView({view}) {
 
   // doesn’t leave the directory.
   const renameFile = (oldPath, file) => {
-    console.log(oldPath);
-    console.log(file.path);
     update(files.slice(), sorted);
     request("/api/move" + oldPath, {
       method: "POST",
@@ -168,39 +169,42 @@ function DirView({view}) {
   }
 
   const copyToTarget = file => {
-    copyFile(file, p.Join(activeTarget, file.name));
+    copyFile(file, join(activeTarget, file.name));
   }
 
   const moveToTarget = file => {
-    moveFile(file, p.Join(activeTarget, file.name));
+    moveFile(file, join(activeTarget, file.name));
   }
 
   const deleteFile = file => {
     setFiles(removeFromArr(files.slice(), file.name));
+    if (file.name === ".sort") {
+      setSorted(false);
+    }
     request("/api/delete" + file.path)
   }
 
   const createNewFile = () => {
-    const name = NewTimeStamp() + ".txt";
+    const name = newTimestamp() + ".txt";
     const f = {
       id: Date.now(),
       name: name,
       path: path + (path === "/" ? "" : "/") + name,
-      type: "text"
+      type: "text",
+      body: ""
     }
 
-    update(separate(files.slice().concat(f)), sorted)
+    update(separate(files.slice().concat(f)), sorted);
 
-      /*
-    request("/api/write" + newPath, {
-      method: "POST",
-      body: "newfile"
-    });
+    request("/api/write" + f.path,
+      {
+        method: "POST",
+        body: "newfile"
+      },
       function callBack() {
-        history.push(newPath)
+        history.push(f.path)
       }
     )
-    */
   }
 
   const saveSort = async (part, type) => {
@@ -217,6 +221,10 @@ function DirView({view}) {
     renameFile: renameFile,
     copyToTarget: copyToTarget,
     moveToTarget: moveToTarget
+  }
+
+  if (isText(viewPath)) {
+    return <Text file={findText(files, basename(viewPath))} modFuncs={modFuncs} single={true} />
   }
 
   return (
@@ -237,7 +245,7 @@ const AddText = ({newFn}) => {
   return <button onClick={newFn}><NewTextIcon /></button>
 }
 
-export default DirView;
+export default FileView;
 
 const dirsOnly = (list) => {
   if (!list) {
@@ -302,7 +310,7 @@ const subtract = (base, other) => {
       setFiles(orgSort(arr));
 
       setTimeout(() => {
-        favicon.href = "/" + p.Section(path) + ".svg";
+        favicon.href = "/" + p.section(path) + ".svg";
       }, 10);
     } catch(err) {
       console.log("loadFiles error. path: " + path + "\nerr: " + err);
@@ -394,3 +402,12 @@ const numerate = files => {
     }
     return false
   }
+
+const findText = (files, name) => {
+  for (const f of files) {
+    if (f.name === name) {
+      return f;
+    }
+  }
+  alert("Couldn’t find text: " + name);
+}

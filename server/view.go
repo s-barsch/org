@@ -10,13 +10,16 @@ import (
 	"time"
 )
 
-type View struct {
-	File     *File    `json:"file"`
-	Parent   string   `json:"parent"`
-	Switch   string   `json:"switch"`
-	Files    []*File  `json:"files"`
-	Sorted   bool     `json:"sorted"`
+type DirView struct {
+	Path   string  `json:"path"`  
+	Files  []*File `json:"files"`
+	Sorted bool    `json:"sorted"`
+
+	/*
 	Siblings []*File  `json:"siblings"`
+	Switch   string   `json:"switch"`
+
+	*/
 	Links    []string `json:"links"`
 }
 
@@ -29,18 +32,20 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		Code: 500,
 	}
 
-	fi, err := os.Stat(ROOT + path)
+	_, err := os.Stat(ROOT + path)
 	if err != nil {
 		e.Err = fmt.Errorf("Not found %v", path)
 		e.Code = 404
 		return e
 	}
 
+	/*
 	siblings, err := getSiblings(path)
 	if err != nil {
 		e.Err = err
 		return e
 	}
+	*/
 
 	files, sorted, err := getFiles(path)
 	if err != nil {
@@ -50,16 +55,13 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 
 	//for _, f := range files { fmt.Printf("%d:\n\t%v\n", f.Num, f.Name) }
 
-	v := &View{
-		File: &File{
-			Path: path,
-			Type: getFileType(path, fi.IsDir()),
-		},
-		Parent:   p.Dir(path),
-
+	v := &DirView{
+		/*
 		Switch:   getSwitchPath(path),
 		Siblings: siblings,
+		*/
 
+		Path:   path,
 		Files:  files,
 		Sorted: sorted,
 

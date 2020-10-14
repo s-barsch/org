@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import * as p from '../funcs/paths';
-//import DragIcon from '@material-ui/icons/Menu';
 import DeleteIcon from '@material-ui/icons/ClearSharp';
 import EditIcon from '@material-ui/icons/Edit';
-import { dirname, join } from 'path';
+import { basename, dirname, join } from 'path';
 
 const BotToggle = ({file, moveFile}) => {
-  const target = p.Base(p.Dir(file.path)) === "bot" ? "top" : "bot";
+  const target = basename(dirname(file.path)) === "bot" ? "top" : "bot";
 
   const move = () => {
     const i = file.path.lastIndexOf("/")

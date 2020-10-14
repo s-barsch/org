@@ -49,7 +49,7 @@ func getFiles(path string) ([]*File, bool, error) {
 		}
 	}
 	if !hasSort(path) {
-		return files, false, err
+		return antoSort(files), false, err
 	}
 
 	sorted, err := parseSort(path)

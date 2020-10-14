@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import './App.css';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
-import DirView from './components/dir/view';
-import { FileSwitch } from './components/dir/files';
-import Top from './components/top/top';
+import FileView from './components/dir/view';
+//import { FileSwitch } from './components/dir/files';
+//import Top from './components/top/top';
 import TargetsProvider, { TargetsContext } from "./targets";
-import { Section } from './funcs/paths';
+import { section, isText } from './funcs/paths';
 
 function App() {
   return (
@@ -19,18 +19,11 @@ function App() {
 
 export default App;
 
-function mockView(path) {
+function mockView() {
   return {
-    file:   {
-      path: path,
-      type: path.includes(".") ? "text" : "dir",
-      body: ""
-    },
-    parent:   "",
-    switch:   "",
-    siblings: [],
-    files:    [],
-    sorted:   false
+    path:   "",
+    files:  [],
+    sorted: false
   }
 }
 
@@ -40,42 +33,43 @@ function View() {
   const path = useLocation().pathname;
 
   const [view, setView] = useState(mockView(path));
+  const [lastPath, setLastPath] = useState("");
   const [notFound, setNotFound] = useState(false);
 
   async function loadView(path, history) {
-    if (path === "/today") {
-      const resp = await fetch("/api/today");
-      const todayPath = await resp.text();
-      history.push(todayPath)
-      return;
-    }
+    blinkFavicon(path);
     try {
-
-
+      console.log("LOAD VIEW");
       const resp = await fetch("/api/view" + path);
-
       if (!resp.ok) {
         setNotFound(true)
         return;
       }
       setNotFound(false);
-
       const view = await resp.json();
       setView(view);
+      setLastPath(view.path);
     } catch(err) {
       console.log(err)
     }
   }
 
   useEffect(() => {
-    let favicon = document.querySelector('link[rel="icon"]');
-    favicon.href = "/blue.svg";
-    setTimeout(() => {
-      favicon.href = "/" + Section(path) + ".svg";
-      console.log("/" + Section(path) + ".svg");
-    }, 100);
+    if (isText(path)) {
+      return;
+    }
+
+    if (path === view.path) {
+      return;
+    }
+
+    if (isToday(path)) {
+      todayRedirect(history);
+      return;
+    }
+
     loadView(path, history);
-  }, [history, path]);
+  }, [path, lastPath, history, view]);
 
   const listenForWrite = useCallback(evt => {
     if (path === activeTarget) {
@@ -91,25 +85,25 @@ function View() {
     };
   }, [listenForWrite]);
 
-  /*
-  if (path === "/today") {
-    todayRedirect(history);
-    return null;
-  }
-  */
-
   if (notFound) {
     return "404"
   }
 
+  return (
+    <FileView viewPath={path} view={view} setView={setView} />
+  )
+
+  /*
   return (
     <>
       <Top view={view} />
       <Main view={view} />
     </>
   )
+  */
 }
 
+/*
 function Main({view}) {
   switch (view.file.type) {
     case "text":
@@ -129,4 +123,22 @@ function Single({view}) {
   )
 }
 
+*/
 
+const blinkFavicon = (path) => {
+    let favicon = document.querySelector('link[rel="icon"]');
+    favicon.href = "/blue.svg";
+    setTimeout(() => {
+      favicon.href = "/" + section(path) + ".svg";
+    }, 100);
+}
+
+function isToday(path) {
+  return path === "/today";
+}
+
+async function todayRedirect(history) {
+  const resp = await fetch("/api/today");
+  const todayPath = await resp.text();
+  history.push(todayPath)
+}

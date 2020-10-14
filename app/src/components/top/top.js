@@ -80,11 +80,6 @@ const Top = ({view}) => {
 
   document.title = PageTitle(path);
 
-  /*
-  let favicon = document.querySelector('link[rel="icon"]');
-  favicon.href = "/" + p.Section(path) + ".svg";
-  */
-  
   const history = useHistory();
 
   async function renameFile(newPath) {
