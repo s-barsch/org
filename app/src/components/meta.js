@@ -4,6 +4,7 @@ import * as p from '../funcs/paths';
 //import DragIcon from '@material-ui/icons/Menu';
 import DeleteIcon from '@material-ui/icons/ClearSharp';
 import EditIcon from '@material-ui/icons/Edit';
+import { dirname, join } from 'path';
 
 const BotToggle = ({file, moveFile}) => {
   const target = p.Base(p.Dir(file.path)) === "bot" ? "top" : "bot";
@@ -19,7 +20,7 @@ const BotToggle = ({file, moveFile}) => {
         newPath = file.path.substr(0, i-4) + file.path.substr(i);
     }
 
-    moveFile(file.path, newPath);
+    moveFile(file, newPath);
     return;
   }
 
@@ -28,10 +29,10 @@ const BotToggle = ({file, moveFile}) => {
 
 const Info = ({file, modFuncs}) => {
   const moveToTarget = evt => {
-    modFuncs.moveToTarget(file.path);
+    modFuncs.moveToTarget(file);
   }
   const copyToTarget = evt => {
-    modFuncs.copyToTarget(file.path);
+    modFuncs.copyToTarget(file);
   }
   const duplicateFile = evt => {
     modFuncs.duplicateFile(file);
@@ -39,7 +40,7 @@ const Info = ({file, modFuncs}) => {
 
   return (
     <div className="info">
-      <FileName file={file} moveFile={modFuncs.moveFile} /> 
+      <FileName file={file} renameFile={modFuncs.renameFile} moveFile={modFuncs.moveFile} /> 
       <BotToggle file={file} moveFile={modFuncs.moveFile} />
       <button className="info__dupli" onClick={duplicateFile}>⧺</button>
       <img className="rarr" alt="Copy" src="/rarrc.svg" onClick={copyToTarget} />
@@ -52,7 +53,7 @@ const Info = ({file, modFuncs}) => {
   )
 }
   
-const FileName = ({file, moveFile}) => {
+const FileName = ({file, renameFile, moveFile}) => {
   const [edit, setEdit] = useState(false);
 
   const [name, setName] = useState("");
@@ -80,18 +81,21 @@ const FileName = ({file, moveFile}) => {
     setEdit(!edit);
   }
 
-  const renameFile = evt => {
+  const rename = evt => {
     setEdit(false);
     if (name === file.Name) {
       return;
     }
-    moveFile(file.path, p.Join(p.Dir(file.path), name));
+    const oldPath = file.path;
+    file.path = join(dirname(file.path), name);
+    file.name = name;
+    renameFile(oldPath, file);
   }
 
   return (
     <span className="info__file">
       <FileLink file={file} isEdit={edit}>
-        <input disabled={edit ? "" : "disabled"} size={name.length} value={name} onChange={handleTyping} ref={ref} onBlur={renameFile} className="info__rename" />
+        <input disabled={edit ? "" : "disabled"} size={name.length} value={name} onChange={handleTyping} ref={ref} onBlur={rename} className="info__rename" />
       </FileLink>
     <button onClick={toggleEdit} className="info__edit"><EditIcon /></button>
       <span className="info__type">{file.type}</span>

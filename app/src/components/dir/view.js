@@ -5,7 +5,7 @@ import { NewTimeStamp } from '../../funcs/paths';
 import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
 import { TargetsContext } from '../../targets';
-import { basename, dirname, extname, join } from 'path';
+import { dirname, extname, join } from 'path';
 import * as p from '../../funcs/paths';
 import { separate, orgSort } from '../../funcs/sort';
 
@@ -103,8 +103,8 @@ function DirView({view}) {
     });
   }
 
-  const copyFile = (filepath, newPath) => {
-    request("/api/copy" + filepath, {
+  const copyFile = (file, newPath) => {
+    request("/api/copy" + file.path, {
       method: "POST",
       body: newPath
     },
@@ -114,15 +114,12 @@ function DirView({view}) {
     );
   }
 
-  const moveFile = (filepath, newPath) => {
-    request("/api/move" + filepath, {
+  // doesn’t leave the directory.
+  const renameFile = (oldPath, file) => {
+    request("/api/move" + oldPath, {
       method: "POST",
-      body: newPath
-    },
-      function callBack() {
-        setWriteTime();
-      }
-    );
+      body: file.path
+    });
   }
 
   // 120912+2.txt -> 120912.txt
@@ -192,12 +189,24 @@ function DirView({view}) {
     });
   }
 
-  const copyToTarget = (filepath) => {
-    copyFile(filepath, p.Join(activeTarget, basename(filepath)));
+  const moveFile = (file, newPath) => {
+    setFiles(removeFromArr(files.slice(), file.name));
+    request("/api/move" + file.path, {
+      method: "POST",
+      body: newPath
+    },
+      function callBack() {
+        setWriteTime();
+      }
+    );
   }
 
-  const moveToTarget = (filepath, operation) => {
-    moveFile(filepath, p.Join(activeTarget, basename(filepath)));
+  const copyToTarget = file => {
+    copyFile(file, p.Join(activeTarget, file.name));
+  }
+
+  const moveToTarget = file => {
+    moveFile(file, p.Join(activeTarget, file.name));
   }
 
   const removeFromArr = (files, name) => {
@@ -249,6 +258,7 @@ function DirView({view}) {
     duplicateFile: duplicateFile,
     deleteFile: deleteFile,
     moveFile: moveFile,
+    renameFile: renameFile,
     copyToTarget: copyToTarget,
     moveToTarget: moveToTarget
   }
