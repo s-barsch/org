@@ -2,19 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
-import { basename, dirname } from 'path';
+import { basename } from 'path';
 import CrumbNav from './crumbs';
 import { Del } from '../meta';
 import { extendedBase, section } from '../../funcs/paths';
 import { TargetsContext } from '../../targets';
-
-const DirName = (path) => {
-  const name = basename(path);
-  if (name === "") {
-    return "org"
-  }
-  return name
-}
 
 /*
 const PageTitle = path => {
@@ -22,21 +14,6 @@ const PageTitle = path => {
     return "ORG"
   }
   return DirName(path) + " - ORG";
-}
-*/
-
-/*
-const makeSiblingsList = files => {
-  if (!files) {
-    return [];
-  }
-  let nu = [];
-  for (const f of files) {
-    if (f.type === "dir") {
-      nu.push(f.path);
-    }
-  }
-  return nu;
 }
 */
 
@@ -80,22 +57,6 @@ const Top = ({pathname, view}) => {
 
   const history = useHistory();
 
-  async function renameFile(newPath) {
-    try {
-      const resp = await fetch("/api/move" + view.path, {
-        method: "POST",
-        body: newPath
-      });
-      if (!resp.ok) {
-        alert( "Rename failed: " + view.path + "\nreason: " +resp.statusText);
-        return;
-      }
-      history.push(newPath)
-    } catch(err) {
-      console.log(err);
-    }
-  }
-
   async function deleteFile(path) {
     try {
       const resp = await fetch("/api/delete" + path);
@@ -109,8 +70,6 @@ const Top = ({pathname, view}) => {
     }
   }
 
-  console.log(view.nav);
-
   return (
     <>
       <nav id="links">
@@ -123,8 +82,6 @@ const Top = ({pathname, view}) => {
           <Del file={view.file} deleteFile={deleteFile} />
         </span>
       </nav>
-    {/* 
-          */}
       <nav id="bar">
         <CrumbNav path={pathname} nav={view.nav}/>
         <span className="right">
@@ -136,39 +93,7 @@ const Top = ({pathname, view}) => {
             removeFn={removeTarget} />
         </span>
       </nav>
-
-      <h1 className="name">
-        <Link className="parent" to={dirname(view.path)}>^</Link>
-        <RenameInput path={pathname} renameFile={renameFile} />
-      </h1>
     </>
-  )
-}
-
-const RenameInput = ({path, renameFile}) => {
-  const [name, setName] = useState(DirName(path));
-
-  useEffect(() => {
-    setName(basename(path));
-  }, [path]);
-
-  function handleTyping(evt) {
-    setName(evt.target.value);
-  }
-
-  function submit() {
-    const old = DirName(path);
-    if (old === name) {
-      return;
-    }
-    const dir = dirname(path);
-    renameFile(dir + (dir === "/" ? "" : "/") + name);
-  }
-
-  return (
-    <input type="text" value={name} size={name.length}
-      disabled={name === "org" ? "disabled" : ""}
-      onChange={handleTyping} onBlur={submit} />
   )
 }
 

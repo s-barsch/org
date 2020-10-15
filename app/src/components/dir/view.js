@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import AddDir from './add';
 import Text from '../types/text';
 import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
 import { TargetsContext } from '../../targets';
 import { basename, extname, dirname, join } from 'path';
-import { newTimestamp, isText } from '../../funcs/paths';
+import { newTimestamp, isText, orgBase } from '../../funcs/paths';
 import { separate, orgSort } from '../../funcs/sort';
 
 const newMockFile = (i) => {
@@ -117,6 +117,33 @@ function FileView({pathname, view, setView}) {
     });
   }
 
+  const renameView = (newName) => {
+    let newPath = "";
+    if (isText(pathname)) {
+      const t = findText(files, basename(pathname));
+      if (!t) {
+        alert("rename: Couldn’t find text.")
+        return
+      }
+      t.path = join(dirname(pathname), newName);
+      t.name = newName;
+      update(files.slice(), sorted);
+      history.push(t.path);
+      request("/api/move" + pathname, {
+        method: "POST",
+        body: t.path
+      });
+      return;
+    }
+    newPath = join(dirname(path), newName);
+    request("/api/move" + pathname, {
+      method: "POST",
+      body: newPath
+    }, function callback() {
+      history.push(newPath);
+    });
+  }
+
   // doesn’t leave the directory.
   const renameFile = (oldPath, file) => {
     update(files.slice(), sorted);
@@ -223,6 +250,16 @@ function FileView({pathname, view, setView}) {
     moveToTarget: moveToTarget
   }
 
+  const Head = () => {
+    return (
+      <h1 className="name">
+        <Link className="parent" to={dirname(pathname)}>^</Link>
+        <RenameInput path={pathname} renameView={renameView} />
+      </h1>
+    )
+  }
+
+
   if (isText(pathname)) {
     if (files.length === 0) {
       return "";
@@ -233,11 +270,17 @@ function FileView({pathname, view, setView}) {
       return "Couldn’t find text."
     }
 
-    return <Text file={text} modFuncs={modFuncs} single={true} />
+    return (
+      <>
+        <Head />
+        <Text file={text} modFuncs={modFuncs} single={true} />
+      </>
+    )
   }
 
   return (
     <>
+      <Head />
       <nav id="dirs">
         <DirList  dirs={dirsOnly(files)} saveSort={saveSort} setActiveTarget={setActiveTarget} />
         <AddDir submitFn={addNewDir} />
@@ -419,3 +462,31 @@ const findText = (files, name) => {
     }
   }
 }
+
+const RenameInput = ({path, renameView}) => {
+  const [name, setName] = useState(orgBase(path));
+
+  useEffect(() => {
+    setName(orgBase(path));
+  }, [path]);
+
+  function handleTyping(evt) {
+    setName(evt.target.value);
+  }
+
+  function submit() {
+    const old = orgBase(path);
+    if (old === name) {
+      return;
+    }
+    renameView(name);
+  }
+
+  return (
+    <input type="text" value={name} size={name.length}
+      disabled={name === "org" ? "disabled" : ""}
+      onChange={handleTyping} onBlur={submit} />
+  )
+}
+
+

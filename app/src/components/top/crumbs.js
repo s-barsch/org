@@ -17,14 +17,13 @@ const Root = () => {
 }
 
 const CrumbNav = ({path, nav}) => {
-  console.log(nav);
-  const sibNav = nav.siblings && nav.siblings.length > 0;
+  const sibs = nav.siblings && nav.siblings.length > 0;
   const text = isText(path);
   return (
     <nav className="crumbs">
       <Root />
-      <CrumbList path={path} switcher={nav.switcher} trimCrumbs={sibNav} />
-    { sibNav &&
+      <CrumbList path={path} switcher={nav.switcher} trim={sibs || text} />
+    { sibs &&
       <Siblings path={path} files={nav.siblings} siblingPath={nav.path} />
     }
     { text &&
@@ -37,14 +36,14 @@ const CrumbNav = ({path, nav}) => {
   )
 }
 
-const CrumbList = ({path, switcher, trimCrumbs}) => {
+const CrumbList = ({path, switcher, trim}) => {
   if (path === "/") {
     return null
   }
 
   const items = path.substr(1).split("/");
 
-  if (trimCrumbs) {
+  if (trim) {
     items.pop();
   }
 
