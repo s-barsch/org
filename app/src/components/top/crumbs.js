@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { TargetsContext } from '../../targets';
 import { basename } from 'path';
 import { isText } from '../../funcs/paths';
-import { TargetsContext } from '../../targets';
 
 const Spacer = () => {
   return (
@@ -10,77 +10,64 @@ const Spacer = () => {
   )
 }
 
-/*
 const Root = () => {
   return (
     <Link to="/">org</Link>
   )
 }
-*/
 
-const CrumbNav = ({path, items, siblings}) => {
-  if (!items) {
-    return null
-  }
-
-  console.log(path)
-  console.log(siblings)
-  const deepDir = siblings && path.split("/").length > 4;
-
-  let mySiblings = siblings.slice();
-  let myItems = items.slice()
-  if (deepDir) {
-    myItems.pop()
-  }
-
+const CrumbNav = ({path, nav}) => {
+  console.log(nav);
+  const sibNav = nav.siblings && nav.siblings.length > 0;
+  const text = isText(path);
   return (
     <nav className="crumbs">
-      <CrumbList links={myItems} />
-      { (deepDir) &&
-        <SiblingList links={mySiblings} />
-      }
-      { (isText(path))  &&
-        <>
-          <Spacer />
-          <CrumbLink href={path} name={basename(path)} />
-        </>
-      }
+      <Root />
+      <CrumbList path={path} switcher={nav.switcher} trimCrumbs={sibNav} />
+    { sibNav &&
+      <Siblings path={path} files={nav.siblings} siblingPath={nav.path} />
+    }
+    { text &&
+      <>
+        <Spacer />
+        <CrumbLink href={path} name={basename(path)} />
+      </>
+    }
     </nav>
   )
 }
 
-const CrumbList = ({links}) => {
-  if (!links) {
+const CrumbList = ({path, switcher, trimCrumbs}) => {
+  if (path === "/") {
     return null
   }
-  return (
-    links.map((l, i) => (
+
+  const items = path.substr(1).split("/");
+
+  if (trimCrumbs) {
+    items.pop();
+  }
+
+  let href = "";
+  return items.map((name, i) => {
+    href += "/" + name;
+
+    let cHref = href;
+    let className = "";
+
+    if (!switcher !== "" && (name === "private" || name === "public")) {
+      cHref = switcher
+      className = name
+    }
+
+    return (
       <span key={i}>
-      { i > 0 &&
         <Spacer />
-      }
-        <CrumbLink key={i} href={l.href} name={l.name} />
+        <CrumbLink href={cHref} name={name} className={className} />
       </span>
-    ))
-  )
+    )
+  })
 }
-
-const SiblingList = ({links}) => {
-  if (!links) {
-    return null
-  }
-  return (
-    <>
-      <Spacer />
-      <nav className="siblings">
-        { links.map((l, i) => (
-          <CrumbLink key={i} href={l.href} name={l.name} isActive={l.active} />
-        )) }
-      </nav>
-    </>
-  )
-}
-
 
 const CrumbLink = ({href, name, className, isActive}) => {
   const { setActiveTarget } = useContext(TargetsContext);
@@ -97,5 +84,23 @@ const CrumbLink = ({href, name, className, isActive}) => {
     <Link className={className} to={href} onClick={setTarget}>{name}</Link>
   )
 }
+
+
+const Siblings = ({path, files, siblingPath}) => {
+  if (path !== siblingPath) {
+    return null;
+  }
+  return (
+    <>
+      <Spacer />
+      <nav className="siblings">
+      { files.map((f, i) => (
+        <CrumbLink key={i} href={f.path} name={f.name} isActive={path === f.path} />
+      ))}
+      </nav>
+    </>
+  )
+}
+
 
 export default CrumbNav;

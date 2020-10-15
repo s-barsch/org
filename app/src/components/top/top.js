@@ -109,6 +109,8 @@ const Top = ({pathname, view}) => {
     }
   }
 
+  console.log(view.nav);
+
   return (
     <>
       <nav id="links">
@@ -124,11 +126,7 @@ const Top = ({pathname, view}) => {
     {/* 
           */}
       <nav id="bar">
-        <CrumbNav
-          path={pathname}
-          items={view.nav.items}
-          siblings={view.nav.siblings}
-        />
+        <CrumbNav path={pathname} nav={view.nav}/>
         <span className="right">
           <TargetList
             links={targetList}

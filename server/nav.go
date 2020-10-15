@@ -2,66 +2,122 @@ package main
 
 import (
 	"strings"
+	p "path/filepath"
+	"os"
 )
 
 type Nav struct {
-	Items    []*Link `json:"items"`
-	Siblings []*Link `json:"siblings"`
-}
-
-type Link struct {
-	Name string `json:"name"`
-	Href string `json:"href"`
-	Active bool `json:"active"`
+	// Path is necessary here to give this object some sort of a life cycle.
+	// React’s renderings are much faster than the server-side response.
+	// Therefore, it has to know with what object it is dealing with.
+	Path     string   `json:"path"`
+	Switcher string   `json:"switcher"`
+	Siblings []*File  `json:"siblings"`
+	Links    []string `json:"links"`
 }
 
 func getNav(path string) (*Nav, error) {
-	sibs := []*Link{}
+	siblings := []*File{}
 	
 	if strings.Count(path, "/") >= 4 {
-		siblings, err := getSiblings(path)
+		s, err := getSiblings(path)
 		if err != nil {
 			return nil, err
 		}
-		for _, f := range siblings {
-			sibs = append(sibs, &Link{
-				Name: f.Name,
-				Href: f.Path,
-				Active: f.Path == path,
-			})
-		}
-		println("yes")
+		siblings = s
 	}
 
 	return &Nav{
-		Siblings: sibs,
-		Items: getCrumbs(path, getSwitchPath(path)),
+		Path:     path,
+		Siblings: siblings,
+		Switcher: switchPath(path),
+		Links:    siteConfig.Links,
 	}, nil
 }
 
-func getCrumbs(path, switchPath string) []*Link{
-	items := []*Link{
-		&Link{
-			Href: "/",
-			Name: "org",
-		},
+func getSiblings(path string) ([]*File, error) {
+	files, _, err := getFiles(p.Dir(path))
+	if err != nil {
+		return nil, err
 	}
-	if path == "/" {
-		return items
-	}
-	href := ""
-	for _, name := range strings.Split(path[1:], "/") {
-		href += "/" + name
-		ihref := href
-		if name == "public" || name == "private" {
-			ihref = switchPath
+
+	files = dirsOnly(files)
+
+	c := 0
+	for i, f := range files {
+		if f.Path == path {
+			c = i
+			break
 		}
-		items = append(items, &Link{
-			Href: ihref,
-			Name: name,
-		})
 	}
-	return items
+
+	length := len(files)
+
+	start := 0
+	end := length
+
+	d := 2
+
+	if c+1+d < length {
+		end = c + 1 + d
+	}
+	if c-d > 0 {
+		start = c - d
+	}
+
+	return files[start:end], nil
+}
+
+// Switch path is the closest corresponding public or private path to a directory.
+//    /public/graph/20/20-10/10/subdir
+// -> /private/graph/20/20-10
+func switchPath(path string) string {
+	public := false
+	if l := len("/public"); len(path) > l {
+		public = path[:l] == "/public"
+	}
+
+	var find, replace string
+
+	if public {
+		find = "public"
+		replace = "private"
+	} else {
+		find = "private"
+		replace = "public"
+	}
+
+	newPath := strings.Replace(path, find, replace, -1)
+
+	existent := findExistent(newPath)
+
+	if existent == "/private" || existent == "/public" {
+		return ""
+	}
+	return existent
+}
+
+// Recursive function going upwards the tree until it finds a existent
+// directory.
+func findExistent(path string) string {
+	if path == "/" || path == "." {
+		return path
+	}
+	_, err := os.Stat(ROOT + path)
+	if err == nil {
+		return path
+	}
+	return findExistent(p.Dir(path))
+}
+
+func dirsOnly(files []*File) []*File {
+	nu := []*File{}
+	for _, f := range files {
+		if f.Type == "dir" {
+			nu = append(nu, f)
+		}
+	}
+	return nu
 }
 
 

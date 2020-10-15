@@ -11,12 +11,10 @@ import (
 )
 
 type DirView struct {
+	Nav   *Nav     `json:"nav"`
 	Path   string  `json:"path"`  
 	Files  []*File `json:"files"`
 	Sorted bool    `json:"sorted"`
-
-	Nav   *Nav     `json:"nav"`
-	Links []string `json:"links"`
 }
 
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
@@ -52,13 +50,11 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	v := &DirView{
+		Nav:   nav,
 		Path:   path,
 
 		Files:  files,
 		Sorted: sorted,
-
-		Nav:   nav,
-		Links: siteConfig.Links,
 	}
 
 	err = json.NewEncoder(w).Encode(v)
@@ -68,86 +64,6 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	return nil
-}
-
-func getSwitchPath(path string) string {
-	public := false
-	if l := len("/public"); len(path) > l {
-		public = path[:l] == "/public"
-	}
-
-	var find, replace string
-
-	if public {
-		find = "public"
-		replace = "private"
-	} else {
-		find = "private"
-		replace = "public"
-	}
-
-	newPath := strings.Replace(path, find, replace, -1)
-
-	existent := findExistent(newPath)
-
-	if existent == "/private" || existent == "/public" {
-		return ""
-	}
-	return existent
-}
-
-func findExistent(path string) string {
-	if path == "/" || path == "." {
-		return path
-	}
-	_, err := os.Stat(ROOT + path)
-	if err == nil {
-		return path
-	}
-	return findExistent(p.Dir(path))
-}
-
-func dirsOnly(files []*File) []*File {
-	nu := []*File{}
-	for _, f := range files {
-		if f.Type == "dir" {
-			nu = append(nu, f)
-		}
-	}
-	return nu
-}
-
-func getSiblings(path string) ([]*File, error) {
-	files, _, err := getFiles(p.Dir(path))
-	if err != nil {
-		return nil, err
-	}
-
-	files = dirsOnly(files)
-
-	c := 0
-	for i, f := range files {
-		if f.Path == path {
-			c = i
-			break
-		}
-	}
-
-	length := len(files)
-
-	start := 0
-	end := length
-
-	d := 2
-
-	if c+1+d < length {
-		end = c + 1 + d
-	}
-	if c-d > 0 {
-		start = c - d
-	}
-
-	return files[start:end], nil
 }
 
 func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
