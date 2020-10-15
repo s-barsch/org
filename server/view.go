@@ -15,12 +15,8 @@ type DirView struct {
 	Files  []*File `json:"files"`
 	Sorted bool    `json:"sorted"`
 
-	/*
-	Siblings []*File  `json:"siblings"`
-	Switch   string   `json:"switch"`
-
-	*/
-	Links    []string `json:"links"`
+	Nav   *Nav     `json:"nav"`
+	Links []string `json:"links"`
 }
 
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
@@ -32,6 +28,10 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		Code: 500,
 	}
 
+	if strings.Contains(path, ".") {
+		path = p.Dir(path)
+	}
+
 	_, err := os.Stat(ROOT + path)
 	if err != nil {
 		e.Err = fmt.Errorf("Not found %v", path)
@@ -39,33 +39,26 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	/*
-	siblings, err := getSiblings(path)
-	if err != nil {
-		e.Err = err
-		return e
-	}
-	*/
-
 	files, sorted, err := getFiles(path)
 	if err != nil {
 		e.Err = err
 		return e
 	}
 
-	//for _, f := range files { fmt.Printf("%d:\n\t%v\n", f.Num, f.Name) }
+	nav, err := getNav(path)
+	if err != nil {
+		e.Err = err
+		return e
+	}
 
 	v := &DirView{
-		/*
-		Switch:   getSwitchPath(path),
-		Siblings: siblings,
-		*/
-
 		Path:   path,
+
 		Files:  files,
 		Sorted: sorted,
 
-		Links:    siteConfig.Links,
+		Nav:   nav,
+		Links: siteConfig.Links,
 	}
 
 	err = json.NewEncoder(w).Encode(v)
@@ -114,11 +107,23 @@ func findExistent(path string) string {
 	return findExistent(p.Dir(path))
 }
 
+func dirsOnly(files []*File) []*File {
+	nu := []*File{}
+	for _, f := range files {
+		if f.Type == "dir" {
+			nu = append(nu, f)
+		}
+	}
+	return nu
+}
+
 func getSiblings(path string) ([]*File, error) {
 	files, _, err := getFiles(p.Dir(path))
 	if err != nil {
 		return nil, err
 	}
+
+	files = dirsOnly(files)
 
 	c := 0
 	for i, f := range files {

@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
-import { basename } from 'path';
+import { basename, dirname } from 'path';
 import CrumbNav from './crumbs';
 import { Del } from '../meta';
-import * as p from '../../funcs/paths';
+import { extendedBase, section } from '../../funcs/paths';
 import { TargetsContext } from '../../targets';
 
 const DirName = (path) => {
@@ -16,13 +16,16 @@ const DirName = (path) => {
   return name
 }
 
+/*
 const PageTitle = path => {
   if (path === "/") {
     return "ORG"
   }
   return DirName(path) + " - ORG";
 }
+*/
 
+/*
 const makeSiblingsList = files => {
   if (!files) {
     return [];
@@ -35,8 +38,9 @@ const makeSiblingsList = files => {
   }
   return nu;
 }
+*/
 
-const Top = ({view}) => {
+const Top = ({pathname, view}) => {
   const { targetList, activeTarget, removeTarget, setActiveTarget } = useContext(TargetsContext);
 
   /* theme */
@@ -54,42 +58,36 @@ const Top = ({view}) => {
     localStorage.setItem("dark-theme", !darkTheme);
   }
 
-  const [links, setLinks] = useState([]);
-  const [siblings, setSiblings] = useState([]);
-
-  useEffect(() => {
-    setLinks(view.links);
-    setSiblings(view.siblings);
-  }, [view])
-
    const TargetButton = ({clickFn}) => {
     return <button onClick={clickFn}><TargetIcon /></button>
   }
 
   const setThisActive = () => {
-    setActiveTarget(view.file.path);
+    setActiveTarget(view.path);
   }
 
   /* path */
 
-  const [path, setPath] = useState(view.file.path);
+  /*
+  const [path, setPath] = useState(view.path);
 
   useEffect(() => {
     setPath(view.file.path);
   }, [view]);
 
   document.title = PageTitle(path);
+  */
 
   const history = useHistory();
 
   async function renameFile(newPath) {
     try {
-      const resp = await fetch("/api/move" + path, {
+      const resp = await fetch("/api/move" + view.path, {
         method: "POST",
         body: newPath
       });
       if (!resp.ok) {
-        alert( "Rename failed: " + path + "\nreason: " +resp.statusText);
+        alert( "Rename failed: " + view.path + "\nreason: " +resp.statusText);
         return;
       }
       history.push(newPath)
@@ -115,7 +113,7 @@ const Top = ({view}) => {
     <>
       <nav id="links">
         <span className="links__top">
-          <LinkList links={links} />
+          <LinkList links={view.links} />
         </span>
         <span className="right">
           <TargetButton clickFn={setThisActive} />
@@ -127,13 +125,14 @@ const Top = ({view}) => {
           */}
       <nav id="bar">
         <CrumbNav
-          siblings={makeSiblingsList(siblings)}
-          switchLink={view.switch}
-          path={path} />
+          path={pathname}
+          items={view.nav.items}
+          siblings={view.nav.siblings}
+        />
         <span className="right">
           <TargetList
             links={targetList}
-            page={path}
+            page={view.path}
             activeTarget={activeTarget}
             setActiveFn={setActiveTarget}
             removeFn={removeTarget} />
@@ -141,8 +140,8 @@ const Top = ({view}) => {
       </nav>
 
       <h1 className="name">
-        <Link className="parent" to={view.parent}>^</Link>
-        <RenameInput path={path} renameFile={renameFile} />
+        <Link className="parent" to={dirname(view.path)}>^</Link>
+        <RenameInput path={pathname} renameFile={renameFile} />
       </h1>
     </>
   )
@@ -152,7 +151,7 @@ const RenameInput = ({path, renameFile}) => {
   const [name, setName] = useState(DirName(path));
 
   useEffect(() => {
-    setName(DirName(path));
+    setName(basename(path));
   }, [path]);
 
   function handleTyping(evt) {
@@ -164,7 +163,7 @@ const RenameInput = ({path, renameFile}) => {
     if (old === name) {
       return;
     }
-    const dir = p.Dir(path);
+    const dir = dirname(path);
     renameFile(dir + (dir === "/" ? "" : "/") + name);
   }
 
@@ -191,7 +190,7 @@ const TargetList = ({activeTarget, page, links, removeFn, setActiveFn}) => {
   return (
     <span id="targets">
     { links.map((l, i) => {
-        let className = p.Section(l)
+        let className = section(l)
         if (activeTarget === l) {
           className += " active"
         }
@@ -199,7 +198,7 @@ const TargetList = ({activeTarget, page, links, removeFn, setActiveFn}) => {
           <Link key={i} to={l}
           className={className}
           onClick={onClick} onContextMenu={onRightClick}>
-            {p.ExtendedBase(l)}
+            {extendedBase(l)}
           </Link>
         )
       })
@@ -214,7 +213,7 @@ const LinkList = ({links, active}) => {
   }
   return (
     links.map((l, i) => (
-      <Link key={i} to={l} className={active === l ? "active" : ""}>{p.Base(l)}</Link>
+      <Link key={i} to={l} className={active === l ? "active" : ""}>{basename(l)}</Link>
     ))
   )
 }

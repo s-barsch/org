@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback, useContext } from 'react';
 import './App.css';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
 import FileView from './components/dir/view';
-//import { FileSwitch } from './components/dir/files';
-//import Top from './components/top/top';
+import Top from './components/top/top';
 import TargetsProvider, { TargetsContext } from "./targets";
 import { section, isText } from './funcs/paths';
 
@@ -22,6 +21,8 @@ export default App;
 function mockView() {
   return {
     path:   "",
+    nav:    {},
+    links:  [],
     files:  [],
     sorted: false
   }
@@ -55,11 +56,11 @@ function View() {
   }
 
   useEffect(() => {
-    if (isText(path)) {
+    if (path === view.path) {
       return;
     }
 
-    if (path === view.path) {
+    if (view.path !== "" && isText(path)) {
       return;
     }
 
@@ -70,6 +71,7 @@ function View() {
 
     loadView(path, history);
   }, [path, lastPath, history, view]);
+
 
   const listenForWrite = useCallback(evt => {
     if (path === activeTarget) {
@@ -90,7 +92,10 @@ function View() {
   }
 
   return (
-    <FileView viewPath={path} view={view} setView={setView} />
+    <>
+      <Top pathname={path} view={view} />
+      <FileView pathname={path} view={view} setView={setView} />
+    </>
   )
 
   /*

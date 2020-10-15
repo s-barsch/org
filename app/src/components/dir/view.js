@@ -9,38 +9,38 @@ import { basename, extname, dirname, join } from 'path';
 import { newTimestamp, isText } from '../../funcs/paths';
 import { separate, orgSort } from '../../funcs/sort';
 
-const mockFiles = () => {
-  const name = newTimestamp();
-  let arr = [];
-  const file = {
-    path: "/sample/",
-    name: "",
+const newMockFile = (i) => {
+  const name = newTimestamp() + "+" + i + ".txt";
+  return {
+    id:   i,
+    path: "/sample/" + name,
+    name: name,
     type: "text",
     body: ""
   }
+}
+
+const mockFiles = () => {
+  let arr = [];
   for (let i = 0; i <= 2; i++) {
-    let f = Object.assign({}, file);
-    f.id = i;
-    f.name = name + "+" + i + ".txt";
-    f.path = f.path + f.name;
-    arr.push(f);
+    arr.push(newMockFile(i));
   }
   return arr
 }
 
 
-function FileView({viewPath, view, setView}) {
+function FileView({pathname, view, setView}) {
   const { setActiveTarget, activeTarget } = useContext(TargetsContext);
 
-  const [path, setPath] = useState(viewPath);
+  const [path, setPath] = useState(pathname);
   const [files, setFiles] = useState(mockFiles());
   const [sorted, setSorted] = useState(false);
 
   useEffect(() => {
-    setPath(viewPath);
+    setPath(pathname);
     setSorted(view.sorted);
     setFiles(view.files);
-  }, [viewPath, view])
+  }, [pathname, view])
 
   const history = useHistory();
 
@@ -71,11 +71,11 @@ function FileView({viewPath, view, setView}) {
 
     setFiles(newFiles);
     setSorted(isSorted);
-    setView({
-      path:   viewPath,
-      files:  newFiles,
-      sorted: isSorted,
-    });
+
+    view.files = newFiles;
+    view.sorted = isSorted;
+    setView(view);
+    
 
     if (isSorted) {
       request("/api/sort" + path, {
@@ -223,8 +223,17 @@ function FileView({viewPath, view, setView}) {
     moveToTarget: moveToTarget
   }
 
-  if (isText(viewPath)) {
-    return <Text file={findText(files, basename(viewPath))} modFuncs={modFuncs} single={true} />
+  if (isText(pathname)) {
+    if (files.length === 0) {
+      return "";
+    }
+
+    const text = findText(files, basename(pathname));
+    if (!text) {
+      return "Couldn’t find text."
+    }
+
+    return <Text file={text} modFuncs={modFuncs} single={true} />
   }
 
   return (
@@ -409,5 +418,4 @@ const findText = (files, name) => {
       return f;
     }
   }
-  alert("Couldn’t find text: " + name);
 }
