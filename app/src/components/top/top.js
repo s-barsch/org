@@ -8,14 +8,7 @@ import { Del } from '../meta';
 import { extendedBase, section } from '../../funcs/paths';
 import { TargetsContext } from '../../targets';
 
-/*
-const PageTitle = path => {
-  if (path === "/") {
-    return "ORG"
-  }
-  return DirName(path) + " - ORG";
-}
-*/
+
 
 const Top = ({pathname, view}) => {
   const { targetList, activeTarget, removeTarget, setActiveTarget } = useContext(TargetsContext);
@@ -43,17 +36,7 @@ const Top = ({pathname, view}) => {
     setActiveTarget(view.path);
   }
 
-  /* path */
 
-  /*
-  const [path, setPath] = useState(view.path);
-
-  useEffect(() => {
-    setPath(view.file.path);
-  }, [view]);
-
-  document.title = PageTitle(path);
-  */
 
   const history = useHistory();
 
@@ -74,7 +57,7 @@ const Top = ({pathname, view}) => {
     <>
       <nav id="links">
         <span className="links__top">
-          <LinkList links={view.links} />
+          <LinkList links={view.nav.links} />
         </span>
         <span className="right">
           <TargetButton clickFn={setThisActive} />

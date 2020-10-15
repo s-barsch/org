@@ -4,6 +4,7 @@ import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-d
 import FileView from './components/dir/view';
 import Top from './components/top/top';
 import TargetsProvider, { TargetsContext } from "./targets";
+import { basename } from 'path';
 import { section, isText } from './funcs/paths';
 
 function App() {
@@ -56,6 +57,8 @@ function View() {
   }
 
   useEffect(() => {
+    document.title = PageTitle(path);
+
     if (path === view.path) {
       return;
     }
@@ -146,4 +149,11 @@ async function todayRedirect(history) {
   const resp = await fetch("/api/today");
   const todayPath = await resp.text();
   history.push(todayPath)
+}
+
+const PageTitle = path => {
+  if (path === "/") {
+    return "ORG"
+  }
+  return basename(path) + " - ORG";
 }

@@ -43,6 +43,10 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
+	if files == nil {
+		files = []*File{}
+	}
+
 	nav, err := getNav(path)
 	if err != nil {
 		e.Err = err
