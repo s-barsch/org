@@ -14,24 +14,32 @@ func parseSort(path string) ([]*File, error) {
 		return nil, err
 	}
 
-	return makeFiles(path, list), nil
+	return makeFiles(path, list)
 }
 
-func makeFiles(path string, list []string) []*File {
+func makeFiles(path string, list []string) ([]*File, error) {
 	files := []*File{}
-	for _, name := range list {
+	for i, name := range list {
 		filepath := p.Join(path, name)
 		fi, err := os.Stat(ROOT + filepath)
 		if err != nil {
 			continue
 		}
-		files = append(files, &File{
+		f := &File{
+			Num:  i,
 			Name: name,
 			Path: filepath,
 			Type: getFileType(filepath, fi.IsDir()),
-		})
+		}
+		if f.Type == "text" {
+			err = f.Read()
+			if err != nil {
+				return nil, err
+			}
+		}
+		files = append(files, f)
 	}
-	return files
+	return files, nil
 }
 
 func readSort(path string) ([]string, error) {
@@ -81,6 +89,18 @@ func subtract(base, other []*File) []*File {
 	return base
 }
 
+func writeSortFile(path string, list []string) error {
+
+	buf := bytes.Buffer{}
+
+	for _, name := range list {
+		buf.WriteString(name)
+		buf.WriteString("\n")
+	}
+
+	return ioutil.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
+}
+/*
 func writeSortFile(path string, files []*File) error {
 
 	buf := bytes.Buffer{}
@@ -92,6 +112,7 @@ func writeSortFile(path string, files []*File) error {
 
 	return ioutil.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
 }
+*/
 
 // makes sure file keeps its sorting position
 func renameSortEntry(oldPath, newPath string) error {
@@ -105,20 +126,20 @@ func renameSortEntry(oldPath, newPath string) error {
 		return nil
 	}
 
-	sorted, err := parseSort(oldDir)
+	list, err := readSort(p.Join(oldDir, ".sort"))
 	if err != nil {
 		return err
 	}
 
-	f := NewFile(newPath)
+	oldName := p.Base(oldPath)
 
-	for i, v := range sorted {
-		if v.Path == oldPath {
-			sorted[i] = f
+	for i, name := range list {
+		if name == oldName {
+			list[i] = p.Base(newPath)
 		}
 	}
 	
-	return writeSortFile(oldDir, sorted)
+	return writeSortFile(oldDir, list)
 }
 
 

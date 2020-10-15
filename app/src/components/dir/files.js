@@ -14,9 +14,11 @@ const FileEntry = ({file, modFuncs}) => {
 }
 
 const FileSwitch = ({file, modFuncs, single}) => {
+  /*
   if (file.name === ".sort") {
     return <div className="no-sort"><Info file={file} modFuncs={modFuncs} /></div>
   }
+  */
   switch (file.type) {
     case "text":
       return <Text file={file} modFuncs={modFuncs} single={single}/>
@@ -56,7 +58,7 @@ const FileList = ({files, saveSort, modFuncs}) => {
       handle=".info__drag" 
       onEnd={callOnEnd}
       animation={200} list={state} setList={setState}>
-      { state.map((file) => (
+      { state.map((file, i) => (
         <FileEntry key={file.id} file={file} modFuncs={modFuncs}/>
       ))}
       </ReactSortable>

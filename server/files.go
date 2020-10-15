@@ -10,9 +10,11 @@ import (
 )
 
 type File struct {
+	Num  int    `json:"id"`
 	Path string `json:"path"`
 	Name string `json:"name"`
 	Type string `json:"type"`
+	Body string `json:"body"`
 }
 
 func NewFile(path string) *File {
@@ -23,31 +25,60 @@ func NewFile(path string) *File {
 	}
 }
 
-func getFiles(path string) ([]*File, error) {
+func (f *File) Read() error {
+	b, err := ioutil.ReadFile(ROOT + f.Path)
+	if err != nil {
+		return err
+	}
+	f.Body = string(removeNewLine(b))
+	return nil
+}
+
+func getFiles(path string) ([]*File, bool, error) {
 	files, err := readFiles(path)
+	if err != nil {
+		return nil, false, err
+	}
+
+	for _, f := range files {
+		if f.Type == "text" {
+			err = f.Read()
+			if err != nil {
+				return nil, false, err
+			}
+		}
+	}
+	if !hasSort(path) {
+		return antoSort(files), false, err
+	}
+
+	sorted, err := parseSort(path)
+	if err != nil {
+		return nil, false, err
+	}
+
+	fresh := merge(sorted, files)
+
+	return renumerate(fresh), true, nil
+	/*
+	err = writeSortFile(path, freshSort)
 	if err != nil {
 		return nil, err
 	}
+	*/
 
-	if hasSort(path) && true {
-		sorted, err := parseSort(path)
-		if err != nil {
-			return nil, err
-		}
+	/*
 
-		freshSort := separate(merge(sorted, files))
-
-		err = writeSortFile(path, freshSort)
-		if err != nil {
-			return nil, err
-		}
-
-		return freshSort, nil
-	}
-
-	return preSort(files), nil
+	*/
 }
 
+
+func renumerate(files []*File) []*File {
+	for i, f := range files {
+		f.Num = i
+	}
+	return files
+}
 
 
 func readFiles(path string) ([]*File, error) {
@@ -56,9 +87,10 @@ func readFiles(path string) ([]*File, error) {
 		return nil, err
 	}
 	files := []*File{}
-	for _, fi := range l {
+	for i, fi := range l {
 		fpath := p.Join(path, fi.Name())
 		files = append(files, &File{
+			Num:  i,
 			Name: fi.Name(),
 			Path: fpath,
 			Type: getFileType(fpath, fi.IsDir()),

@@ -1,4 +1,4 @@
-import { ExtendedBase } from './paths';
+import { extendedBase } from './paths';
 
 const removeTarget = path => {
   if (getActive() === path) {
@@ -71,8 +71,8 @@ const getList = () => {
   const list = JSON.parse(str);
 
   return list.sort(function(a, b) {
-    const abase = ExtendedBase(a);
-    const bbase = ExtendedBase(b);
+    const abase = extendedBase(a);
+    const bbase = extendedBase(b);
     if (abase < bbase) {
       return -1;
     }

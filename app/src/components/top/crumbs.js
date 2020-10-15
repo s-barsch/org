@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import * as p from '../../funcs/paths';
 import { TargetsContext } from '../../targets';
+import { basename } from 'path';
+import { isText } from '../../funcs/paths';
 
 const Spacer = () => {
   return (
@@ -15,26 +16,34 @@ const Root = () => {
   )
 }
 
-const CrumbNav = ({path, neighbors, switchLink}) => {
-  const deepDir = path.split("/").length > 4 && path.indexOf(".") < 0;
+const CrumbNav = ({path, nav}) => {
+  const sibs = nav.siblings && nav.siblings.length > 0;
+  const text = isText(path);
   return (
     <nav className="crumbs">
       <Root />
-      <CrumbList path={path} switchLink={switchLink} deepDir={deepDir} />
-      { deepDir && <Neighbors links={neighbors} active={path} /> }
+      <CrumbList path={path} switcher={nav.switcher} trim={sibs || text} />
+    { sibs &&
+      <Siblings path={path} files={nav.siblings} siblingPath={nav.path} />
+    }
+    { text &&
+      <>
+        <Spacer />
+        <CrumbLink href={path} name={basename(path)} />
+      </>
+    }
     </nav>
   )
 }
 
-const CrumbList = ({path, deepDir, switchLink}) => {
+const CrumbList = ({path, switcher, trim}) => {
   if (path === "/") {
     return null
   }
 
   const items = path.substr(1).split("/");
 
-  // last element is replaced by neighbor nav
-  if (deepDir) {
+  if (trim) {
     items.pop();
   }
 
@@ -45,8 +54,8 @@ const CrumbList = ({path, deepDir, switchLink}) => {
     let cHref = href;
     let className = "";
 
-    if (!switchLink !== "" && (name === "private" || name === "public")) {
-      cHref = switchLink
+    if (!switcher !== "" && (name === "private" || name === "public")) {
+      cHref = switcher
       className = name
     }
 
@@ -76,13 +85,16 @@ const CrumbLink = ({href, name, className, isActive}) => {
 }
 
 
-const Neighbors = ({links, active}) => {
+const Siblings = ({path, files, siblingPath}) => {
+  if (path !== siblingPath) {
+    return null;
+  }
   return (
     <>
       <Spacer />
-      <nav className="neighbors">
-      { links.map((l, i) => (
-        <CrumbLink key={i} href={l} name={p.Base(l)} isActive={active === l} />
+      <nav className="siblings">
+      { files.map((f, i) => (
+        <CrumbLink key={i} href={f.path} name={f.name} isActive={path === f.path} />
       ))}
       </nav>
     </>
