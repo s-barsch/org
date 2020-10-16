@@ -115,22 +115,6 @@ func viewLinks(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func todayRedirect(w http.ResponseWriter, r *http.Request) *Err {
-	e := &Err{
-		Func: "todayRedirect",
-		Code: 500,
-	}
-
-	path, err := getCurrent()
-	if err != nil {
-		e.Err = err
-		return e
-	}
-
-	http.Redirect(w, r, path, 307)
-	return nil
-}
-
 func getToday(w http.ResponseWriter, r *http.Request) *Err {
 	e := &Err{
 		Func: "getToday",

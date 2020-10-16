@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import './App.css';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
 import FileView from './components/dir/view';
 import Nav from './components/nav/nav';
 import TargetsProvider, { TargetsContext } from "./targets";
@@ -31,6 +31,7 @@ function mockView() {
 function View() {
   const { activeTarget } = useContext(TargetsContext);
   const path = useLocation().pathname;
+  const history = useHistory();
 
   const [view, setView] = useState(mockView(path));
   const [lastPath, setLastPath] = useState("");
@@ -65,8 +66,13 @@ function View() {
       return;
     }
 
+    if (isToday(path)) {
+      todayRedirect(history);
+      return;
+    }
+
     loadView(path);
-  }, [path, view, lastPath]);
+  }, [path, view, lastPath, history]);
 
 
   const listenForWrite = useCallback(evt => {
@@ -108,4 +114,14 @@ const pageTitle = path => {
     return "ORG"
   }
   return basename(path) + " - ORG";
+}
+
+function isToday(path) {
+  return path === "/today";
+}
+
+async function todayRedirect(history) {
+  const resp = await fetch("/api/today");
+  const todayPath = await resp.text();
+  history.push(todayPath)
 }

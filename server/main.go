@@ -37,16 +37,7 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/write").HandlerFunc(h(writeSwitch))
 	r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
 
-
-	r.HandleFunc("/today", h(todayRedirect))
 	r.PathPrefix("/").HandlerFunc(serveBuild)
-	/*
-	api := r.PathPrefix("/api").Subrouter()
-	api.Methods("GET").HandlerFunc(h(viewFile))
-	api.Methods("POST").HandlerFunc(h(writeSwitch))
-	//api.Methods("DELETE").HandlerFunc(h(deleteFile))
-	*/
-
 
 	return r
 }
