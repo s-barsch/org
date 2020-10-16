@@ -36,8 +36,6 @@ const Top = ({pathname, view}) => {
     setActiveTarget(view.path);
   }
 
-
-
   const history = useHistory();
 
   async function deleteFile(path) {

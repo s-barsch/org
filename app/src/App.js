@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import './App.css';
-import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import FileView from './components/dir/view';
-import Top from './components/top/top';
+import Nav from './components/nav/nav';
 import TargetsProvider, { TargetsContext } from "./targets";
 import { basename } from 'path';
 import { section, isText } from './funcs/paths';
@@ -23,7 +23,6 @@ function mockView() {
   return {
     path:   "",
     nav:    {},
-    links:  [],
     files:  [],
     sorted: false
   }
@@ -31,14 +30,13 @@ function mockView() {
 
 function View() {
   const { activeTarget } = useContext(TargetsContext);
-  const history = useHistory();
   const path = useLocation().pathname;
 
   const [view, setView] = useState(mockView(path));
   const [lastPath, setLastPath] = useState("");
   const [notFound, setNotFound] = useState(false);
 
-  async function loadView(path, history) {
+  async function loadView(path) {
     blinkFavicon(path);
     try {
       console.log("LOAD VIEW");
@@ -57,30 +55,25 @@ function View() {
   }
 
   useEffect(() => {
-    document.title = PageTitle(path);
+    document.title = pageTitle(path);
 
     if (path === view.path) {
       return;
     }
 
-    if (view.path !== "" && isText(path)) {
+    if (isText(path) && view.path !== "") {
       return;
     }
 
-    if (isToday(path)) {
-      todayRedirect(history);
-      return;
-    }
-
-    loadView(path, history);
-  }, [path, lastPath, history, view]);
+    loadView(path);
+  }, [path, view, lastPath]);
 
 
   const listenForWrite = useCallback(evt => {
     if (path === activeTarget) {
-      loadView(path, history);
+      loadView(path);
     }
-  }, [activeTarget, path, history]);
+  }, [activeTarget, path]);
 
   useEffect(() => {
     window.addEventListener('storage', listenForWrite);
@@ -96,42 +89,11 @@ function View() {
 
   return (
     <>
-      <Top pathname={path} view={view} />
+      <Nav pathname={path} view={view} />
       <FileView pathname={path} view={view} setView={setView} />
     </>
   )
-
-  /*
-  return (
-    <>
-      <Top view={view} />
-      <Main view={view} />
-    </>
-  )
-  */
 }
-
-/*
-function Main({view}) {
-  switch (view.file.type) {
-    case "text":
-      return <Single view={view} />
-    case "dir":
-      return <DirView view={view} />
-    default:
-      return null
-  }
-}
-
-function Single({view}) {
-  return (
-    <>
-      <FileSwitch file={view.file} single={true} />
-    </>
-  )
-}
-
-*/
 
 const blinkFavicon = (path) => {
     let favicon = document.querySelector('link[rel="icon"]');
@@ -141,17 +103,7 @@ const blinkFavicon = (path) => {
     }, 100);
 }
 
-function isToday(path) {
-  return path === "/today";
-}
-
-async function todayRedirect(history) {
-  const resp = await fetch("/api/today");
-  const todayPath = await resp.text();
-  history.push(todayPath)
-}
-
-const PageTitle = path => {
+const pageTitle = path => {
   if (path === "/") {
     return "ORG"
   }

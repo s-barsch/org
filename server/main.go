@@ -28,7 +28,7 @@ func routes() *mux.Router {
 
 	r.PathPrefix("/file/").HandlerFunc(h(serveStatic))
 
-	r.HandleFunc("/api/today", h(viewToday))
+	r.HandleFunc("/api/today", h(getToday))
 
 	r.PathPrefix("/api/sort").HandlerFunc(h(writeSort))
 	r.PathPrefix("/api/copy").HandlerFunc(h(copyFile))
@@ -38,6 +38,7 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
 
 
+	r.HandleFunc("/today", h(todayRedirect))
 	r.PathPrefix("/").HandlerFunc(serveBuild)
 	/*
 	api := r.PathPrefix("/api").Subrouter()
