@@ -54,7 +54,7 @@ const CrumbList = ({path, switcher, trim}) => {
     let cHref = href;
     let className = "";
 
-    if (!switcher !== "" && (name === "private" || name === "public")) {
+    if (switcher && (name === "private" || name === "public")) {
       cHref = switcher
       className = name
     }

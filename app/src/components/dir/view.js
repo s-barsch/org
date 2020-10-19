@@ -120,7 +120,8 @@ function FileView({pathname, view, setView}) {
   const renameView = (newName) => {
     let newPath = "";
     if (isText(pathname)) {
-      const t = findText(files, basename(pathname));
+      const name = basename(path)
+      const t = files.find(f => f.name === name);
       if (!t) {
         alert("rename: Couldn’t find text.")
         return
@@ -265,7 +266,9 @@ function FileView({pathname, view, setView}) {
       return "";
     }
 
-    const text = findText(files, basename(pathname));
+    const name = basename(pathname);
+    const text = files.find(f => f.name === name);
+
     if (!text) {
       return "Couldn’t find text."
     }
@@ -454,14 +457,6 @@ const numerate = files => {
     }
     return false
   }
-
-const findText = (files, name) => {
-  for (const f of files) {
-    if (f.name === name) {
-      return f;
-    }
-  }
-}
 
 const RenameInput = ({path, renameView}) => {
   const [name, setName] = useState(orgBase(path));
