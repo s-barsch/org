@@ -1,6 +1,6 @@
 import { extendedBase } from './paths';
 
-const removeTarget = path => {
+export function removeTarget(path: string) {
   if (getActive() === path) {
     unsetActive();
   }
@@ -13,7 +13,7 @@ const removeTarget = path => {
   setList(l);
 }
 
-const getActive = () => {
+export function getActive(): string {
   const str = localStorage.getItem("target");
   if (str === null) {
     return ""
@@ -21,7 +21,7 @@ const getActive = () => {
   return str
 }
 
-const nextActive = path => {
+export function nextActive(): string {
   const list = getList();
   const active = getActive();
   let i = 0;
@@ -39,16 +39,16 @@ const nextActive = path => {
   return ""
 }
 
-const unsetActive = () => {
+export function unsetActive() {
   localStorage.setItem("target", nextActive());
 }
 
-const setActive = path => {
+export function setActive(path: string) {
   addTarget(path);
   localStorage.setItem("target", path);
 }
 
-const addTarget = path => {
+function addTarget(path: string) {
   let l = getList();
   for (const target of l) {
     if (target === path) {
@@ -59,28 +59,28 @@ const addTarget = path => {
   setList(l);
 }
 
-const setList = list => {
+function setList(list: string[]) {
   localStorage.setItem("targetList", JSON.stringify(list))
 }
 
-const getList = () => {
+export function getList(): string[] {
   const str = localStorage.getItem("targetList");
   if (str === null) {
     return []
   }
   const list = JSON.parse(str);
 
-  return list.sort(function(a, b) {
+  return list.sort(sortFn)
+}
+
+function sortFn(a: string, b: string): number {
     const abase = extendedBase(a);
     const bbase = extendedBase(b);
     if (abase < bbase) {
-      return -1;
+        return -1;
     }
     if (abase > bbase) {
-      return 1;
+        return 1;
     }
     return 0;
-  })
 }
-
-export { setActive, getActive, getList, unsetActive, removeTarget };
