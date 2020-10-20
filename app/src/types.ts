@@ -12,3 +12,18 @@ export type ModFuncs = {
 
 export type ActionFunc = (f: File) => void;
 
+type View = {
+    path: string;
+    nav: Nav;
+    files: File[];
+    sorted: boolean;
+}
+
+export default View;
+
+export type Nav = {
+    path: string;
+    switcher: string;
+    siblings: File[];
+    Links: string[];
+}
