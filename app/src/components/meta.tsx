@@ -130,7 +130,7 @@ type FileLinkProps = {
 function FileLink({file, isEdit, children}: FileLinkProps) {
     return (
         <>
-            isEdit ? children : <Link className="info__name" to={file.path}>{children}</Link>
+        { isEdit ? children : <Link className="info__name" to={file.path}>{children}</Link> }
         </>
     )
 }

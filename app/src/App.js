@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import './App.css';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
-import FileView from './components/dir/view';
+import FileView from './components/file/view';
 import Nav from './components/nav/nav';
 import TargetsProvider, { TargetsContext } from "./targets";
 import { basename } from 'path';

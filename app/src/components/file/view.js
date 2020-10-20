@@ -349,55 +349,6 @@ const subtract = (base, other) => {
   return base
 }
 
-/*
-*/
-
-  /*
-  async function loadFiles(path) {
-    try {
-      console.log("LOAD FILES");
-      let favicon = document.querySelector('link[rel="icon"]');
-      favicon.href = "/blue.svg";
-
-      const resp = await fetch("/api/list" + path);
-      const arr  = await resp.json();
-
-      setFiles(orgSort(arr));
-
-      setTimeout(() => {
-        favicon.href = "/" + p.section(path) + ".svg";
-      }, 10);
-    } catch(err) {
-      console.log("loadFiles error. path: " + path + "\nerr: " + err);
-    }
-  }
-  */
-  /*
-  const listenForWrite = useCallback(evt => {
-    loadFiles(path);
-  }, [path]);
-
-  useEffect(() => {
-    window.addEventListener('storage', listenForWrite);
-
-    return () => {
-      window.removeEventListener('storage', listenForWrite);
-    };
-  }, [listenForWrite]);
-  */
-
-
-/*
-const numerate = files => {
-  if (!files) {
-    return [];
-  }
-  for (let i = 0; i < files.length; i++) {
-    files[i].id = i
-  }
-  return files;
-}
-*/
   const removeFromArr = (files, name) => {
     for (let i = 0; i < files.length; i++) {
       if (files[i].name === name) {
