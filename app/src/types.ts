@@ -25,5 +25,5 @@ export type Nav = {
     path: string;
     switcher: string;
     siblings: File[];
-    Links: string[];
+    links: string[];
 }
