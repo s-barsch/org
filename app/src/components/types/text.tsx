@@ -7,10 +7,10 @@ import File from '../../funcs/file';
 type TextFieldProps = {
     file: File;
     modFuncs: ModFuncs;
-    single: boolean;
+    isSingle: boolean;
 }
 
-export default function TextField({file, modFuncs, single}: TextFieldProps) {
+export default function TextField({file, modFuncs, isSingle}: TextFieldProps) {
     const [body, setBody] = useState(file.body);
 
     useEffect(() => {
@@ -20,10 +20,10 @@ export default function TextField({file, modFuncs, single}: TextFieldProps) {
     const ref = useRef<HTMLTextAreaElement>(null!)
 
     useEffect(() => {
-        if (single && ref && ref.current) {
+        if (isSingle && ref && ref.current) {
             ref.current.focus({preventScroll:true});
         }
-    }, [single]);
+    }, [isSingle]);
 
     function handleTyping(e: React.FormEvent<HTMLTextAreaElement>) {
         setBody(e.currentTarget.value);
@@ -36,12 +36,12 @@ export default function TextField({file, modFuncs, single}: TextFieldProps) {
 
     return (
         <div className={"text" + (isNoSort(file.name) ? " no-sort" : "")}>
-        { !single &&
+        { !isSingle &&
             <Info file={file} modFuncs={modFuncs}/>
         }
         <TextareaAutosize value={body}
         ref={ref}
-        minRows={!single ? 1 : fullScreenRows()}
+        minRows={!isSingle ? 1 : fullScreenRows()}
         onChange={handleTyping}
         onBlur={submit} />
         </div>

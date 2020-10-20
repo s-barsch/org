@@ -14,6 +14,7 @@ function Image({file, modFuncs}: ImageProps) {
     const path = file.path + ".info"
 
     const info: File = {
+        id:   Date.now(),
         path: path,
         name: basename(path),
         type: "info",
@@ -24,7 +25,7 @@ function Image({file, modFuncs}: ImageProps) {
         <div>
         <img alt="" src={"/file" + file.path} />
         <Del file={file} deleteFile={modFuncs.deleteFile} />
-        <TextField file={info} modFuncs={modFuncs} single={false} />
+        <TextField file={info} modFuncs={modFuncs} isSingle={false} />
         </div>
     )
 }
