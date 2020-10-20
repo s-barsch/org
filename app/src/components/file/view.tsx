@@ -292,14 +292,14 @@ function FileView({pathname, view, setView}: FileViewProps) {
 
     if (isText(pathname)) {
         if (files.length === 0) {
-            return "";
+            return <>""</>;
         }
 
         const name = basename(pathname);
         const text = files.find(f => f.name === name);
 
         if (!text) {
-            return "Couldn’t find text."
+            return <>"Couldn’t find text."</>
         }
 
         return (
