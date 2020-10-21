@@ -69,7 +69,7 @@ function FileView({pathname, view, setView}: FileViewProps) {
             const resp = await fetch(path, options);
             if (!resp.ok) {
                 const text = await resp.text();
-                alert("fetch failed: " + path + "\nreason: " + text);
+                console.log("fetch failed: " + path + "\nreason: " + text);
                 return;
             }
             if (callback) {
@@ -459,7 +459,7 @@ function RenameInput({path, renameView}: RenameInputProps) {
         setName(e.currentTarget.value);
     }
 
-    function submit() {
+    function submit(e: React.FormEvent<HTMLInputElement>) {
         const old = orgBase(path);
         if (old === name) {
             return;

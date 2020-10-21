@@ -42,7 +42,7 @@ func routes() *mux.Router {
 	return r
 }
 
-const BUILD = "app/build"
+const BUILD = "build"
 
 func serveBuild(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {

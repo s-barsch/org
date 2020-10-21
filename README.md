@@ -1,3 +1,3 @@
-<img src="app/public/logo.svg" alt="org" width=350>
+<img src="public/logo.svg" alt="org" width=350>
 
 file organization app

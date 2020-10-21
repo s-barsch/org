@@ -29,7 +29,8 @@ export default function TextField({file, modFuncs, isSingle}: TextFieldProps) {
         setBody(e.currentTarget.value);
     }
 
-    const submit = () => {
+    function submit(e: React.FormEvent<HTMLTextAreaElement>) {
+        console.log("fired");
         file.body = body;
         modFuncs.writeFile(file);
     }

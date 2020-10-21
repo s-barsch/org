@@ -68,7 +68,7 @@ function FileList({files, saveSort, modFuncs}: FileListProps) {
                 animation={200} list={state} setList={setState}>
 
                     { state.map((file, i) => (
-                        <FileSwitch key={file.id} file={file} modFuncs={modFuncs} isSingle={true} />
+                        <FileSwitch key={file.id} file={file} modFuncs={modFuncs} isSingle={false} />
                     ))}
 
             </ReactSortable>

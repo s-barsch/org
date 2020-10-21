@@ -68,6 +68,10 @@ function Top({pathname, view}: TopProps) {
         id:   Date.now()
     }
 
+    if (!view.nav) {
+        return null
+    }
+
     return (
         <>
         <nav id="links">
