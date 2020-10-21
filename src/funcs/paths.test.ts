@@ -1,4 +1,21 @@
+import { dateToTimestamp, shortYear, leadingZero } from './paths';
 import { orgBase, extendedBase, section, isText } from './paths';
+
+it('shortYear results', () => {
+    expect(shortYear(2006)).toBe("06");
+    expect(shortYear(2020)).toBe("20");
+});
+
+it('leadingZero results', () => {
+    expect(leadingZero(100)).toBe("100");
+    expect(leadingZero(10)).toBe("10");
+    expect(leadingZero(1)).toBe("01");
+});
+
+it('dateToTimestamp results', () => {
+   expect(dateToTimestamp(new Date("2020-10-21T20:25:26+00:00"))).toBe("201021_222526") 
+});
+
 
 it('orgBase results', () => {
     expect(orgBase("/")).toBe("org");

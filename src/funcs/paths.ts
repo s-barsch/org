@@ -2,19 +2,29 @@ import { basename, extname, dirname } from 'path';
 
 /* date */
 
-function fill(str: string): string {
+export function newTimestamp(): string {
+    return dateToTimestamp(new Date());
+}
+
+export function dateToTimestamp(d: Date): string {
+    return [
+        shortYear(d.getFullYear()),
+        leadingZero(d.getMonth() + 1),
+        leadingZero(d.getDate()),
+        "_",
+        leadingZero(d.getHours()),
+        leadingZero(d.getMinutes()),
+        leadingZero(d.getSeconds())
+    ].join('');
+}
+
+export function leadingZero(digit: number): string {
+    let str = String(digit);
     return str.length < 2 ? "0" + str : str
 };
 
-export function newTimestamp(): string {
-    let d = new Date();
-    return d.getFullYear().toString().substr(2) +
-        fill((d.getMonth() + 1).toString()) +
-        fill(d.getDate().toString()) +
-        "_" + 
-        fill(d.getHours().toString()) +
-        fill(d.getMinutes().toString()) +
-        fill(d.getSeconds().toString());
+export function shortYear(year: number): string {
+    return String(year).substr(2);
 }
 
 /* names */
@@ -44,10 +54,7 @@ export function section(path: string): string {
 }
 
 export function isPublic(path: string): boolean {
-    if (section(path) === "public") {
-        return true
-    }
-    return false
+    return section(path) === "public"
 }
 
 export function isText(path: string): boolean {
