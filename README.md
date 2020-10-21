@@ -1,3 +1,9 @@
-<img src="public/logo.svg" alt="org" width=350>
+# org
 
 file organization app
+
+### Installation
+
+`yarn build`
+
+`go run server/*go`
