@@ -1,76 +1,76 @@
 import { extendedBase } from './paths';
 
 export function removeTarget(path: string) {
-  if (getActive() === path) {
-    unsetActive();
-  }
-  let l = getList().filter( target => {
-    if (target !== path) {
-      return true
+    if (getActive() === path) {
+        unsetActive();
     }
-    return false
-  });
-  setList(l);
+    let l = getList().filter( target => {
+        if (target !== path) {
+            return true
+        }
+        return false
+    });
+    setList(l);
 }
 
 export function getActive(): string {
-  const str = localStorage.getItem("target");
-  if (str === null) {
-    return ""
-  }
-  return str
+    const str = localStorage.getItem("target");
+    if (str === null) {
+        return ""
+    }
+    return str
 }
 
 export function nextActive(): string {
-  const list = getList();
-  const active = getActive();
-  let i = 0;
-  for (; i < list.length; i++) {
-    if (list[i] === active) {
-      break;
+    const list = getList();
+    const active = getActive();
+    let i = 0;
+    for (; i < list.length; i++) {
+        if (list[i] === active) {
+            break;
+        }
     }
-  }
-  if (list.length > i) {
-    return list[i+1]
-  }
-  if (list.length > 0) {
-    return list[0]
-  }
-  return ""
+    if (list.length > i) {
+        return list[i+1]
+    }
+    if (list.length > 0) {
+        return list[0]
+    }
+    return ""
 }
 
 export function unsetActive() {
-  localStorage.setItem("target", nextActive());
+    localStorage.setItem("target", nextActive());
 }
 
 export function setActive(path: string) {
-  addTarget(path);
-  localStorage.setItem("target", path);
+    addTarget(path);
+    localStorage.setItem("target", path);
 }
 
 function addTarget(path: string) {
-  let l = getList();
-  for (const target of l) {
-    if (target === path) {
-      return
+    let l = getList();
+    for (const target of l) {
+        if (target === path) {
+            return
+        }
     }
-  }
-  l.push(path);
-  setList(l);
+    l.push(path);
+    setList(l);
 }
 
 function setList(list: string[]) {
-  localStorage.setItem("targetList", JSON.stringify(list))
+    localStorage.setItem("targetList", JSON.stringify(list))
 }
 
 export function getList(): string[] {
-  const str = localStorage.getItem("targetList");
-  if (str === null) {
-    return []
-  }
-  const list = JSON.parse(str);
+    const str = localStorage.getItem("targetList");
+    if (str === null) {
+        return []
+    }
+    const list = JSON.parse(str);
 
-  return list.sort(sortFn)
+    return list.sort(sortFn)
 }
 
 function sortFn(a: string, b: string): number {

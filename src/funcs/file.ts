@@ -1,4 +1,3 @@
-
 type File = {
     id:   number;
     path: string;

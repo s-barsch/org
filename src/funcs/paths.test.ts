@@ -20,7 +20,6 @@ it('dateToTimestamp results', () => {
 it('orgBase results', () => {
     expect(orgBase("/")).toBe("org");
     expect(orgBase("/some/deep/dir")).toBe("dir");
-    expect(orgBase("/some/deep/file.txt")).toBe("file.txt");
     expect(orgBase("/some.jpg")).toBe("some.jpg");
 });
 
