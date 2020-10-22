@@ -94,11 +94,10 @@ export function insert(files: File[], f: File, newFile: File): File[] {
             return files;
         }
     }
-    alert("Couldn’t insert duplicate.");
-    return files;
+    throw new Error('Could not insert duplicate file: ' + f);
 }
 
-export function createDuplicate(file: File, files: File[]): File | undefined {
+export function createDuplicate(file: File, files: File[]): File {
     let f = Object.assign({}, file);
 
     let name = splitName(f.name);
@@ -111,7 +110,8 @@ export function createDuplicate(file: File, files: File[]): File | undefined {
             return f;
         }
     }
-    return;
+
+    throw new Error("Couldn’t create duplicate. No free name available.");
 }
 
 

@@ -152,9 +152,11 @@ function FileView({pathname, view, setView}: FileViewProps) {
     }
 
     function duplicateFile(f: File) {
-        const newFile = createDuplicate(f, files);
-        if (!newFile) {
-            alert("Couldn’t create duplicate: no free name available.");
+        let newFile: File;
+        try {
+            newFile = createDuplicate(f, files);
+        } catch(err) {
+            alert(err);
             return;
         }
 
