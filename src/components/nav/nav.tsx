@@ -39,7 +39,6 @@ function Top({pathname, view}: TopProps) {
     }
 
     function setThisActive() {
-        console.log("i fired");
         saveTargets(setActiveTarget(targets, view.path));
     }
 

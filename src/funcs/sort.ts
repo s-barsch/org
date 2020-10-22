@@ -8,7 +8,6 @@ type Divided = {
 }
 
 function divide(unsort: File[]): Divided {
-
     let dirs = [];
     let info = [];
     let files = [];

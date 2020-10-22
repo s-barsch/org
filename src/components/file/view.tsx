@@ -9,7 +9,6 @@ import { basename, extname, dirname, join } from 'path';
 import { newTimestamp, isText, orgBase } from '../../funcs/paths';
 import { separate, orgSort } from '../../funcs/sort';
 import File from '../../funcs/file';
-import Targets from '../../funcs/targets';
 import View, { ModFuncs } from '../../types';
 
 function newMockFile(i: number): File {
@@ -38,15 +37,7 @@ type FileViewProps = {
 }
 
 function FileView({pathname, view, setView}: FileViewProps) {
-    let { targets, saveTargets } = useContext(TargetsContext);
-
-    if (!saveTargets) {
-        saveTargets = () => { console.log("setTargets undefined") };
-    }
-
-    if (!targets) {
-        targets = {} as Targets;
-    }
+    let { targets } = useContext(TargetsContext);
 
     const [path, setPath] = useState(pathname);
     const [files, setFiles] = useState(mockFiles());

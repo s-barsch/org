@@ -17,8 +17,6 @@ export function readTargets(): Targets {
         t = JSON.parse(storage);
     }
 
-    console.log(storage);
-
     t.active = t.active ? t.active : ''
     t.list = t.list ? t.list : [];
 
