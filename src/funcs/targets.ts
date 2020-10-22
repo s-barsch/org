@@ -1,76 +1,80 @@
 import { extendedBase } from './paths';
 
-export function removeTarget(path: string) {
-    if (getActive() === path) {
-        unsetActive();
-    }
-    let l = getList().filter( target => {
-        if (target !== path) {
-            return true
-        }
-        return false
-    });
-    setList(l);
+type Targets = {
+    active: string;
+    list: string[];
 }
 
-export function getActive(): string {
-    const str = localStorage.getItem("target");
-    if (str === null) {
-        return ""
+export function getTargets(): Targets {
+    const storage = localStorage.getItem('targets');
+    let t: Targets;
+
+    if (storage === null) {
+        t = <Targets>{};
+    } else {
+        t = JSON.parse(storage);
     }
-    return str
+
+    t.active = t.active ? t.active : ''
+    t.list = t.list ? t.list : [];
+
+    return t;
 }
 
-export function nextActive(): string {
-    const list = getList();
-    const active = getActive();
+function storeTargets(t: Targets) {
+    localStorage.setItem('targets', JSON.stringify(t));
+}
+
+export function addTarget(t: Targets, path: string): Targets {
+    t.list = addToList(t.list, path);
+    return t;
+}
+
+export function removeTarget(t: Targets, path: string): Targets {
+    if (t.active === path) {
+        t.active = '';
+    }
+    t.list = t.list.filter(target => ( target !== path ));
+    return t;
+}
+
+export function setActiveTarget(t: Targets, path: string): Targets {
+    t.list = addToList(t.list, path);
+    t.active = path;
+    return t;
+}
+
+export function unsetActiveTarget(t: Targets): Targets {
+    t.active = '';
+    return t;
+}
+
+export function nextActiveTarget(t: Targets): string {
     let i = 0;
-    for (; i < list.length; i++) {
-        if (list[i] === active) {
+    for (; i < t.list.length; i++) {
+        if (t.list[i] === t.active) {
+            if (t.list.length > i + 1) {
+                return t.list[i+1];
+            }
+
+            if (t.list.length > 0) {
+                return t.list[0];
+            }
             break;
         }
-    }
-    if (list.length > i) {
-        return list[i+1]
-    }
-    if (list.length > 0) {
-        return list[0]
     }
     return ""
 }
 
-export function unsetActive() {
-    localStorage.setItem("target", nextActive());
-}
-
-export function setActive(path: string) {
-    addTarget(path);
-    localStorage.setItem("target", path);
-}
-
-function addTarget(path: string) {
-    let l = getList();
-    for (const target of l) {
-        if (target === path) {
-            return
+function addToList(list: string[], str: string): string[] {
+    for (const entry of list) {
+        if (entry === str) {
+            return list;
         }
     }
-    l.push(path);
-    setList(l);
-}
-
-function setList(list: string[]) {
-    localStorage.setItem("targetList", JSON.stringify(list))
-}
-
-export function getList(): string[] {
-    const str = localStorage.getItem("targetList");
-    if (str === null) {
-        return []
-    }
-    const list = JSON.parse(str);
-
-    return list.sort(sortFn)
+    list.push(str);
+    list.sort(sortFn);
+    return list;
 }
 
 function sortFn(a: string, b: string): number {
@@ -84,3 +88,5 @@ function sortFn(a: string, b: string): number {
     }
     return 0;
 }
+
+
