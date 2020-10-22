@@ -1,12 +1,11 @@
-import { getTargets, addTarget, removeTarget, setActiveTarget, unsetActiveTarget, nextActiveTarget } from './targets';
+import { readTargets, storeTargets, addTarget, removeTarget, setActiveTarget, unsetActiveTarget, nextActiveTarget } from './targets';
 
 it('tests use localStorageMock', () => {
-    // currently not using that.
     expect(localStorage.isMock()).toBe(true);
 });
 
 it('test addTarget', () => {
-    let t = getTargets();
+    let t = readTargets();
     
     t = addTarget(t, '/some/path');
 
@@ -14,7 +13,7 @@ it('test addTarget', () => {
 });
 
 it('test removeTarget', () => {
-    let t = getTargets();
+    let t = readTargets();
     
     t = addTarget(t, '/some/path');
     t = addTarget(t, '/some/second/path');
@@ -24,7 +23,7 @@ it('test removeTarget', () => {
 });
 
 it('test unsetActiveTarget', () => {
-    let t = getTargets();
+    let t = readTargets();
     
     t = addTarget(t, '/some/path');
     t = setActiveTarget(t, '/dir/active');
@@ -33,13 +32,29 @@ it('test unsetActiveTarget', () => {
     expect(t).toStrictEqual({"active":"","list":['/dir/active', '/some/path']});
 });
 
-it('test unsetActiveTarget', () => {
-    let t = getTargets();
+it('test nextActiveTarget', () => {
+    let t = readTargets();
     
     t = addTarget(t, '/some/path');
     t = setActiveTarget(t, '/zeta/xxx');
 
     expect(nextActiveTarget(t)).toStrictEqual('/some/path');
+
+    t = setActiveTarget(t, '/some/path');
+
+    expect(nextActiveTarget(t)).toStrictEqual('/zeta/xxx');
 });
 
 
+it('test storeTargets', () => {
+    let t = readTargets();
+    
+    t = addTarget(t, '/some/path');
+    t = addTarget(t, '/some/second/path');
+
+    storeTargets(t);
+
+    let tfresh = readTargets();
+
+    expect(tfresh).toStrictEqual(t);
+});

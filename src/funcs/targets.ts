@@ -5,7 +5,7 @@ type Targets = {
     list: string[];
 }
 
-export function getTargets(): Targets {
+export function readTargets(): Targets {
     const storage = localStorage.getItem('targets');
     let t: Targets;
 
@@ -21,7 +21,7 @@ export function getTargets(): Targets {
     return t;
 }
 
-function storeTargets(t: Targets) {
+export function storeTargets(t: Targets) {
     localStorage.setItem('targets', JSON.stringify(t));
 }
 
