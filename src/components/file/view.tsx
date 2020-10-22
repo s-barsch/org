@@ -5,30 +5,14 @@ import Text from '../types/text';
 import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
 import { TargetsContext } from '../../targets';
-import { basename, extname, dirname, join } from 'path';
-import { newTimestamp, isText, orgBase } from '../../funcs/paths';
+import { basename, dirname, join } from 'path';
+import { newTimestamp, isText } from '../../funcs/paths';
 import { separate, orgSort } from '../../funcs/sort';
 import File from '../../funcs/file';
 import View, { ModFuncs } from '../../types';
-
-function newMockFile(i: number): File {
-    const name = newTimestamp() + "+" + i + ".txt";
-    return {
-        id:   i,
-        path: "/sample/" + name,
-        name: name,
-        type: "text",
-        body: ""
-    }
-}
-
-function mockFiles(): File[] {
-    let arr: File[] = [];
-    for (let i = 0; i <= 2; i++) {
-        arr.push(newMockFile(i));
-    }
-    return arr
-}
+import RenameInput from './rename';
+import { filesOnly, dirsOnly, makeStringArr, merge, insert, 
+    createDuplicate, isPresent, removeFromArr } from './list';
 
 type FileViewProps = {
     pathname: string;
@@ -40,7 +24,7 @@ function FileView({pathname, view, setView}: FileViewProps) {
     let { targets } = useContext(TargetsContext);
 
     const [path, setPath] = useState(pathname);
-    const [files, setFiles] = useState(mockFiles());
+    const [files, setFiles] = useState([] as File[]);
     const [sorted, setSorted] = useState(false);
 
     useEffect(() => {
@@ -313,148 +297,4 @@ function AddText({newFn}: {newFn: () => void}) {
 }
 
 export default FileView;
-
-function dirsOnly(list: File[]): File[] {
-    if (!list) {
-        return [];
-    }
-    return list.filter((file) => {
-        return file.type === "dir"
-    })
-}
-
-function filesOnly(list: File[]): File[] {
-    if (!list) {
-        return [];
-    }
-    return list.filter((file) => {
-        return file.type !== "dir"
-    })
-}
-
-function makeStringArr(files: File[]): string[] {
-    let arr = [];
-    for (const f of files) {
-        arr.push(f.name);
-    }
-    return arr
-}
-
-function merge(all: File[], part: File[], type: string): File[] {
-    let diff = subtract(all, part)
-    if (type === "files") {
-        return diff.concat(part)
-    } 
-    return part.concat(diff)
-}
-
-function subtract(base: File[], other: File[]): File[] {
-    for (const f of other) {
-        for (let i = 0; i < base.length; i++) {
-            if (base[i].name === f.name) {
-                base.splice(i, 1)
-                break;
-            }
-        }
-    }
-    return base
-}
-
-function removeFromArr(files: File[], name: string): File[] {
-    for (let i = 0; i < files.length; i++) {
-        if (files[i].name === name) {
-            files.splice(i, 1)
-            break;
-        }
-    }
-    return files;
-}
-
-function insert(files: File[], f: File, newFile: File): File[] {
-    for (let i = 0; i < files.length; i++) {
-        if (files[i].name === f.name) {
-            files.splice(i, 0, newFile)
-            return files;
-        }
-    }
-    alert("Couldn’t insert duplicate.");
-    return files;
-}
-
-function createDuplicate(file: File, files: File[]): File | undefined {
-    let f = Object.assign({}, file);
-
-    let name = splitName(f.name);
-    for (let i = 1; i < 10; i++) {
-        const newName = name.trunk + "+" + i + name.ext; 
-        if (!isPresent(files, newName)) {
-            f.id = Date.now();
-            f.name = newName;
-            f.path = dirname(f.path) + "/" + newName;
-            return f;
-        }
-    }
-    return;
-}
-
-type SplitName = {
-    trunk: string;
-    ext: string;
-}
-
-// 120912+2.txt -> 120912.txt
-function splitName(name: string): SplitName {
-    let ext = extname(name);
-    let trunk = name.substr(0, name.length-ext.length);
-
-    const x = trunk.indexOf("+");
-    if (x >= 0) {
-        trunk = trunk.substr(0, x);
-    }
-    return {
-        trunk: trunk,
-        ext: ext
-    }
-}
-
-function isPresent(files: File[], name: string): boolean {
-    for (const f of files) {
-        if (f.name === name) {
-            return true
-        }
-    }
-    return false
-}
-
-type RenameInputProps = {
-    path: string;
-    renameView: (name: string) => void;
-}
-
-function RenameInput({path, renameView}: RenameInputProps) {
-    const [name, setName] = useState(orgBase(path));
-
-    useEffect(() => {
-        setName(orgBase(path));
-    }, [path]);
-
-    function handleTyping(e: React.FormEvent<HTMLInputElement>) {
-        setName(e.currentTarget.value);
-    }
-
-    function submit(e: React.FormEvent<HTMLInputElement>) {
-        const old = orgBase(path);
-        if (old === name) {
-            return;
-        }
-        renameView(name);
-    }
-
-    return (
-        <input type="text" value={name} size={name.length}
-        disabled={name === "org" ? true : false} 
-        onChange={handleTyping} onBlur={submit} />
-    )
-}
-
 
