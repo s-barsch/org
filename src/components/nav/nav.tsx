@@ -6,9 +6,10 @@ import { basename, dirname } from 'path';
 import CrumbNav from './crumbs';
 import { Del } from '../meta';
 import { extendedBase, section } from '../../funcs/paths';
-import { TargetsContext } from '../../targets';
+import { TargetsContext, TargetsProps } from '../../targets';
 import View from '../../types';
 import File from '../../funcs/file';
+import { setActiveTarget, removeTarget } from '../../funcs/targets';
 
 type TopProps = {
     pathname: string;
@@ -16,7 +17,7 @@ type TopProps = {
 }
 
 function Top({pathname, view}: TopProps) {
-    const { targetList, activeTarget, removeTarget, setActiveTarget } = useContext(TargetsContext);
+    const { targets, saveTargets } = useContext(TargetsContext);
 
     /* theme */
 
@@ -38,11 +39,8 @@ function Top({pathname, view}: TopProps) {
     }
 
     function setThisActive() {
-        if (!setActiveTarget) {
-            alert("setActiveTarget undefined");
-            return;
-        }
-        setActiveTarget(view.path);
+        console.log("i fired");
+        saveTargets(setActiveTarget(targets, view.path));
     }
 
     const history = useHistory();
@@ -86,43 +84,37 @@ function Top({pathname, view}: TopProps) {
         </nav>
         <nav id="bar">
             <CrumbNav path={pathname} nav={view.nav}/>
-            <span className="right">
-                <TargetList
-                links={targetList ? targetList : []}
-                activeTarget={activeTarget ? activeTarget : ""}
-                setActiveTarget={setActiveTarget ? setActiveTarget : (path: string) => {}} 
-                removeTarget={removeTarget ? removeTarget : (path: string) => {}} />
-            </span>
+            <TargetsList targets={targets} saveTargets={saveTargets}/>
         </nav>
         </>
     )
 }
 
-type TargetListProps = {
-    activeTarget: string;
-    links: string[];
-    removeTarget: (path: string) => void;
-    setActiveTarget: (path: string) => void;
-}
+function TargetsList({targets, saveTargets}: TargetsProps) {
 
-function TargetList({activeTarget, links, removeTarget, setActiveTarget}: TargetListProps) {
     function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
         if (e.shiftKey) {
             e.preventDefault();
-            setActiveTarget(e.currentTarget.pathname);
+            saveTargets(setActiveTarget(targets, e.currentTarget.pathname));
         }
     }
+
     function onRightClick(e: React.MouseEvent<HTMLAnchorElement>) {
         if (e.shiftKey) {
             e.preventDefault();
-            removeTarget(e.currentTarget.pathname);
+            saveTargets(removeTarget(targets, e.currentTarget.pathname));
         }
     }
+
+    if (targets.list.length === 0) {
+        return null
+    }
+
     return (
-        <span id="targets">
-        { links.map((l, i) => {
+        <span id="targets" className="right">
+        { targets.list.map((l, i) => {
             let className = section(l)
-            if (activeTarget === l) {
+            if (targets.active === l) {
                 className += " active"
             }
             return (

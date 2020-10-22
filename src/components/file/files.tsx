@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReverseIcon from '@material-ui/icons/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
@@ -8,6 +8,8 @@ import Text from '../types/text';
 import Image from '../types/image';
 import { ModFuncs } from '../../types';
 import File from '../../funcs/file';
+import { setActiveTarget } from '../../funcs/targets';
+import { TargetsContext } from '../../targets';
 
 type FileSwitchProps = {
     file: File;
@@ -76,16 +78,14 @@ function FileList({files, saveSort, modFuncs}: FileListProps) {
     );
 }
 
-type DirProps = {
-    dir: File;
-    setActiveTarget: (path: string) => void;
-}
+function Dir({dir}: {dir: File;}) {
+    let { targets, saveTargets } = useContext(TargetsContext);
 
-function Dir({dir, setActiveTarget}: DirProps) {
     function setTarget(e: React.MouseEvent<HTMLAnchorElement>) {
         if (e.shiftKey) {
+            console.log("try to set something");
             e.preventDefault();
-            setActiveTarget(e.currentTarget.pathname);
+            saveTargets(setActiveTarget(targets, e.currentTarget.pathname));
         }
     }
     return (
@@ -96,10 +96,9 @@ function Dir({dir, setActiveTarget}: DirProps) {
 type DirListProps = {
     dirs: File[];
     saveSort: (part: File[], type: string) => void;
-    setActiveTarget: (path: string) => void;
 }
 
-function DirList({dirs, saveSort, setActiveTarget}: DirListProps) {
+function DirList({dirs, saveSort}: DirListProps) {
     const [state, setState] = useState(dirs);
 
     useEffect(() => {
@@ -114,7 +113,7 @@ function DirList({dirs, saveSort, setActiveTarget}: DirListProps) {
         <ReactSortable className="dirs__list" onEnd={callOnEnd}
         animation={200} list={state} setList={setState}>
         {state.map((dir) => (
-            <Dir key={dir.id} dir={dir} setActiveTarget={setActiveTarget} />
+            <Dir key={dir.id} dir={dir} />
         ))}
         </ReactSortable>
     )

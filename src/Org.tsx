@@ -20,7 +20,7 @@ export default function Org() {
 }
 
 function OrgView() {
-    const { activeTarget } = useContext(TargetsContext);
+    const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
     const history = useHistory();
 
@@ -67,10 +67,10 @@ function OrgView() {
 
 
     const listenForWrite = useCallback(evt => {
-        if (path === activeTarget) {
+        if (targets && path === targets.active) {
             loadView(path);
         }
-    }, [activeTarget, path]);
+    }, [targets, path]);
 
     useEffect(() => {
         window.addEventListener('storage', listenForWrite);

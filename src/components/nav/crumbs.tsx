@@ -5,6 +5,7 @@ import { basename } from 'path';
 import { isText } from '../../funcs/paths';
 import { Nav } from '../../types';
 import File from '../../funcs/file';
+import { setActiveTarget } from '../../funcs/targets';
 
 function Spacer() {
     return (
@@ -91,8 +92,7 @@ type CrumbLinkProps = {
 }
 
 function CrumbLink({href, name, className, isActive}: CrumbLinkProps) {
-    const { setActiveTarget } = useContext(TargetsContext);
-
+    const { targets, saveTargets } = useContext(TargetsContext);
 
     function setTarget(e: React.MouseEvent<HTMLAnchorElement>) {
         if (e.shiftKey) {
@@ -101,7 +101,7 @@ function CrumbLink({href, name, className, isActive}: CrumbLinkProps) {
                 alert("setActiveTarget undefined");
                 return;
             }
-            setActiveTarget(e.currentTarget.pathname);
+            saveTargets(setActiveTarget(targets, e.currentTarget.pathname));
         }
     }
 

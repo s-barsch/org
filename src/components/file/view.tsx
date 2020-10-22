@@ -9,6 +9,7 @@ import { basename, extname, dirname, join } from 'path';
 import { newTimestamp, isText, orgBase } from '../../funcs/paths';
 import { separate, orgSort } from '../../funcs/sort';
 import File from '../../funcs/file';
+import Targets from '../../funcs/targets';
 import View, { ModFuncs } from '../../types';
 
 function newMockFile(i: number): File {
@@ -33,18 +34,18 @@ function mockFiles(): File[] {
 type FileViewProps = {
     pathname: string;
     view: View;
-    setView: React.Dispatch<React.SetStateAction<View>>;
+    setView: (v: View) => void;
 }
 
 function FileView({pathname, view, setView}: FileViewProps) {
-    let { setActiveTarget, activeTarget } = useContext(TargetsContext);
+    let { targets, saveTargets } = useContext(TargetsContext);
 
-    if (!setActiveTarget) {
-        setActiveTarget = () => { console.log("setActiveTarget undefined") };
+    if (!saveTargets) {
+        saveTargets = () => { console.log("setTargets undefined") };
     }
 
-    if (!activeTarget) {
-        activeTarget = ""
+    if (!targets) {
+        targets = {} as Targets;
     }
 
     const [path, setPath] = useState(pathname);
@@ -218,19 +219,11 @@ function FileView({pathname, view, setView}: FileViewProps) {
     }
 
     function copyToTarget(f: File) {
-        if (!activeTarget) {
-            alert("activeTarget undefined");
-            return;
-        }
-        copyFile(f, join(activeTarget, f.name));
+        copyFile(f, join(targets.active, f.name));
     }
 
     function moveToTarget(f: File) {
-        if (!activeTarget) {
-            alert("activeTarget undefined");
-            return;
-        }
-        moveFile(f, join(activeTarget, f.name));
+        moveFile(f, join(targets.active, f.name));
     }
 
     function deleteFile(f: File) {
@@ -314,7 +307,7 @@ function FileView({pathname, view, setView}: FileViewProps) {
         <>
             <Head />
             <nav id="dirs">
-                <DirList  dirs={dirsOnly(files)} saveSort={saveSort} setActiveTarget={setActiveTarget} />
+                <DirList  dirs={dirsOnly(files)} saveSort={saveSort} />
                 <AddDir submitFn={addNewDir} />
             </nav>
             <section id="files">

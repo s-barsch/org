@@ -5,15 +5,19 @@ type Targets = {
     list: string[];
 }
 
+export default Targets; 
+
 export function readTargets(): Targets {
     const storage = localStorage.getItem('targets');
     let t: Targets;
 
     if (storage === null) {
-        t = <Targets>{};
+        t = {} as Targets;
     } else {
         t = JSON.parse(storage);
     }
+
+    console.log(storage);
 
     t.active = t.active ? t.active : ''
     t.list = t.list ? t.list : [];

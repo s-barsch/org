@@ -1,18 +1,22 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
-import * as targets from './funcs/targets';
+import React, { createContext, useEffect, useCallback, useState } from 'react';
+import Targets, { storeTargets, readTargets } from './funcs/targets';
 
 function TargetsProvider({ children }: {children: React.ReactNode}) {
-    const defaultList: string[] = [];
-    const [list, setList] = useState(defaultList);
-    const [active, setActive] = useState("");
+    const [targets, setTargets] = useState(readTargets());
 
-    const loadTargets = () => {
-        setActive(targets.getActive());
-        setList(targets.getList())
+    useEffect(() => {
+        setTargets(readTargets());
+    }, []);
+
+    function saveTargets(t: Targets) {
+        setTargets({ ...t })
+        storeTargets({ ...t });
     }
 
+    /* watch localStorage for multi tab support */
+
     const listenForTargets = useCallback(evt => {
-        loadTargets();
+        setTargets(readTargets());
     }, []);
 
     useEffect(() => {
@@ -23,40 +27,20 @@ function TargetsProvider({ children }: {children: React.ReactNode}) {
         };
     }, [listenForTargets]);
 
-    useEffect(() => {
-        loadTargets();
-    }, [])
-
-    /* targets functions */
-
-    function setActiveTarget(path: string) {
-        targets.setActive(path);
-        loadTargets();
-    }
-
-    function removeTarget(path: string) {
-        targets.removeTarget(path);
-        loadTargets();
-    }
-
-    let targetList = list
-    let activeTarget = active
 
     return (
         <TargetsContext.Provider value={{ 
-            targetList, activeTarget, removeTarget, setActiveTarget
+            targets, saveTargets
         }}>
         {children}
         </TargetsContext.Provider>
     );
 }
 
-type ContextProps = {
-    targetList: string[];
-    activeTarget: string;
-    removeTarget: (path: string) => void;
-    setActiveTarget: (path: string) => void;
+export type TargetsProps = {
+    targets: Targets;
+    saveTargets: (t: Targets) => void;
 }
 
-export const TargetsContext = createContext<Partial<ContextProps>>({});
+export const TargetsContext = createContext<TargetsProps>({} as TargetsProps);
 export default TargetsProvider; 
