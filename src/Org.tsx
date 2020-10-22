@@ -53,7 +53,7 @@ function OrgView() {
             return;
         }
 
-        if (isText(path) && view.path !== "") {
+        if (isText(path) && view.path && view.path !== "") {
             return;
         }
 

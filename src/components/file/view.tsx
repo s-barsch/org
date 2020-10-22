@@ -273,10 +273,9 @@ function FileView({pathname, view, setView}: FileViewProps) {
         )
     }
 
-
     if (isText(pathname)) {
-        if (files.length === 0) {
-            return <>""</>;
+        if (!files || files.length === 0) {
+            return <></>;
         }
 
         const name = basename(pathname);

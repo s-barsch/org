@@ -4,7 +4,6 @@ import (
 	"strings"
 	p "path/filepath"
 	"os"
-	"fmt"
 )
 
 type Nav struct {
@@ -27,8 +26,6 @@ func getNav(path string) (*Nav, error) {
 		}
 		siblings = s
 	}
-
-	fmt.Println(siteConfig.Links);
 
 	return &Nav{
 		Path:     path,
