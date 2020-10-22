@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useCallback, useState } from 'react';
-import Targets, { storeTargets, readTargets } from './funcs/targets';
+import Targets, { storeTargets, readTargets } from '../funcs/targets';
 
 function TargetsProvider({ children }: {children: React.ReactNode}) {
     const [targets, setTargets] = useState(readTargets());

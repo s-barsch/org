@@ -9,7 +9,7 @@ import Image from '../types/image';
 import { ModFuncs } from '../../types';
 import File from '../../funcs/file';
 import { setActiveTarget } from '../../funcs/targets';
-import { TargetsContext } from '../../targets';
+import { TargetsContext } from '../../context/targets';
 
 type FileSwitchProps = {
     file: File;

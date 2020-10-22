@@ -4,7 +4,7 @@ import AddDir from './add';
 import Text from '../types/text';
 import NewTextIcon from '@material-ui/icons/Flare';
 import { DirList, FileList } from './files';
-import { TargetsContext } from '../../targets';
+import { TargetsContext } from '../../context/targets';
 import { basename, dirname, join } from 'path';
 import { newTimestamp, isText } from '../../funcs/paths';
 import { separate, orgSort } from '../../funcs/sort';
@@ -57,8 +57,8 @@ function FileView({pathname, view, setView}: FileViewProps) {
     }
 
     function update(newFiles: File[], isSorted: boolean) {
-        if (isSorted === undefined) {
-            alert('invalid sorted attribute.');
+        if (!isSorted) {
+            throw new Error('isSorted undefined');
         }
 
         if (!isSorted) {
@@ -85,6 +85,7 @@ function FileView({pathname, view, setView}: FileViewProps) {
         if (name === "") {
             return;
         }
+    
         if (isPresent(files, name)) {
             alert("Dir with this name already exists.");
             return;
@@ -101,10 +102,6 @@ function FileView({pathname, view, setView}: FileViewProps) {
         update(separate(files.slice().concat(f)), sorted)
 
         request("/api/write" + join(path, name));
-    }
-
-    function setWriteTime() {
-        localStorage.setItem("write", String(Date.now()));
     }
 
     function writeFile(f: File) {
@@ -211,7 +208,7 @@ function FileView({pathname, view, setView}: FileViewProps) {
         request("/api/delete" + f.path)
     }
 
-    const createNewFile = () => {
+    function createNewFile() {
         const name = newTimestamp() + ".txt";
         const f = {
             id: Date.now(),
@@ -259,6 +256,8 @@ function FileView({pathname, view, setView}: FileViewProps) {
         )
     }
 
+    /* file view */
+
     if (isText(pathname)) {
         if (!files || files.length === 0) {
             return <></>;
@@ -268,7 +267,7 @@ function FileView({pathname, view, setView}: FileViewProps) {
         const text = files.find(f => f.name === name);
 
         if (!text) {
-            return <>"Couldn’t find text."</>
+            return <>"Couldn’t find text: " name + "."</>
         }
 
         return (
@@ -278,6 +277,8 @@ function FileView({pathname, view, setView}: FileViewProps) {
             </>
         )
     }
+
+    /* dir view */
 
     return (
         <>
@@ -294,9 +295,14 @@ function FileView({pathname, view, setView}: FileViewProps) {
     )
 }
 
+export default FileView;
+
 function AddText({newFn}: {newFn: () => void}) {
     return <button onClick={newFn}><NewTextIcon /></button>
 }
 
-export default FileView;
+function setWriteTime() {
+    localStorage.setItem("write", String(Date.now()));
+}
+
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Org from './Org';
+import App from './handler';
 
 ReactDOM.render(
     <React.StrictMode>
-    <Org />
+    <App />
     </React.StrictMode>,
     document.getElementById('root')
 );

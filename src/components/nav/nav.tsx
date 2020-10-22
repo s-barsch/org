@@ -6,7 +6,7 @@ import { basename, dirname } from 'path';
 import CrumbNav from './crumbs';
 import { Del } from '../meta';
 import { extendedBase, section } from '../../funcs/paths';
-import { TargetsContext, TargetsProps } from '../../targets';
+import { TargetsContext, TargetsProps } from '../../context/targets';
 import View from '../../types';
 import File from '../../funcs/file';
 import { setActiveTarget, removeTarget } from '../../funcs/targets';

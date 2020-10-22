@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import './main.css';
+import './css/main.css';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
-import FileView from './components/file/view';
+import FileView from './components/main/view';
 import Nav from './components/nav/nav';
-import TargetsProvider, { TargetsContext } from "./targets";
+import TargetsProvider, { TargetsContext } from "./context/targets";
 import { basename } from 'path';
 import { section, isText } from './funcs/paths';
 import View from './types';
 import H from 'history';
 
-export default function Org() {
+export default function App() {
     return (
         <Router>
         <TargetsProvider>
-        <OrgView />
+        <Handler />
         </TargetsProvider>
         </Router>
     )
 }
 
-function OrgView() {
+function Handler() {
     const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
     const history = useHistory();
