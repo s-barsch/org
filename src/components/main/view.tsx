@@ -39,6 +39,8 @@ function MainView({pathname, main, setMain}: FileViewProps) {
     const [files, setFiles] = useState([] as File[]);
     const [sorted, setSorted] = useState(false);
 
+    const [err, setErr] = useState({} as errObj);
+
     useEffect(() => {
         setPath(pathname);
         setSorted(main.sorted);
@@ -57,7 +59,7 @@ function MainView({pathname, main, setMain}: FileViewProps) {
         });
 
         if (isSorted) {
-            saveSortRequest(path, files)
+            saveSortRequest(path, files, setErr)
         }
     }
 
@@ -70,11 +72,11 @@ function MainView({pathname, main, setMain}: FileViewProps) {
         const dirPath = join(path, name);
 
         update(insertNewDir(files.slice(), dirPath), sorted);
-        makeNewDirRequest(dirPath);
+        makeNewDirRequest(dirPath, setErr);
     }
 
     function writeFile(f: File) {
-        makeWriteRequest(f.path, f.body);
+        makeWriteRequest(f.path, f.body, setErr);
     }
 
     async function renameView(newName: string) {
@@ -86,13 +88,13 @@ function MainView({pathname, main, setMain}: FileViewProps) {
             update(newFiles, sorted);
         }
 
-        await renameViewRequest(path, newPath)
+        await renameViewRequest(path, newPath, setErr);
         history.push(newPath);
     }
 
     function renameFile(oldPath: string, f: File) {
         update(files.slice(), sorted);
-        makeMoveRequest(oldPath, f.path);
+        makeMoveRequest(oldPath, f.path, setErr);
     }
 
     function duplicateFile(f: File) {
@@ -105,16 +107,16 @@ function MainView({pathname, main, setMain}: FileViewProps) {
         }
 
         update(insertDuplicateFile(files.slice(), newFile, sorted), sorted);
-        makeWriteRequest(newFile.path, newFile.body)
+        makeWriteRequest(newFile.path, newFile.body, setErr);
     }
 
     function copyFile(f: File, newPath: string) {
-        makeCopyRequest(f.path, newPath);
+        makeCopyRequest(f.path, newPath, setErr);
     }
 
     function moveFile(f: File, newPath: string) {
         setFiles(removeFromArr(files.slice(), f.name));
-        makeMoveRequest(f.path, newPath);
+        makeMoveRequest(f.path, newPath, setErr);
     }
 
     function copyToTarget(f: File) {
@@ -130,7 +132,7 @@ function MainView({pathname, main, setMain}: FileViewProps) {
             setSorted(false);
         }
         setFiles(removeFromArr(files.slice(), f.name));
-        makeDeleteRequest(f.path);
+        makeDeleteRequest(f.path, setErr);
     }
 
     function createNewFile() {
@@ -138,7 +140,7 @@ function MainView({pathname, main, setMain}: FileViewProps) {
         const newFiles = insertNewFile(files.slice(), f, sorted);
 
         update(newFiles, sorted);
-        makeNewFileRequest(f.path)
+        makeNewFileRequest(f.path, setErr);
         history.push(f.path);
     }
 
@@ -159,10 +161,13 @@ function MainView({pathname, main, setMain}: FileViewProps) {
 
     const Head = () => {
         return (
-            <h1 className="name">
-            <Link className="parent" to={dirname(pathname)}>^</Link>
-            <RenameInput path={pathname} renameView={renameView} />
-            </h1>
+            <>
+                <ErrComponent err={err} />
+                <h1 className="name">
+                <Link className="parent" to={dirname(pathname)}>^</Link>
+                <RenameInput path={pathname} renameView={renameView} />
+                </h1>
+            </>
         )
     }
 
@@ -210,7 +215,180 @@ function MainView({pathname, main, setMain}: FileViewProps) {
 export default MainView;
 
 
+/* request funcs */
+
+type reqOptions = {
+    method: string;
+    body:   string;
+}
+
+type errObj = {
+    path: string;
+    func: string;
+    code: number;
+    msg:  string;
+}
+
+type setErrFn = (err: errObj) => void;
+
+function request(path: string, options: reqOptions, err: errObj, setErr: setErrFn): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const resp = await fetch(path, options);
+            if (!resp.ok) {
+                const text = await resp.text();
+                console.log("fetch failed: " + path + "\nreason: " + text);
+                reject();
+                return;
+            }
+            err.code = 200;
+            setErr(err);
+            resolve();
+        } catch(err) {
+            console.log(err)
+        }
+    });
+}
+
+async function makeMoveRequest(path: string, newPath: string, setErr: setErrFn) {
+    let e = {
+        func: 'makeMoveRequest',
+        path: path,
+        code: 0,
+        msg:  ''
+    }
+    await request("/api/move" + path, {
+        method: "POST",
+        body: newPath
+    }, e, setErr);
+    setWriteTime();
+}
+
+async function makeCopyRequest(path: string, newPath: string, setErr: setErrFn) {
+    let e = {
+        func: 'makeCopyRequest',
+        path: path,
+        code: 0,
+        msg:  ''
+    }
+    await request("/api/copy" + path, {
+        method: "POST",
+        body: newPath
+    }, e, setErr);
+    setWriteTime();
+}
+
+function makeWriteRequest(path: string, body: string, setErr: setErrFn) {
+    let e = {
+        func: 'makeWriteRequest',
+        path: path,
+        code: 0,
+        msg:  ''
+    }
+    request("/api/write" + path, {
+        method: "POST",
+        body:   body
+    }, e, setErr);
+}
+
+function makeDeleteRequest(path: string, setErr: setErrFn) {
+    let e = {
+        func: 'makeDeleteRequest',
+        path: path,
+        code: 0,
+        msg:  ''
+    }
+    request("/api/delete" + path, {} as reqOptions, e, setErr);
+}
+
+function makeNewDirRequest(path: string, setErr: setErrFn) {
+    let e = {
+        func: 'makeNewDirRequest',
+        path: path,
+        code: 0,
+        msg:  ''
+    }
+    request("/api/write" + path, {} as reqOptions, e, setErr);
+}
+
+function renameViewRequest(path: string, body: string, setErr: setErrFn): Promise<string> {
+    let e = {
+        func: 'renameViewRequest',
+        path: path,
+        code: 0,
+        msg:  ''
+    }
+    return new Promise(async (resolve, reject) => {
+        await request("/api/move" + path, {
+            method: "POST",
+            body: body
+        }, e, setErr);
+        resolve();
+    });
+}
+
+function saveSortRequest(path: string, files: File[], setErr: setErrFn) {
+    let e = {
+        func: 'saveSortRequest',
+        path: path,
+        code: 0,
+        msg:  ''
+    }
+    request("/api/sort" + path, {
+        method: "POST",
+        body: JSON.stringify(makeStringArr(files))
+    }, e, setErr);
+}
+
+function makeNewFileRequest(path: string, setErr: setErrFn) {
+    let e = {
+        func: 'makeNewFileRequest',
+        path: path,
+        code: 0,
+        msg:  ''
+    }
+    request("/api/write" + path, {
+            method: "POST",
+            body: "newfile"
+    }, e, setErr);
+}
+
 /* additional funcs */
+
+function insertDuplicateFile(files: File[], f: File, isSorted: boolean) {
+    if (isSorted) {
+        return insert(files, f, f);
+    }
+    return files.concat(f);
+}
+
+function insertNewFile(files: File[], f: File, isSorted: boolean): File[] {
+    if (!isSorted) {
+        return [f].concat(files)
+    }
+    return orgSort(files.concat(f))
+}
+
+function createNewFileObject(path: string): File {
+    const name = newTimestamp() + ".txt";
+    return {
+        id: Date.now(),
+        name: name,
+        path: join(path, name),
+        type: "text",
+        body: ""
+    }
+}
+
+function renameText(files: File[], oldName: string, newName: string): File[] {
+    const f = files.find(f => f.name === oldName);
+    if (!f) {
+        throw new Error("renameText: Couldn’t find file. " + oldName)
+    }
+    f.path = join(dirname(f.path), newName);
+    f.name = newName;
+    return files
+}
 
 function AddText({newFn}: {newFn: () => void}) {
     return <button onClick={newFn}><NewTextIcon /></button>
@@ -231,116 +409,8 @@ function insertNewDir(files: File[], path: string): File[] {
     return files.concat(f)
 }
 
-type reqOptions = {
-    method: string;
-    body:   string;
-}
-
-async function request(path: string, options?: reqOptions, callback?: () => void) {
-    try {
-        const resp = await fetch(path, options);
-        if (!resp.ok) {
-            const text = await resp.text();
-            console.log("fetch failed: " + path + "\nreason: " + text);
-            return;
-        }
-        if (callback) {
-            callback();
-        }
-    } catch(err) {
-        console.log(err)
-    }
-}
-
-function makeMoveRequest(path: string, newPath: string) {
-    request("/api/move" + path, {
-        method: "POST",
-        body: newPath
-    },
-        function callBack() {
-            setWriteTime();
-        }
-    );
-}
-
-function makeCopyRequest(path: string, newPath: string) {
-    request("/api/copy" + path, {
-        method: "POST",
-        body: newPath
-    },
-        function callBack() {
-            setWriteTime();
-        }
-    );
-}
-
-function insertDuplicateFile(files: File[], f: File, isSorted: boolean) {
-    if (isSorted) {
-        return insert(files, f, f);
-    }
-    return files.concat(f);
-}
-
-function makeWriteRequest(path: string, body: string) {
-    request("/api/write" + path, {
-        method: "POST",
-        body:   body
-    });
-}
-
-function makeDeleteRequest(path: string) {
-    request("/api/delete" + path);
-}
-
-function makeNewDirRequest(path: string) {
-    request("/api/write" + path);
-}
-
-function renameText(files: File[], oldName: string, newName: string): File[] {
-    const f = files.find(f => f.name === oldName);
-    if (!f) {
-        throw new Error("renameText: Couldn’t find file. " + oldName)
-    }
-    f.path = join(dirname(f.path), newName);
-    f.name = newName;
-    return files
-}
-
-function renameViewRequest(path: string, body: string) {
-    request("/api/move" + path, {
-        method: "POST",
-        body: body
-    });
-}
-
-function saveSortRequest(path: string, files: File[]) {
-    request("/api/sort" + path, {
-        method: "POST",
-        body: JSON.stringify(makeStringArr(files))
-    });
-}
-
-function createNewFileObject(path: string): File {
-    const name = newTimestamp() + ".txt";
-    return {
-        id: Date.now(),
-        name: name,
-        path: join(path, name),
-        type: "text",
-        body: ""
-    }
-}
-
-function insertNewFile(files: File[], f: File, isSorted: boolean): File[] {
-    if (!isSorted) {
-        return [f].concat(files)
-    }
-    return orgSort(files.concat(f))
-}
-
-function makeNewFileRequest(path: string) {
-    request("/api/write" + path, {
-            method: "POST",
-            body: "newfile"
-    });
+function ErrComponent({err}: {err: errObj}) {
+    return (
+        <>{err.msg}</>
+    )
 }
