@@ -81,10 +81,10 @@ export function removeFromArr(files: File[], name: string): File[] {
     for (let i = 0; i < files.length; i++) {
         if (files[i].name === name) {
             files.splice(i, 1)
-            break;
+            return files;
         }
     }
-    return files;
+    throw new Error("Could not delete " + name + "from files.");
 }
 
 export function insert(files: File[], f: File, newFile: File): File[] {

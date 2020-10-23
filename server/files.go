@@ -1,12 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	p "path/filepath"
-	"strings"
 	"sort"
-	"fmt"
+	"strings"
 )
 
 type File struct {
@@ -21,7 +21,7 @@ func NewFile(path string) *File {
 	return &File{
 		Name: p.Base(path),
 		Path: path,
-		Type: fileType(ROOT+path),
+		Type: fileType(ROOT + path),
 	}
 }
 
@@ -61,17 +61,16 @@ func getFiles(path string) ([]*File, bool, error) {
 
 	return renumerate(fresh), true, nil
 	/*
-	err = writeSortFile(path, freshSort)
-	if err != nil {
-		return nil, err
-	}
+		err = writeSortFile(path, freshSort)
+		if err != nil {
+			return nil, err
+		}
 	*/
 
 	/*
 
-	*/
+	 */
 }
-
 
 func renumerate(files []*File) []*File {
 	for i, f := range files {
@@ -79,7 +78,6 @@ func renumerate(files []*File) []*File {
 	}
 	return files
 }
-
 
 func readFiles(path string) ([]*File, error) {
 	l, err := ioutil.ReadDir(p.Join(ROOT, path))
@@ -133,7 +131,7 @@ func divide(all []*File) (dirs, files []*File) {
 			info = append(info, f)
 			continue
 		}
-		if  f.Name == ".sort" {
+		if f.Name == ".sort" {
 			sort = append(sort, f)
 			continue
 		}

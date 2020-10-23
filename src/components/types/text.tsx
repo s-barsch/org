@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { Info } from '../meta';
-import { ModFuncs } from '../../types';
-import File from '../../funcs/file';
+import { Info } from 'components/meta';
+import { ModFuncs } from 'components/main/view';
+import File from 'funcs/file';
 
 type TextFieldProps = {
     file: File;

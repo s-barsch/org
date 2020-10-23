@@ -34,15 +34,15 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 	fmt.Println(list)
 	/*
 
-	sorted, err := makeFiles(path, list)
+		sorted, err := makeFiles(path, list)
 
-	files, err := readFiles(path)
-	if err != nil {
-		e.Err = err
-		return e
-	}
+		files, err := readFiles(path)
+		if err != nil {
+			e.Err = err
+			return e
+		}
 
-	all := separate(merge(sorted, files))
+		all := separate(merge(sorted, files))
 	*/
 
 	err = writeSortFile(path, list)
@@ -104,7 +104,7 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func copyFileFunc(oldpath, newpath string) error {
-	b, err := ioutil.ReadFile(ROOT+oldpath)
+	b, err := ioutil.ReadFile(ROOT + oldpath)
 	if err != nil {
 		return err
 	}
@@ -135,7 +135,7 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 		e.Err = err
 		return e
 	}
-	
+
 	err = renameSortEntry(path, newPath)
 	if err != nil {
 		e.Err = err
@@ -149,11 +149,11 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	/*
-	err = deleteBot(oldPath)
-	if err != nil {
-		e.Err = err
-		return e
-	}
+		err = deleteBot(oldPath)
+		if err != nil {
+			e.Err = err
+			return e
+		}
 	*/
 
 	return nil
@@ -284,9 +284,8 @@ func createInfo(path string) error {
 		time.Now().Format("060102_150405"),
 	)
 
-	return ioutil.WriteFile(ROOT + path + "/info", []byte(str), 0755)
+	return ioutil.WriteFile(ROOT+path+"/info", []byte(str), 0755)
 }
-
 
 func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api/write"):]
@@ -331,5 +330,3 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 
 	return nil
 }
-
-

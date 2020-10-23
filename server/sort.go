@@ -3,8 +3,8 @@ package main
 import (
 	"bytes"
 	"io/ioutil"
-	p "path/filepath"
 	"os"
+	p "path/filepath"
 	"strings"
 )
 
@@ -76,7 +76,6 @@ func merge(sorted, files []*File) []*File {
 	return append(sorted, subtract(files, sorted)...)
 }
 
-
 func subtract(base, other []*File) []*File {
 	for _, x := range other {
 		for j, f := range base {
@@ -100,6 +99,7 @@ func writeSortFile(path string, list []string) error {
 
 	return ioutil.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
 }
+
 /*
 func writeSortFile(path string, files []*File) error {
 
@@ -138,12 +138,12 @@ func renameSortEntry(oldPath, newPath string) error {
 			list[i] = p.Base(newPath)
 		}
 	}
-	
+
 	return writeSortFile(oldDir, list)
 }
 
-
 type Asc []*File
+
 func (a Asc) Len() int           { return len(a) }
 func (a Asc) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a Asc) Less(i, j int) bool { return a[i].Name < a[j].Name }

@@ -1,9 +1,9 @@
 package main
 
 import (
+	"gopkg.in/yaml.v3"
 	"io"
 	"os"
-	"gopkg.in/yaml.v3"
 )
 
 type Config struct {

@@ -19,7 +19,7 @@ export default function RenameInput({path, renameView}: RenameInputProps) {
 
     function submit(e: React.FormEvent<HTMLInputElement>) {
         const old = orgBase(path);
-        if (old === name) {
+        if (old === name || name === '') {
             return;
         }
         renameView(name);

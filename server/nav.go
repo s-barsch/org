@@ -1,9 +1,9 @@
 package main
 
 import (
-	"strings"
-	p "path/filepath"
 	"os"
+	p "path/filepath"
+	"strings"
 )
 
 type Nav struct {
@@ -18,7 +18,7 @@ type Nav struct {
 
 func getNav(path string) (*Nav, error) {
 	siblings := []*File{}
-	
+
 	if strings.Count(path, "/") >= 4 {
 		s, err := getSiblings(path)
 		if err != nil {
@@ -119,5 +119,3 @@ func dirsOnly(files []*File) []*File {
 	}
 	return nu
 }
-
-

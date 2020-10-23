@@ -11,8 +11,12 @@ import (
 )
 
 type DirView struct {
-	Nav   *Nav     `json:"nav"`
-	Path   string  `json:"path"`  
+	Path string `json:"path"`
+	Nav  *Nav   `json:"nav"`
+	Main *Main  `json:"main"`
+}
+
+type Main struct {
 	Files  []*File `json:"files"`
 	Sorted bool    `json:"sorted"`
 }
@@ -54,11 +58,12 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	v := &DirView{
-		Nav:   nav,
-		Path:   path,
-
-		Files:  files,
-		Sorted: sorted,
+		Path: path,
+		Nav:  nav,
+		Main: &Main{
+			Files:  files,
+			Sorted: sorted,
+		},
 	}
 
 	err = json.NewEncoder(w).Encode(v)

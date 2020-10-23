@@ -3,20 +3,20 @@ import { Link, useHistory } from 'react-router-dom';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
 import { basename, dirname } from 'path';
-import CrumbNav from './crumbs';
-import { Del } from '../meta';
-import { extendedBase, section } from '../../funcs/paths';
-import { TargetsContext, TargetsProps } from '../../context/targets';
-import View from '../../types';
-import File from '../../funcs/file';
-import { setActiveTarget, removeTarget } from '../../funcs/targets';
+import CrumbNav from 'components/nav/crumbs';
+import { Del } from 'components/meta';
+import { extendedBase, section } from 'funcs/paths';
+import { TargetsContext, TargetsProps } from 'context/targets';
+import File from 'funcs/file';
+import { setActiveTarget, removeTarget } from 'funcs/targets';
+import { Nav } from 'app';
 
-type TopProps = {
+type NavViewProps = {
     pathname: string;
-    view: View;
+    nav: Nav;
 }
 
-function Top({pathname, view}: TopProps) {
+function NavView({pathname, nav}: NavViewProps) {
     const { targets, saveTargets } = useContext(TargetsContext);
 
     /* theme */
@@ -39,7 +39,7 @@ function Top({pathname, view}: TopProps) {
     }
 
     function setThisActive() {
-        saveTargets(setActiveTarget(targets, view.path));
+        saveTargets(setActiveTarget(targets, pathname));
     }
 
     const history = useHistory();
@@ -58,14 +58,14 @@ function Top({pathname, view}: TopProps) {
     }
 
     const viewFile: File = {
-        name: basename(view.path),
-        path: view.path,
+        name: basename(pathname),
+        path: pathname,
         type: 'dir',
         body: '',
         id:   Date.now()
     }
 
-    if (!view.nav) {
+    if (!nav) {
         return null
     }
 
@@ -73,7 +73,7 @@ function Top({pathname, view}: TopProps) {
         <>
         <nav id="links">
             <span className="links__top">
-                <LinkList links={view.nav.links} active="" />
+                <LinkList links={nav.links} active="" />
             </span>
             <span className="right">
                 <TargetButton clickFn={setThisActive} />
@@ -82,7 +82,7 @@ function Top({pathname, view}: TopProps) {
             </span>
         </nav>
         <nav id="bar">
-            <CrumbNav path={pathname} nav={view.nav}/>
+            <CrumbNav path={pathname} nav={nav}/>
             <TargetsList targets={targets} saveTargets={saveTargets}/>
         </nav>
         </>
@@ -145,7 +145,7 @@ function LinkList({links, active}: LinkListProps) {
     )
 }
 
-export default Top;
+export default NavView;
 
 function readStateBool(key: string): boolean {
     const str = localStorage.getItem(key);

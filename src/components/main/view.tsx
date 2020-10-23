@@ -1,26 +1,38 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import AddDir from './add';
-import Text from '../types/text';
+import AddDir from 'components/main/add';
+import Text from 'components/types/text';
 import NewTextIcon from '@material-ui/icons/Flare';
-import { DirList, FileList } from './files';
-import { TargetsContext } from '../../context/targets';
+import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
-import { newTimestamp, isText } from '../../funcs/paths';
-import { separate, orgSort } from '../../funcs/sort';
-import File from '../../funcs/file';
-import View, { ModFuncs } from '../../types';
-import RenameInput from './rename';
+import { newTimestamp, isText } from 'funcs/paths';
+import { orgSort } from 'funcs/sort';
+import File from 'funcs/file';
+import { DirList, FileList } from 'components/main/files';
+import RenameInput from 'components/main/rename';
+import { Main } from 'app';
 import { filesOnly, dirsOnly, makeStringArr, merge, insert, 
     createDuplicate, isPresent, removeFromArr } from './list';
 
-type FileViewProps = {
-    pathname: string;
-    view: View;
-    setView: (v: View) => void;
+export type ModFuncs = {
+    writeFile: ActionFunc;
+    duplicateFile: ActionFunc;
+    deleteFile: ActionFunc;
+    moveFile: (f: File, newPath: string) => void;
+    renameFile: (oldPath: string, f: File) => void;
+    copyToTarget: ActionFunc;
+    moveToTarget: ActionFunc;
 }
 
-function FileView({pathname, view, setView}: FileViewProps) {
+export type ActionFunc = (f: File) => void;
+
+type FileViewProps = {
+    pathname: string;
+    main: Main;
+    setMain: (main: Main) => void;
+}
+
+function MainView({pathname, main, setMain}: FileViewProps) {
     let { targets } = useContext(TargetsContext);
 
     const [path, setPath] = useState(pathname);
@@ -29,123 +41,58 @@ function FileView({pathname, view, setView}: FileViewProps) {
 
     useEffect(() => {
         setPath(pathname);
-        setSorted(view.sorted);
-        setFiles(view.files);
-    }, [pathname, view])
+        setSorted(main.sorted);
+        setFiles(main.files);
+    }, [pathname, main])
 
     const history = useHistory();
 
-    type reqOptions = {
-        method: string;
-        body:   string;
-    }
-
-    async function request(path: string, options?: reqOptions, callback?: () => void) {
-        try {
-            const resp = await fetch(path, options);
-            if (!resp.ok) {
-                const text = await resp.text();
-                console.log("fetch failed: " + path + "\nreason: " + text);
-                return;
-            }
-            if (callback) {
-                callback();
-            }
-        } catch(err) {
-            console.log(err)
-        }
-    }
-
     function update(newFiles: File[], isSorted: boolean) {
-        if (!isSorted) {
-            throw new Error('isSorted undefined');
-        }
-
-        if (!isSorted) {
-            newFiles = orgSort(newFiles);
-        }
-
-        setFiles(newFiles);
         setSorted(isSorted);
+        setFiles(newFiles);
 
-        view.files = newFiles;
-        view.sorted = isSorted;
-        setView(view);
-
+        setMain({
+            sorted: isSorted,
+            files:  newFiles
+        });
 
         if (isSorted) {
-            request("/api/sort" + path, {
-                method: "POST",
-                body: JSON.stringify(makeStringArr(newFiles))
-            }, () => {});
+            saveSortRequest(path, files)
         }
     }
 
     function addNewDir(name: string) {
-        if (name === "") {
-            return;
-        }
-    
         if (isPresent(files, name)) {
             alert("Dir with this name already exists.");
             return;
         }
 
-        let f = {
-            id:   Date.now(),
-            name: name,
-            body: "",
-            path: join(path, name),
-            type: "dir"
-        }
+        const dirPath = join(path, name);
 
-        update(separate(files.slice().concat(f)), sorted)
-
-        request("/api/write" + join(path, name));
+        update(insertNewDir(files.slice(), dirPath), sorted);
+        makeNewDirRequest(dirPath);
     }
 
     function writeFile(f: File) {
-        request("/api/write" + f.path, {
-            method: "POST",
-            body:   f.body
-        });
+        makeWriteRequest(f.path, f.body);
     }
 
-    function renameView(newName: string) {
-        let newPath = "";
+    async function renameView(newName: string) {
+        let oldName = basename(path);
+        let newPath = join(dirname(path), newName);
+
         if (isText(pathname)) {
-            const name = basename(path)
-            const t = files.find(f => f.name === name);
-            if (!t) {
-                alert("rename: Couldn’t find text.")
-                return
-            }
-            t.path = join(dirname(pathname), newName);
-            t.name = newName;
-            update(files.slice(), sorted);
-            history.push(t.path);
-            request("/api/move" + pathname, {
-                method: "POST",
-                body: t.path
-            });
-            return;
+            const newFiles = renameText(files.slice(), oldName, newName)
+            update(newFiles, sorted);
         }
-        newPath = join(dirname(path), newName);
-        request("/api/move" + pathname, {
-            method: "POST",
-            body: newPath
-        }, function callback() {
-            history.push(newPath);
-        });
+
+        await renameViewRequest(path, newPath)
+        history.push(newPath);
     }
 
-    // doesn’t leave the directory.
     function renameFile(oldPath: string, f: File) {
         update(files.slice(), sorted);
-        request("/api/move" + oldPath, {
-            method: "POST",
-            body: f.path
-        });
+        makeMoveRequest(oldPath, f.path);
     }
 
     function duplicateFile(f: File) {
@@ -157,39 +104,17 @@ function FileView({pathname, view, setView}: FileViewProps) {
             return;
         }
 
-        if (sorted) {
-            update(insert(files.slice(), f, newFile), sorted);
-        } else {
-            update(files.slice().concat(newFile), sorted);
-        }
-
-        request("/api/write" + newFile.path, {
-            method: "POST",
-            body: newFile.body
-        });
+        update(insertDuplicateFile(files.slice(), newFile, sorted), sorted);
+        makeWriteRequest(newFile.path, newFile.body)
     }
 
     function copyFile(f: File, newPath: string) {
-        request("/api/copy" + f.path, {
-            method: "POST",
-            body: newPath
-        },
-            function callBack() {
-                setWriteTime();
-            }
-        );
+        makeCopyRequest(f.path, newPath);
     }
 
     function moveFile(f: File, newPath: string) {
         setFiles(removeFromArr(files.slice(), f.name));
-        request("/api/move" + f.path, {
-            method: "POST",
-            body: newPath
-        },
-            function callBack() {
-                setWriteTime();
-            }
-        );
+        makeMoveRequest(f.path, newPath);
     }
 
     function copyToTarget(f: File) {
@@ -201,50 +126,35 @@ function FileView({pathname, view, setView}: FileViewProps) {
     }
 
     function deleteFile(f: File) {
-        setFiles(removeFromArr(files.slice(), f.name));
         if (f.name === ".sort") {
             setSorted(false);
         }
-        request("/api/delete" + f.path)
+        setFiles(removeFromArr(files.slice(), f.name));
+        makeDeleteRequest(f.path);
     }
 
     function createNewFile() {
-        const name = newTimestamp() + ".txt";
-        const f = {
-            id: Date.now(),
-            name: name,
-            path: path + (path === "/" ? "" : "/") + name,
-            type: "text",
-            body: ""
-        }
+        const f = createNewFileObject(pathname);
+        const newFiles = insertNewFile(files.slice(), f, sorted);
 
-        update(separate(files.slice().concat(f)), sorted);
-
-        request("/api/write" + f.path,
-            {
-                method: "POST",
-                body: "newfile"
-            },
-            function callBack() {
-                history.push(f.path)
-            }
-        )
+        update(newFiles, sorted);
+        makeNewFileRequest(f.path)
+        history.push(f.path);
     }
 
     async function saveSort(part: File[], type: string) {
-        setSorted(true);
         const New = merge(files.slice(), part, type);
         update(New, true);
     }
 
     const modFuncs: ModFuncs = {
-        writeFile: writeFile,
-        duplicateFile: duplicateFile,
-        deleteFile: deleteFile,
-        moveFile: moveFile,
-        renameFile: renameFile,
-        copyToTarget: copyToTarget,
-        moveToTarget: moveToTarget
+        writeFile:      writeFile,
+        deleteFile:     deleteFile,
+        moveFile:       moveFile,
+        renameFile:     renameFile,
+        duplicateFile:  duplicateFile,
+        copyToTarget:   copyToTarget,
+        moveToTarget:   moveToTarget
     }
 
     const Head = () => {
@@ -256,18 +166,20 @@ function FileView({pathname, view, setView}: FileViewProps) {
         )
     }
 
+    console.log(files);
+
     /* file view */
 
     if (isText(pathname)) {
         if (!files || files.length === 0) {
-            return <></>;
+            return <>No files found.</>;
         }
 
         const name = basename(pathname);
         const text = files.find(f => f.name === name);
 
         if (!text) {
-            return <>"Couldn’t find text: " name + "."</>
+            return <>{'Couldn’t find text: ' + name + '.'}</>
         }
 
         return (
@@ -295,7 +207,10 @@ function FileView({pathname, view, setView}: FileViewProps) {
     )
 }
 
-export default FileView;
+export default MainView;
+
+
+/* additional funcs */
 
 function AddText({newFn}: {newFn: () => void}) {
     return <button onClick={newFn}><NewTextIcon /></button>
@@ -305,4 +220,127 @@ function setWriteTime() {
     localStorage.setItem("write", String(Date.now()));
 }
 
+function insertNewDir(files: File[], path: string): File[] {
+    let f = {
+        id:   Date.now(),
+        name: basename(path),
+        path: path,
+        type: "dir",
+        body: ""
+    }
+    return files.concat(f)
+}
 
+type reqOptions = {
+    method: string;
+    body:   string;
+}
+
+async function request(path: string, options?: reqOptions, callback?: () => void) {
+    try {
+        const resp = await fetch(path, options);
+        if (!resp.ok) {
+            const text = await resp.text();
+            console.log("fetch failed: " + path + "\nreason: " + text);
+            return;
+        }
+        if (callback) {
+            callback();
+        }
+    } catch(err) {
+        console.log(err)
+    }
+}
+
+function makeMoveRequest(path: string, newPath: string) {
+    request("/api/move" + path, {
+        method: "POST",
+        body: newPath
+    },
+        function callBack() {
+            setWriteTime();
+        }
+    );
+}
+
+function makeCopyRequest(path: string, newPath: string) {
+    request("/api/copy" + path, {
+        method: "POST",
+        body: newPath
+    },
+        function callBack() {
+            setWriteTime();
+        }
+    );
+}
+
+function insertDuplicateFile(files: File[], f: File, isSorted: boolean) {
+    if (isSorted) {
+        return insert(files, f, f);
+    }
+    return files.concat(f);
+}
+
+function makeWriteRequest(path: string, body: string) {
+    request("/api/write" + path, {
+        method: "POST",
+        body:   body
+    });
+}
+
+function makeDeleteRequest(path: string) {
+    request("/api/delete" + path);
+}
+
+function makeNewDirRequest(path: string) {
+    request("/api/write" + path);
+}
+
+function renameText(files: File[], oldName: string, newName: string): File[] {
+    const f = files.find(f => f.name === oldName);
+    if (!f) {
+        throw new Error("renameText: Couldn’t find file. " + oldName)
+    }
+    f.path = join(dirname(f.path), newName);
+    f.name = newName;
+    return files
+}
+
+function renameViewRequest(path: string, body: string) {
+    request("/api/move" + path, {
+        method: "POST",
+        body: body
+    });
+}
+
+function saveSortRequest(path: string, files: File[]) {
+    request("/api/sort" + path, {
+        method: "POST",
+        body: JSON.stringify(makeStringArr(files))
+    });
+}
+
+function createNewFileObject(path: string): File {
+    const name = newTimestamp() + ".txt";
+    return {
+        id: Date.now(),
+        name: name,
+        path: join(path, name),
+        type: "text",
+        body: ""
+    }
+}
+
+function insertNewFile(files: File[], f: File, isSorted: boolean): File[] {
+    if (!isSorted) {
+        return [f].concat(files)
+    }
+    return orgSort(files.concat(f))
+}
+
+function makeNewFileRequest(path: string) {
+    request("/api/write" + path, {
+            method: "POST",
+            body: "newfile"
+    });
+}
