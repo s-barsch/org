@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import AddDir from 'components/main/add';
 import Text from 'components/types/text';
@@ -10,7 +10,7 @@ import { orgSort } from 'funcs/sort';
 import File from 'funcs/file';
 import { DirList, FileList } from 'components/main/files';
 import RenameInput from 'components/main/rename';
-import { Main } from 'app';
+import { Main, errObj } from 'app';
 import { filesOnly, dirsOnly, makeStringArr, merge, insert, 
     createDuplicate, isPresent, removeFromArr } from './list';
 
@@ -26,33 +26,20 @@ export type ModFuncs = {
 
 export type ActionFunc = (f: File) => void;
 
-type FileViewProps = {
-    pathname: string;
-    main: Main;
+type MainViewProps = {
+    path: string;
+    files: File[];
+    sorted: boolean;
     setMain: (main: Main) => void;
+    setErr: (err: errObj) => void;
 }
 
-function MainView({pathname, main, setMain}: FileViewProps) {
+function MainView({path, files, sorted, setMain, setErr}: MainViewProps) {
     let { targets } = useContext(TargetsContext);
-
-    const [path, setPath] = useState(pathname);
-    const [files, setFiles] = useState([] as File[]);
-    const [sorted, setSorted] = useState(false);
-
-    const [err, setErr] = useState({} as errObj);
-
-    useEffect(() => {
-        setPath(pathname);
-        setSorted(main.sorted);
-        setFiles(main.files);
-    }, [pathname, main])
 
     const history = useHistory();
 
     function update(newFiles: File[], isSorted: boolean) {
-        setSorted(isSorted);
-        setFiles(newFiles);
-
         setMain({
             sorted: isSorted,
             files:  newFiles
@@ -83,7 +70,7 @@ function MainView({pathname, main, setMain}: FileViewProps) {
         let oldName = basename(path);
         let newPath = join(dirname(path), newName);
 
-        if (isText(pathname)) {
+        if (isText(path)) {
             const newFiles = renameText(files.slice(), oldName, newName)
             update(newFiles, sorted);
         }
@@ -115,7 +102,7 @@ function MainView({pathname, main, setMain}: FileViewProps) {
     }
 
     function moveFile(f: File, newPath: string) {
-        setFiles(removeFromArr(files.slice(), f.name));
+        update(removeFromArr(files.slice(), f.name), sorted);
         makeMoveRequest(f.path, newPath, setErr);
     }
 
@@ -129,14 +116,14 @@ function MainView({pathname, main, setMain}: FileViewProps) {
 
     function deleteFile(f: File) {
         if (f.name === ".sort") {
-            setSorted(false);
+            sorted = false;
         }
-        setFiles(removeFromArr(files.slice(), f.name));
+        update(removeFromArr(files.slice(), f.name), sorted);
         makeDeleteRequest(f.path, setErr);
     }
 
     function createNewFile() {
-        const f = createNewFileObject(pathname);
+        const f = createNewFileObject(path);
         const newFiles = insertNewFile(files.slice(), f, sorted);
 
         update(newFiles, sorted);
@@ -162,10 +149,9 @@ function MainView({pathname, main, setMain}: FileViewProps) {
     const Head = () => {
         return (
             <>
-                <ErrComponent err={err} />
                 <h1 className="name">
-                <Link className="parent" to={dirname(pathname)}>^</Link>
-                <RenameInput path={pathname} renameView={renameView} />
+                <Link className="parent" to={dirname(path)}>^</Link>
+                <RenameInput path={path} renameView={renameView} />
                 </h1>
             </>
         )
@@ -175,12 +161,12 @@ function MainView({pathname, main, setMain}: FileViewProps) {
 
     /* file view */
 
-    if (isText(pathname)) {
+    if (isText(path)) {
         if (!files || files.length === 0) {
             return <>No files found.</>;
         }
 
-        const name = basename(pathname);
+        const name = basename(path);
         const text = files.find(f => f.name === name);
 
         if (!text) {
@@ -220,13 +206,6 @@ export default MainView;
 type reqOptions = {
     method: string;
     body:   string;
-}
-
-type errObj = {
-    path: string;
-    func: string;
-    code: number;
-    msg:  string;
 }
 
 type setErrFn = (err: errObj) => void;
@@ -409,8 +388,3 @@ function insertNewDir(files: File[], path: string): File[] {
     return files.concat(f)
 }
 
-function ErrComponent({err}: {err: errObj}) {
-    return (
-        <>{err.msg}</>
-    )
-}

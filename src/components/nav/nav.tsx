@@ -9,14 +9,15 @@ import { extendedBase, section } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
 import File from 'funcs/file';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
-import { Nav } from 'app';
+import { Nav, errObj } from 'app';
 
 type NavViewProps = {
     pathname: string;
     nav: Nav;
+    err: errObj;
 }
 
-function NavView({pathname, nav}: NavViewProps) {
+function NavView({pathname, nav, err}: NavViewProps) {
     const { targets, saveTargets } = useContext(TargetsContext);
 
     /* theme */

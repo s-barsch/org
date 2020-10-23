@@ -45,11 +45,19 @@ function newDirView(): DirView {
     };
 }
 
+export type errObj = {
+    path: string;
+    func: string;
+    code: number;
+    msg:  string;
+}
+
 function Loader() {
     const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
     const history = useHistory();
 
+    const [err, setErr] = useState({} as errObj);
     const [dir, setDir] = useState(newDirView());
     const [notFound, setNotFound] = useState(false);
 
@@ -74,6 +82,8 @@ function Loader() {
             console.log(err)
         }
     };
+
+    console.log(err);
 
     useEffect(() => {
         if (isToday(path)) {
@@ -116,8 +126,8 @@ function Loader() {
 
     return (
         <>
-        <NavView pathname={path} nav={dir.nav} />
-        <MainView pathname={path} main={dir.main} setMain={setMain} />
+        <NavView pathname={path} nav={dir.nav} err={err} />
+        <MainView path={path} files={dir.main.files} sorted={dir.main.sorted} setMain={setMain} setErr={setErr} />
         </>
     )
 }
