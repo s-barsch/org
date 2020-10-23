@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import './css/main.css';
+import 'src/css/main.css';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
-import MainView from './components/main/view';
-import NavView from './components/nav/nav';
+import MainView from 'src/components/main/view';
+import NavView from 'src/components/nav/nav';
 import TargetsProvider, { TargetsContext } from "./context/targets";
 import { basename } from 'path';
-import { section, isText } from './funcs/paths';
+import { section, isText } from 'src/funcs/paths';
 import H from 'history';
-import File from 'funcs/file';
+import File from 'src/funcs/file';
 
 export default function App() {
     return (
@@ -52,12 +52,21 @@ export type errObj = {
     msg:  string;
 }
 
+function newErr(): errObj {
+    return {
+        path: "",
+        func: "",
+        code: 0,
+        msg:  ""
+    }
+}
+
 function Loader() {
     const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
     const history = useHistory();
 
-    const [err, setErr] = useState({} as errObj);
+    const [err, setErr] = useState(newErr());
     const [dir, setDir] = useState(newDirView());
     const [notFound, setNotFound] = useState(false);
 
@@ -83,7 +92,6 @@ function Loader() {
         }
     };
 
-    console.log(err);
 
     useEffect(() => {
         if (isToday(path)) {

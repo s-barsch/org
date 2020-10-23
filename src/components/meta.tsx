@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/ClearSharp';
 import EditIcon from '@material-ui/icons/Edit';
 import { basename, dirname, join } from 'path';
-import File from 'funcs/file';
-import { ModFuncs, ActionFunc } from 'components/main/view';
+import File from 'src/funcs/file';
+import { ModFuncs, ActionFunc } from 'src/components/main/view';
 
 type BotToggleProps = {
     file: File;

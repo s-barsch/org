@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import ReverseIcon from '@material-ui/icons/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
 import { basename } from 'path';
-import { Info } from 'components/meta';
-import Text from 'components/types/text';
-import Image from 'components/types/image';
-import { ModFuncs } from 'components/main/view';
-import File from 'funcs/file';
-import { setActiveTarget } from 'funcs/targets';
-import { TargetsContext } from 'context/targets';
+import { Info } from 'src/components/meta';
+import Text from 'src/components/types/text';
+import Image from 'src/components/types/image';
+import { ModFuncs } from 'src/components/main/view';
+import File from 'src/funcs/file';
+import { setActiveTarget } from 'src/funcs/targets';
+import { TargetsContext } from 'src/context/targets';
 
 type FileSwitchProps = {
     file: File;

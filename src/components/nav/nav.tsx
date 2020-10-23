@@ -3,13 +3,14 @@ import { Link, useHistory } from 'react-router-dom';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
 import { basename, dirname } from 'path';
-import CrumbNav from 'components/nav/crumbs';
-import { Del } from 'components/meta';
-import { extendedBase, section } from 'funcs/paths';
-import { TargetsContext, TargetsProps } from 'context/targets';
-import File from 'funcs/file';
-import { setActiveTarget, removeTarget } from 'funcs/targets';
-import { Nav, errObj } from 'app';
+import CrumbNav from 'src/components/nav/crumbs';
+import { Del } from 'src/components/meta';
+import { extendedBase, section } from 'src/funcs/paths';
+import { TargetsContext, TargetsProps } from 'src/context/targets';
+import File from 'src/funcs/file';
+import { setActiveTarget, removeTarget } from 'src/funcs/targets';
+import { Nav, errObj } from 'src/app';
+import { ErrComponent } from 'src/components/error';
 
 type NavViewProps = {
     pathname: string;
@@ -77,6 +78,7 @@ function NavView({pathname, nav, err}: NavViewProps) {
                 <LinkList links={nav.links} active="" />
             </span>
             <span className="right">
+                <ErrComponent err={err} />
                 <TargetButton clickFn={setThisActive} />
                 <button onClick={toggleTheme} ><ThemeIcon /></button>
                 <Del file={viewFile} deleteFile={deleteDir} />

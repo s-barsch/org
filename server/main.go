@@ -74,7 +74,7 @@ type Err struct {
 }
 
 func (e *Err) Error() string {
-	return fmt.Sprintf("%v: %v (%d)\n%v", e.Func, e.Err.Error(), e.Code, e.Path)
+	return fmt.Sprintf("%v: %v (%d)\npath: %v", e.Func, e.Err.Error(), e.Code, e.Path)
 }
 
 var ROOT = "org"

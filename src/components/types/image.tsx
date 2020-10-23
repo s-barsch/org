@@ -1,9 +1,9 @@
 import React from 'react';
-import TextField from 'components/types/text';
-import { Del } from 'components/meta';
 import { basename } from 'path';
-import File from 'funcs/file';
-import { ModFuncs } from 'components/main/view';
+import TextField from 'src/components/types/text';
+import { Del } from 'src/components/meta';
+import File from 'src/funcs/file';
+import { ModFuncs } from 'src/components/main/view';
 
 type ImageProps = {
     file: File;

@@ -326,3 +326,41 @@ textarea {
     outline:none;
     border:none;
 }
+
+.errbox {
+    margin-right:.375rem;
+    vertical-align:top;
+    margin-top:.125rem;
+    width:1.25rem;
+    height:1.25rem;
+    background:grey;
+    display:inline-block;
+}
+
+.success .errbox {
+    background:green;
+}
+
+.fail .errbox {
+    background:red;
+}
+
+.success {
+    color:white;
+}
+.success svg {
+    vertical-align:middle;
+}
+
+.err {
+    vertical-align:top;
+    font-size:1.25rem;
+    margin-right:.75rem;
+    font-family:sans-serif;
+    white-space:pre-wrap;
+    max-width:40rem;
+    display:inline-block;
+    background:orange;
+    padding:.25rem;
+}
+
