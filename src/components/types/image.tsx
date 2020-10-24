@@ -2,7 +2,7 @@ import React from 'react';
 import { basename } from 'path';
 import TextField from 'components/types/text';
 import { Del } from 'components/meta';
-import File from 'funcs/file';
+import File from 'funcs/files';
 import { ModFuncs } from 'components/main/view';
 
 type ImageProps = {

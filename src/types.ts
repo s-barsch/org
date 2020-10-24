@@ -1,2 +1,2 @@
-import File from './funcs/file';
+import File from './funcs/files';
 

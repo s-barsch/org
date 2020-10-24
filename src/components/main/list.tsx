@@ -7,9 +7,10 @@ import { Info } from 'components/meta';
 import Text from 'components/types/text';
 import Image from 'components/types/image';
 import { ModFuncs } from 'components/main/view';
-import File from 'funcs/file';
+import File from 'funcs/files';
 import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
+import { orgSort } from 'funcs/sort';
 
 type FileSwitchProps = {
     file: File;
@@ -39,7 +40,7 @@ type FileListProps = {
     modFuncs: ModFuncs;
 }
 
-function FileList({files, saveSort, modFuncs}: FileListProps) {
+export function FileList({files, saveSort, modFuncs}: FileListProps) {
     const [state, setState] = useState(files);
 
     useEffect(() => {
@@ -47,7 +48,7 @@ function FileList({files, saveSort, modFuncs}: FileListProps) {
     }, [files])
 
     const reverseFiles = () => {
-        const reverse = preSort(state.slice().reverse());
+        const reverse = orgSort(state.slice().reverse());
         saveSort(reverse, "files");
     }
 
@@ -98,7 +99,7 @@ type DirListProps = {
     saveSort: (part: File[], type: string) => void;
 }
 
-function DirList({dirs, saveSort}: DirListProps) {
+export function DirList({dirs, saveSort}: DirListProps) {
     const [state, setState] = useState(dirs);
 
     useEffect(() => {
@@ -118,26 +119,3 @@ function DirList({dirs, saveSort}: DirListProps) {
         </ReactSortable>
     )
 }
-
-export { DirList, FileList, FileSwitch };
-
-function preSort(files: File[]): File[] {
-    let info = [];
-    let sort = [];
-    let nu   = [];
-
-    for (const f of files) {
-        if (f.name === "info") {
-            info.push(f)
-            continue
-        }
-        if (f.name === ".sort") {
-            sort.push(f)
-            continue
-        }
-        nu.push(f)
-    }
-
-    return info.concat(nu).concat(sort);
-}
-

@@ -7,7 +7,7 @@ import CrumbNav from 'components/nav/crumbs';
 import { Del } from 'components/meta';
 import { extendedBase, section } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
-import File from 'funcs/file';
+import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
 import { Nav, errObj } from 'app';
 import { ErrComponent } from 'components/error';

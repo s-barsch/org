@@ -1,6 +1,5 @@
-import File from 'funcs/file';
+import File, { makeStringArr } from 'funcs/files';
 import { errObj } from 'app';
-import { makeStringArr } from './list';
 
 type setErrFn = (err: errObj) => void;
 

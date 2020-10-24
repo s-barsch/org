@@ -1,4 +1,4 @@
-import File from './file';
+import File from './files';
 
 type Divided = {
     dirs: File[];

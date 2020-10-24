@@ -1,10 +1,11 @@
 import React, {useRef, useCallback, useState} from 'react';
+import NewTextIcon from '@material-ui/icons/Flare';
 
-type AddDirProps = {
-    submitFn: (name: string) => void;
+export function AddText({createNewFile}: {createNewFile: () => void}) {
+    return <button onClick={createNewFile}><NewTextIcon /></button>
 }
 
-function AddDir({submitFn}: AddDirProps) {
+export function AddDir({addNewDir}: {addNewDir: (name: string) => void;}) {
     const [field, showField] = useState(false);
     const [fieldEl] = useHookWithRefCallback()
 
@@ -13,7 +14,7 @@ function AddDir({submitFn}: AddDirProps) {
     }
 
     if (field) {
-        return <AddField fieldRef={fieldEl} submitFn={submitFn} toggleFn={toggleField} />
+        return <AddField fieldRef={fieldEl} submitFn={addNewDir} toggleFn={toggleField} />
     }
 
     return <AddButton clickFn={toggleField} />
@@ -47,8 +48,6 @@ const AddButton = ({clickFn}: {clickFn: () => void}) => {
         <button className="add-dir" onClick={clickFn}>+</button>
     )
 }
-
-export default AddDir;
 
 // from here https://gist.github.com/thebuilder/fb07c989093d4a82811625de361884e7
 function useHookWithRefCallback(): ((node: any) => void)[] {

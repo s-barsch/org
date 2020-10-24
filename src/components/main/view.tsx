@@ -1,29 +1,32 @@
 import React, { useContext } from 'react';
-import { useHistory, Link } from 'react-router-dom';
-import NewTextIcon from '@material-ui/icons/Flare';
-import AddDir from 'components/main/add';
-import Text from 'components/types/text';
+import { useHistory } from 'react-router-dom';
 import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
-import { newTimestamp, isText } from 'funcs/paths';
+import { isText } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
-import File from 'funcs/file';
-import { DirList, FileList } from 'components/main/files';
-import RenameInput from 'components/main/rename';
 import { Main, errObj } from 'app';
-import { filesOnly, dirsOnly, merge, insertBefore, createDuplicate, 
-    isPresent, removeFromArr } from './list';
+import File, { newFile, merge, insertBefore, createDuplicate, 
+    isPresent, removeFromArr } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
     copyRequest, newFileRequest, deleteRequest, renameViewRequest } from './requests';
+import TextView from 'components/main/text';
+import DirView from 'components/main/dir';
 
 export type ModFuncs = {
     writeFile: ActionFunc;
     duplicateFile: ActionFunc;
     deleteFile: ActionFunc;
+    createNewFile: () => void;
     moveFile: (f: File, newPath: string) => void;
     renameFile: (oldPath: string, f: File) => void;
+
     copyToTarget: ActionFunc;
     moveToTarget: ActionFunc;
+
+    addNewDir: (name: string) => void;
+    renameView: (name: string) => void;
+
+    saveSort: (part: File[], type:string) => void;
 }
 
 export type ActionFunc = (f: File) => void;
@@ -125,7 +128,7 @@ function MainView({path, files, sorted, setMain, setErr}: MainViewProps) {
     }
 
     function createNewFile() {
-        const f = createNewFileObject(path);
+        const f = newFile(path);
         const newFiles = insertNewFile(files.slice(), f, sorted);
 
         update(newFiles, sorted);
@@ -145,57 +148,21 @@ function MainView({path, files, sorted, setMain, setErr}: MainViewProps) {
         renameFile:     renameFile,
         duplicateFile:  duplicateFile,
         copyToTarget:   copyToTarget,
-        moveToTarget:   moveToTarget
-    }
+        moveToTarget:   moveToTarget,
 
-    const Head = () => {
-        return (
-            <>
-                <h1 className="name">
-                <Link className="parent" to={dirname(path)}>^</Link>
-                <RenameInput path={path} renameView={renameView} />
-                </h1>
-            </>
-        )
-    }
+        createNewFile:  createNewFile,
 
-    /* file view */
+        addNewDir:      addNewDir,
+        renameView:     renameView,
+
+        saveSort:       saveSort
+    }
 
     if (isText(path)) {
-        if (!files || files.length === 0) {
-            return <>No files found.</>;
-        }
-
-        const name = basename(path);
-        const text = files.find(f => f.name === name);
-
-        if (!text) {
-            return <>{'Couldn’t find text: ' + name + '.'}</>
-        }
-
-        return (
-            <>
-            <Head />
-            <Text file={text} modFuncs={modFuncs} isSingle={true} />
-            </>
-        )
+        return <TextView path={path} files={files} modFuncs={modFuncs} />;
     }
 
-    /* dir view */
-
-    return (
-        <>
-            <Head />
-            <nav id="dirs">
-                <DirList  dirs={dirsOnly(files)} saveSort={saveSort} />
-                <AddDir submitFn={addNewDir} />
-            </nav>
-            <section id="files">
-                <AddText newFn={createNewFile} />
-                <FileList files={filesOnly(files)} modFuncs={modFuncs} saveSort={saveSort} />
-            </section>
-        </>
-    )
+    return <DirView path={path} files={files} modFuncs={modFuncs} />
 }
 
 export default MainView;
@@ -217,17 +184,6 @@ function insertNewFile(files: File[], f: File, isSorted: boolean): File[] {
     return orgSort(files.concat(f))
 }
 
-function createNewFileObject(path: string): File {
-    const name = newTimestamp() + ".txt";
-    return {
-        id: Date.now(),
-        name: name,
-        path: join(path, name),
-        type: "text",
-        body: ""
-    }
-}
-
 function renameText(files: File[], oldName: string, newName: string): File[] {
     const f = files.find(f => f.name === oldName);
     if (!f) {
@@ -236,10 +192,6 @@ function renameText(files: File[], oldName: string, newName: string): File[] {
     f.path = join(dirname(f.path), newName);
     f.name = newName;
     return files
-}
-
-function AddText({newFn}: {newFn: () => void}) {
-    return <button onClick={newFn}><NewTextIcon /></button>
 }
 
 function insertNewDir(files: File[], path: string): File[] {

@@ -1,5 +1,26 @@
-import { extname, dirname } from 'path';
-import File from '../../funcs/file';
+import { newTimestamp } from './paths';
+import { extname, dirname, join } from 'path';
+
+type File = {
+    id:   number;
+    path: string;
+    name: string;
+    type: string;
+    body: string;
+}
+
+export default File;
+
+export function newFile(path: string): File {
+    const name = newTimestamp() + ".txt";
+    return {
+        id: Date.now(),
+        name: name,
+        path: join(path, name),
+        type: "text",
+        body: ""
+    }
+}
 
 export type SplitName = {
     trunk: string;

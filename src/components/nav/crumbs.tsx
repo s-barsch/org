@@ -4,7 +4,7 @@ import { basename } from 'path';
 import { TargetsContext } from 'context/targets';
 import { isText } from 'funcs/paths';
 import { Nav } from 'app';
-import File from 'funcs/file';
+import File from 'funcs/files';
 import { setActiveTarget } from 'funcs/targets';
 
 function Spacer() {

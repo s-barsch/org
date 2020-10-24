@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { orgBase } from '../../funcs/paths';
-
-type RenameInputProps = {
+import { Link } from 'react-router-dom';
+import { dirname } from 'path';
+import { orgBase } from 'funcs/paths';
+type HeadProps = {
     path: string;
     renameView: (name: string) => void;
 }
 
-export default function RenameInput({path, renameView}: RenameInputProps) {
+export default function Head({path, renameView}: HeadProps) {
+    return (
+        <h1 className="name">
+        <Link className="parent" to={dirname(path)}>^</Link>
+        <RenameView path={path} renameView={renameView} />
+        </h1>
+    )
+}
+
+type RenameViewProps = {
+    path: string;
+    renameView: (name: string) => void;
+}
+
+function RenameView({path, renameView}: RenameViewProps) {
     const [name, setName] = useState(orgBase(path));
 
     useEffect(() => {

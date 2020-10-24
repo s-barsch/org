@@ -7,7 +7,7 @@ import TargetsProvider, { TargetsContext } from "./context/targets";
 import { basename } from 'path';
 import { section, isText } from 'funcs/paths';
 import H from 'history';
-import File from 'funcs/file';
+import File from 'funcs/files';
 
 export default function App() {
     return (
