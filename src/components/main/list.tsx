@@ -6,7 +6,7 @@ import { basename } from 'path';
 import { Info } from 'components/meta';
 import Text from 'components/types/text';
 import Image from 'components/types/image';
-import { ModFuncs } from 'components/main/view';
+import { modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
 import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
@@ -14,7 +14,7 @@ import { orgSort } from 'funcs/sort';
 
 type FileSwitchProps = {
     file: File;
-    modFuncs: ModFuncs;
+    modFuncs: modFuncsObj;
     isSingle: boolean;
 }
 
@@ -37,7 +37,7 @@ function FileSwitch({file, modFuncs, isSingle}: FileSwitchProps) {
 type FileListProps = {
     files: File[];
     saveSort: (part: File[], type: string) => void;
-    modFuncs: ModFuncs;
+    modFuncs: modFuncsObj;
 }
 
 export function FileList({files, saveSort, modFuncs}: FileListProps) {

@@ -4,16 +4,17 @@ import Head from 'components/main/head';
 import Text from 'components/types/text';
 import File from 'funcs/files';
 
-import { ModFuncs } from 'components/main/view';
+import { mainFuncsObj, modFuncsObj } from 'components/main/main';
 import { basename } from 'path';
 
 type TextViewProps = {
     path: string;
     files: File[];
-    modFuncs: ModFuncs;
+    mainFuncs: mainFuncsObj;
+    modFuncs: modFuncsObj;
 }
 
-export default function TextView({path, files, modFuncs}: TextViewProps) {
+export default function TextView({path, files, mainFuncs, modFuncs}: TextViewProps) {
     if (!files || files.length === 0) {
         return <>No files found.</>;
     }
@@ -27,7 +28,7 @@ export default function TextView({path, files, modFuncs}: TextViewProps) {
 
     return (
         <>
-            <Head path={path} renameView={modFuncs.renameView} />
+            <Head path={path} renameView={mainFuncs.renameView} />
             <Text file={text} modFuncs={modFuncs} isSingle={true} />
         </>
     )

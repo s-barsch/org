@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Info } from 'components/meta';
-import { ModFuncs } from 'components/main/view';
+import { modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
 
 type TextFieldProps = {
     file: File;
-    modFuncs: ModFuncs;
+    modFuncs: modFuncsObj;
     isSingle: boolean;
 }
 

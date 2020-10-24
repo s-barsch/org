@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import 'css/main.scss';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
-import MainView from 'components/main/view';
-import NavView from 'components/nav/nav';
+import Main from 'components/main/main';
+import Nav from 'components/nav/nav';
 import TargetsProvider, { TargetsContext } from "./context/targets";
 import { basename } from 'path';
 import { section, isText } from 'funcs/paths';
@@ -19,29 +19,29 @@ export default function App() {
     )
 }
 
-export type DirView = {
+export type viewObj = {
     path: string;
-    nav: Nav;
-    main: Main;
+    nav: navObj;
+    main: mainObj;
 }
 
-export type Main = {
+export type mainObj = {
     files:  File[];
     sorted: boolean;
 }
 
-export type Nav = {
+export type navObj = {
     path: string;
     switcher: string;
     siblings: File[];
     links: string[];
 }
 
-function newDirView(): DirView {
+function newView(): viewObj {
     return {
         path: "",
-        nav:  {} as Nav,
-        main: {} as Main
+        nav:  {} as navObj,
+        main: {} as mainObj,
     };
 }
 
@@ -67,10 +67,10 @@ function Loader() {
     const history = useHistory();
 
     const [err, setErr] = useState(newErr());
-    const [dir, setDir] = useState(newDirView());
+    const [dir, setDir] = useState(newView());
     const [notFound, setNotFound] = useState(false);
 
-    function setMain(main: Main) {
+    function setMain(main: mainObj) {
         dir.main = main;
         setDir({ ...dir });
     }
@@ -134,8 +134,8 @@ function Loader() {
 
     return (
         <>
-        <NavView pathname={path} nav={dir.nav} err={err} />
-        <MainView path={path} files={dir.main.files} sorted={dir.main.sorted} setMain={setMain} setErr={setErr} />
+        <Nav pathname={path} nav={dir.nav} err={err} />
+        <Main path={path} files={dir.main.files} sorted={dir.main.sorted} setMain={setMain} setErr={setErr} />
         </>
     )
 }

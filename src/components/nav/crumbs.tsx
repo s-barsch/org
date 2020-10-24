@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { basename } from 'path';
 import { TargetsContext } from 'context/targets';
 import { isText } from 'funcs/paths';
-import { Nav } from 'app';
+import { navObj } from 'app';
 import File from 'funcs/files';
 import { setActiveTarget } from 'funcs/targets';
 
@@ -21,7 +21,7 @@ function RootLink() {
 
 type CrumbNavProps = {
     path: string;
-    nav: Nav;
+    nav: navObj;
 }
 
 function CrumbNav({path, nav}: CrumbNavProps) {

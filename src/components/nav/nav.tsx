@@ -9,16 +9,16 @@ import { extendedBase, section } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
 import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
-import { Nav, errObj } from 'app';
+import { navObj, errObj } from 'app';
 import { ErrComponent } from 'components/error';
 
-type NavViewProps = {
+type NavProps = {
     pathname: string;
-    nav: Nav;
+    nav: navObj;
     err: errObj;
 }
 
-function NavView({pathname, nav, err}: NavViewProps) {
+export default function Nav({pathname, nav, err}: NavProps) {
     const { targets, saveTargets } = useContext(TargetsContext);
 
     /* theme */
@@ -147,8 +147,6 @@ function LinkList({links, active}: LinkListProps) {
         ))}</>
     )
 }
-
-export default NavView;
 
 function readStateBool(key: string): boolean {
     const str = localStorage.getItem(key);

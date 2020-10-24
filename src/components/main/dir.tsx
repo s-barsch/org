@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModFuncs } from 'components/main/view';
+import { mainFuncsObj, modFuncsObj } from 'components/main/main';
 import Head from 'components/main/head';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
 import { DirList, FileList } from 'components/main/list';
@@ -8,20 +8,21 @@ import { AddDir, AddText } from 'components/main/add';
 type DirViewProps = {
     path: string;
     files: File[];
-    modFuncs: ModFuncs;
+    mainFuncs: mainFuncsObj;
+    modFuncs: modFuncsObj;
 }
 
-export default function DirView({path, files, modFuncs}: DirViewProps) {
+export default function DirView({path, files, mainFuncs, modFuncs}: DirViewProps) {
     return (
         <>
-            <Head path={path} renameView={modFuncs.renameView} />
+            <Head path={path} renameView={mainFuncs.renameView} />
             <nav id="dirs">
-                <DirList  dirs={dirsOnly(files)} saveSort={modFuncs.saveSort} />
-                <AddDir addNewDir={modFuncs.addNewDir} />
+                <DirList  dirs={dirsOnly(files)} saveSort={mainFuncs.saveSort} />
+                <AddDir addNewDir={mainFuncs.addNewDir} />
             </nav>
             <section id="files">
-                <AddText createNewFile={modFuncs.createNewFile} />
-                <FileList files={filesOnly(files)} modFuncs={modFuncs} saveSort={modFuncs.saveSort} />
+                <AddText createNewFile={mainFuncs.createNewFile} />
+                <FileList files={filesOnly(files)} modFuncs={modFuncs} saveSort={mainFuncs.saveSort} />
             </section>
         </>
     )

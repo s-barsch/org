@@ -4,7 +4,7 @@ import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
 import { isText } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
-import { Main, errObj } from 'app';
+import { mainObj, errObj } from 'app';
 import File, { newFile, merge, insertBefore, createDuplicate, 
     isPresent, removeFromArr } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
@@ -12,34 +12,36 @@ import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
 import TextView from 'components/main/text';
 import DirView from 'components/main/dir';
 
-export type ModFuncs = {
-    writeFile: ActionFunc;
-    duplicateFile: ActionFunc;
-    deleteFile: ActionFunc;
+export type mainFuncsObj = {
     createNewFile: () => void;
-    moveFile: (f: File, newPath: string) => void;
-    renameFile: (oldPath: string, f: File) => void;
-
-    copyToTarget: ActionFunc;
-    moveToTarget: ActionFunc;
-
     addNewDir: (name: string) => void;
     renameView: (name: string) => void;
-
     saveSort: (part: File[], type:string) => void;
 }
 
-export type ActionFunc = (f: File) => void;
+export type modFuncsObj = {
+    writeFile: actionFunc;
+    duplicateFile: actionFunc;
+    deleteFile: actionFunc;
 
-type MainViewProps = {
+    moveFile: (f: File, newPath: string) => void;
+    renameFile: (oldPath: string, f: File) => void;
+
+    copyToTarget: actionFunc;
+    moveToTarget: actionFunc;
+}
+
+export type actionFunc = (f: File) => void;
+
+type MainProps = {
     path: string;
     files: File[];
     sorted: boolean;
-    setMain: (main: Main) => void;
+    setMain: (main: mainObj) => void;
     setErr: (err: errObj) => void;
 }
 
-function MainView({path, files, sorted, setMain, setErr}: MainViewProps) {
+export default function Main({path, files, sorted, setMain, setErr}: MainProps) {
     let { targets } = useContext(TargetsContext);
 
     const history = useHistory();
@@ -141,7 +143,7 @@ function MainView({path, files, sorted, setMain, setErr}: MainViewProps) {
         update(New, true);
     }
 
-    const modFuncs: ModFuncs = {
+    const modFuncs: modFuncsObj = {
         writeFile:      writeFile,
         deleteFile:     deleteFile,
         moveFile:       moveFile,
@@ -149,26 +151,21 @@ function MainView({path, files, sorted, setMain, setErr}: MainViewProps) {
         duplicateFile:  duplicateFile,
         copyToTarget:   copyToTarget,
         moveToTarget:   moveToTarget,
+    }
 
+    const mainFuncs: mainFuncsObj = {
         createNewFile:  createNewFile,
-
         addNewDir:      addNewDir,
         renameView:     renameView,
-
         saveSort:       saveSort
     }
 
     if (isText(path)) {
-        return <TextView path={path} files={files} modFuncs={modFuncs} />;
+        return <TextView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />;
     }
 
-    return <DirView path={path} files={files} modFuncs={modFuncs} />
+    return <DirView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />
 }
-
-export default MainView;
-
-
-/* additional funcs */
 
 function insertDuplicateFile(files: File[], f: File, newFile: File, isSorted: boolean) {
     if (isSorted) {

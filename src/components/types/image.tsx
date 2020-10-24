@@ -3,11 +3,11 @@ import { basename } from 'path';
 import TextField from 'components/types/text';
 import { Del } from 'components/meta';
 import File from 'funcs/files';
-import { ModFuncs } from 'components/main/view';
+import { modFuncsObj } from 'components/main/main';
 
 type ImageProps = {
     file: File;
-    modFuncs: ModFuncs;
+    modFuncs: modFuncsObj;
 }
 
 function Image({file, modFuncs}: ImageProps) {

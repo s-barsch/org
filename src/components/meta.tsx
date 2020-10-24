@@ -4,7 +4,7 @@ import DeleteIcon from '@material-ui/icons/ClearSharp';
 import EditIcon from '@material-ui/icons/Edit';
 import { basename, dirname, join } from 'path';
 import File from 'funcs/files';
-import { ModFuncs, ActionFunc } from 'components/main/view';
+import { modFuncsObj, actionFunc } from 'components/main/main';
 
 type BotToggleProps = {
     file: File;
@@ -34,7 +34,7 @@ export function BotToggle({file, moveFile}: BotToggleProps) {
 
 type InfoProps = {
     file: File;
-    modFuncs: ModFuncs;
+    modFuncs: modFuncsObj;
 }
 
 export function Info({file, modFuncs}: InfoProps) {
@@ -137,7 +137,7 @@ function FileLink({file, isEdit, children}: FileLinkProps) {
 
 type DelProps = {
     file: File;
-    deleteFile: ActionFunc;
+    deleteFile: actionFunc;
 }
 
 export function Del({file, deleteFile}: DelProps) {
