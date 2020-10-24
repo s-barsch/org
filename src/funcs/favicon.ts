@@ -9,12 +9,12 @@ function getFavicon(): HTMLLinkElement {
 }
 
 export function setFavicon(path: string) {
-    let favicon = getFavicon();
+    const favicon = getFavicon();
     favicon.href = faviconPath(path);
 }
 
 export function blinkFavicon(path: string) {
-    let favicon = getFavicon();
+    const favicon = getFavicon();
     favicon.href = "/blue.svg";
     setTimeout(() => {
         if (!favicon) return;
