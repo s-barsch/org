@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { errObj } from 'src/app';
+import { errObj } from 'app';
 
 function StatusBox() {
     return <span className="errbox"></span>

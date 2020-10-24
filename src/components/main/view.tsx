@@ -1,16 +1,16 @@
 import React, { useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import NewTextIcon from '@material-ui/icons/Flare';
-import AddDir from 'src/components/main/add';
-import Text from 'src/components/types/text';
-import { TargetsContext } from 'src/context/targets';
+import AddDir from 'components/main/add';
+import Text from 'components/types/text';
+import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
-import { newTimestamp, isText } from 'src/funcs/paths';
-import { orgSort } from 'src/funcs/sort';
-import File from 'src/funcs/file';
-import { DirList, FileList } from 'src/components/main/files';
-import RenameInput from 'src/components/main/rename';
-import { Main, errObj } from 'src/app';
+import { newTimestamp, isText } from 'funcs/paths';
+import { orgSort } from 'funcs/sort';
+import File from 'funcs/file';
+import { DirList, FileList } from 'components/main/files';
+import RenameInput from 'components/main/rename';
+import { Main, errObj } from 'app';
 import { filesOnly, dirsOnly, makeStringArr, merge, insert, 
     createDuplicate, isPresent, removeFromArr } from './list';
 

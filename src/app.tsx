@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import 'src/css/main.css';
+import 'css/main.css';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
-import MainView from 'src/components/main/view';
-import NavView from 'src/components/nav/nav';
+import MainView from 'components/main/view';
+import NavView from 'components/nav/nav';
 import TargetsProvider, { TargetsContext } from "./context/targets";
 import { basename } from 'path';
-import { section, isText } from 'src/funcs/paths';
+import { section, isText } from 'funcs/paths';
 import H from 'history';
-import File from 'src/funcs/file';
+import File from 'funcs/file';
 
 export default function App() {
     return (
