@@ -84,26 +84,6 @@ function Loader() {
         }
     }, [path, history]);
 
-    // load function
-    async function loadView(path: string) {
-        try {
-            const resp = await fetch("/api/view" + path);
-
-            if (!resp.ok) {
-                console.log(resp);
-                setStatus("404 - not found.");
-                return;
-            }
-
-            const view = await resp.json();
-            setStatus("");
-            setDir(view);
-            blinkFavicon(path);
-        } catch(err) {
-            console.log(err);
-        }
-    };
-
     // only load when a new *dir* is requested
     useEffect(() => {
         if (shouldLoad(path, dir)) {
@@ -125,6 +105,27 @@ function Loader() {
             window.removeEventListener('storage', listenForWrite);
         };
     }, [listenForWrite]);
+
+    async function loadView(path: string) {
+        const resp = await fetch("/api/view" + path);
+
+        if (!resp.ok) {
+            if (resp.status === 404) {
+                setStatus("404 - not found.");
+                return;
+            }
+            if (resp.status === 502) {
+                setStatus("502 - server down.");
+                return;
+            }
+            // let other errors bubble
+        }
+
+        const view = await resp.json();
+        setStatus("");
+        setDir(view);
+        blinkFavicon(path);
+    };
 
     if (status !== "") {
         return <>{status}</>

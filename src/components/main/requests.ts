@@ -14,25 +14,21 @@ function setWriteTime() {
 
 function request(path: string, options: reqOptions, err: errObj, setErr: setErrFn): Promise<string> {
     return new Promise(async (resolve, reject) => {
-        try {
-            const resp = await fetch(path, options);
-            if (!resp.ok) {
-                err.code = resp.status;
-                if (err.code === 502) {
-                    err.msg = 'Server not running.';
-                } else {
-                    err.msg = await resp.text();
-                }
-                setErr(err);
-                reject(err);
-                return;
+        const resp = await fetch(path, options);
+        if (!resp.ok) {
+            err.code = resp.status;
+            if (err.code === 502) {
+                err.msg = 'Server not running.';
+            } else {
+                err.msg = await resp.text();
             }
-            err.code = 200;
             setErr(err);
-            resolve();
-        } catch(err) {
-            console.log(err)
+            reject(err);
+            return;
         }
+        err.code = 200;
+        setErr(err);
+        resolve();
     });
 }
 
