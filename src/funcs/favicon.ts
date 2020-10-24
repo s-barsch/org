@@ -1,20 +1,20 @@
 import { section } from 'funcs/paths';
 
-function getFavicon(): HTMLLinkElement | null {
-    return document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+function getFavicon(): HTMLLinkElement {
+    const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!favicon) {
+        throw new Error("Cannot get favicon.");
+    }
+    return favicon;
 }
 
 export function setFavicon(path: string) {
     let favicon = getFavicon();
-    if (!favicon) {
-        throw new Error("Cannot set favicon.");
-    }
     favicon.href = faviconPath(path);
 }
 
 export function blinkFavicon(path: string) {
     let favicon = getFavicon();
-    if (!favicon) return;
     favicon.href = "/blue.svg";
     setTimeout(() => {
         if (!favicon) return;
