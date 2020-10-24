@@ -10,7 +10,7 @@ import { TargetsContext, TargetsProps } from 'context/targets';
 import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
 import { navObj, errObj } from 'app';
-import { ErrComponent } from 'components/error';
+import { ErrComponent } from 'components/nav/error';
 
 type NavProps = {
     pathname: string;
