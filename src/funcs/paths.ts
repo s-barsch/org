@@ -70,3 +70,16 @@ export function isText(path: string): boolean {
             return false;
     }
 }
+
+export function pageTitle(path: string): string {
+    if (path === "/") {
+        return "ORG"
+    }
+    return basename(path) + " - ORG";
+}
+
+export function isToday(path: string): boolean {
+    return path === "/today";
+}
+
+

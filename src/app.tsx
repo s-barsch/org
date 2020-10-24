@@ -3,9 +3,9 @@ import 'css/main.scss';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
 import Main from 'components/main/main';
 import Nav from 'components/nav/nav';
-import TargetsProvider, { TargetsContext } from "./context/targets";
-import { basename } from 'path';
-import { section, isText } from 'funcs/paths';
+import Targets from 'funcs/targets';
+import TargetsProvider, { TargetsContext } from './context/targets';
+import { isToday, pageTitle, section, isText } from 'funcs/paths';
 import H from 'history';
 import File from 'funcs/files';
 
@@ -68,54 +68,52 @@ function Loader() {
 
     const [err, setErr] = useState(newErr());
     const [dir, setDir] = useState(newView());
-    const [notFound, setNotFound] = useState(false);
+    const [status, setStatus] = useState("");
 
     function setMain(main: mainObj) {
         dir.main = main;
         setDir({ ...dir });
     }
 
-    async function loadView(path: string) {
-        blinkFavicon(path);
-        try {
-            console.log("LOAD VIEW");
-            const resp = await fetch("/api/view" + path);
-            if (!resp.ok) {
-                setNotFound(true)
-                return;
-            }
-            setNotFound(false);
-            const view = await resp.json();
-            setDir(view);
-        } catch(err) {
-            console.log(err)
-        }
-    };
-
-
+    // "/today" redirects to "/graph/20/20-10/24" (current day)
     useEffect(() => {
+        document.title = pageTitle(path);
         if (isToday(path)) {
             todayRedirect(history);
             return;
         }
     }, [path, history]);
 
+    // load function
+    async function loadView(path: string) {
+        try {
+            const resp = await fetch("/api/view" + path);
+
+            if (!resp.ok) {
+                console.log(resp);
+                setStatus("404 - not found.");
+                return;
+            }
+
+            const view = await resp.json();
+            setStatus("");
+            setDir(view);
+            blinkFavicon(path);
+        } catch(err) {
+            console.log(err);
+        }
+    };
+
+    // only load when a new *dir* is requested
     useEffect(() => {
-        document.title = pageTitle(path);
-
-        if (path === dir.path) {
-            return;
+        if (shouldLoad(path, dir)) {
+            loadView(path);
         }
-
-        if (isText(path) && dir.path && dir.path !== "") {
-            return;
-        }
-
-        loadView(path);
     }, [path, dir]);
 
+    // listen if another tab sends files to this tab.
     const listenForWrite = useCallback(evt => {
-        if (targets && path === targets.active) {
+        if (isActiveTarget(targets, path)) {
             loadView(path);
         }
     }, [targets, path]);
@@ -128,8 +126,8 @@ function Loader() {
         };
     }, [listenForWrite]);
 
-    if (notFound) {
-        return <>404</>
+    if (status !== "") {
+        return <>{status}</>
     }
 
     return (
@@ -150,19 +148,23 @@ function blinkFavicon(path: string) {
     }, 100);
 }
 
-function pageTitle(path: string): string {
-    if (path === "/") {
-        return "ORG"
-    }
-    return basename(path) + " - ORG";
-}
-
-function isToday(path: string): boolean {
-    return path === "/today";
-}
-
 async function todayRedirect(history: H.History<any>) {
     const resp = await fetch("/api/today");
     const todayPath = await resp.text();
     history.push(todayPath)
 }
+
+function shouldLoad(path: string, dir: viewObj): boolean {
+    if (path === dir.path) {
+        return false
+    }
+    if (isText(path) && dir.path && dir.path !== "") {
+        return false;
+    }
+    return true;
+}
+
+function isActiveTarget(targets: Targets, path: string): boolean {
+    return targets && path === targets.active;
+}
+
