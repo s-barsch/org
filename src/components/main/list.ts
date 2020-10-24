@@ -87,14 +87,14 @@ export function removeFromArr(files: File[], name: string): File[] {
     throw new Error("Could not delete " + name + "from files.");
 }
 
-export function insert(files: File[], f: File, newFile: File): File[] {
+export function insertBefore(files: File[], f: File, newFile: File): File[] {
     for (let i = 0; i < files.length; i++) {
         if (files[i].name === f.name) {
             files.splice(i, 0, newFile)
             return files;
         }
     }
-    throw new Error('Could not insert duplicate file: ' + f);
+    throw new Error('Could not insert before file: ' + f.name);
 }
 
 export function createDuplicate(file: File, files: File[]): File {

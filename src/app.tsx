@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import 'css/main.css';
+import 'css/main.scss';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
 import MainView from 'components/main/view';
 import NavView from 'components/nav/nav';
