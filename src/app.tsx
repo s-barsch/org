@@ -78,6 +78,7 @@ function Loader() {
     // "/today" redirects to "/graph/20/20-10/24" (current day)
     useEffect(() => {
         document.title = pageTitle(path);
+        setFavicon(path);
         if (isToday(path)) {
             todayRedirect(history);
             return;
@@ -95,6 +96,7 @@ function Loader() {
     const listenForWrite = useCallback(evt => {
         if (isActiveTarget(targets, path)) {
             loadView(path);
+            blinkFavicon(path);
         }
     }, [targets, path]);
 
@@ -124,7 +126,6 @@ function Loader() {
         const view = await resp.json();
         setStatus("");
         setDir(view);
-        blinkFavicon(path);
     };
 
     if (status !== "") {
@@ -139,13 +140,29 @@ function Loader() {
     )
 }
 
+function getFavicon(): HTMLLinkElement | null {
+    return document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+}
+
+function setFavicon(path: string) {
+    let favicon = getFavicon();
+    if (!favicon) {
+        throw new Error("Cannot set favicon.");
+    }
+    favicon.href = faviconPath(path);
+}
+
+function faviconPath(path: string): string {
+    return "/" + section(path) + ".svg"
+}
+
 function blinkFavicon(path: string) {
-    let favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    let favicon = getFavicon();
     if (!favicon) return;
     favicon.href = "/blue.svg";
     setTimeout(() => {
         if (!favicon) return;
-        favicon.href = "/" + section(path) + ".svg";
+        favicon.href = faviconPath(path);
     }, 100);
 }
 

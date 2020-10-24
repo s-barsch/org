@@ -10,7 +10,7 @@ import { modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
 import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
-import { orgSort } from 'funcs/sort';
+import { separate } from 'funcs/sort';
 
 type FileSwitchProps = {
     file: File;
@@ -48,7 +48,7 @@ export function FileList({files, saveSort, modFuncs}: FileListProps) {
     }, [files])
 
     const reverseFiles = () => {
-        const reverse = orgSort(state.slice().reverse());
+        const reverse = separate(state.slice().reverse());
         saveSort(reverse, "files");
     }
 
