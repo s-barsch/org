@@ -5,7 +5,8 @@ import Main from 'components/main/main';
 import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
 import TargetsProvider, { TargetsContext } from './context/targets';
-import { isToday, pageTitle, section, isText } from 'funcs/paths';
+import { isToday, pageTitle, isText } from 'funcs/paths';
+import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import H from 'history';
 import File from 'funcs/files';
 
@@ -138,32 +139,6 @@ function Loader() {
         <Main path={path} files={dir.main.files} sorted={dir.main.sorted} setMain={setMain} setErr={setErr} />
         </>
     )
-}
-
-function getFavicon(): HTMLLinkElement | null {
-    return document.querySelector<HTMLLinkElement>('link[rel="icon"]');
-}
-
-function setFavicon(path: string) {
-    let favicon = getFavicon();
-    if (!favicon) {
-        throw new Error("Cannot set favicon.");
-    }
-    favicon.href = faviconPath(path);
-}
-
-function faviconPath(path: string): string {
-    return "/" + section(path) + ".svg"
-}
-
-function blinkFavicon(path: string) {
-    let favicon = getFavicon();
-    if (!favicon) return;
-    favicon.href = "/blue.svg";
-    setTimeout(() => {
-        if (!favicon) return;
-        favicon.href = faviconPath(path);
-    }, 100);
 }
 
 async function todayRedirect(history: H.History<any>) {
