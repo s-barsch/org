@@ -9,8 +9,8 @@ import File, { newFile, merge, insertBefore, createDuplicate,
     isPresent, removeFromArr } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
     copyRequest, newFileRequest, deleteRequest, renameViewRequest } from './requests';
-import TextView from 'components/main/text';
-import DirView from 'components/main/dir';
+import TextView from 'components/main/views/text';
+import DirView from 'components/main/views/dir';
 
 export type mainFuncsObj = {
     createNewFile: () => void;

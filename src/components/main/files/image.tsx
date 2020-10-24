@@ -1,7 +1,7 @@
 import React from 'react';
 import { basename } from 'path';
-import TextField from 'components/types/text';
-import { Del } from 'components/meta';
+import TextField from 'components/main/files/text';
+import { Del } from 'components/main/files/meta';
 import File from 'funcs/files';
 import { modFuncsObj } from 'components/main/main';
 

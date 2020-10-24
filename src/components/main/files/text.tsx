@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { Info } from 'components/meta';
+import { Info } from 'components/main/files/meta';
 import { modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { mainFuncsObj, modFuncsObj } from 'components/main/main';
-import Head from 'components/main/head';
+import Head from 'components/main/parts/head';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
-import { DirList, FileList } from 'components/main/list';
-import { AddDir, AddText } from 'components/main/add';
+import { DirList, FileList } from 'components/main/parts/list';
+import { AddDir, AddText } from 'components/main/parts/add';
 
 type DirViewProps = {
     path: string;
