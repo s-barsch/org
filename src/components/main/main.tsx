@@ -67,7 +67,7 @@ export default function Main({path, files, sorted, nav, err, setMain, setErr}: M
 
         const dirPath = join(path, name);
 
-        update(insertNewDir(files.slice(), dirPath), sorted);
+        update(insertNewDir(files.slice(), dirPath, sorted), sorted);
         newDirRequest(dirPath, setErr);
     }
 
@@ -194,7 +194,7 @@ function renameText(files: File[], oldName: string, newName: string): File[] {
     return files
 }
 
-function insertNewDir(files: File[], path: string): File[] {
+function insertNewDir(files: File[], path: string, isSorted: boolean): File[] {
     let f = {
         id:   Date.now(),
         name: basename(path),
@@ -202,6 +202,10 @@ function insertNewDir(files: File[], path: string): File[] {
         type: "dir",
         body: ""
     }
-    return files.concat(f)
+    let newFiles = files.concat(f)
+    if (!isSorted) {
+        return orgSort(newFiles);
+    }
+    return newFiles;
 }
 

@@ -14,7 +14,7 @@ export function AddDir({addNewDir}: {addNewDir: (name: string) => void;}) {
     }
 
     if (field) {
-        return <AddField fieldRef={fieldEl} submitFn={addNewDir} toggleFn={toggleField} />
+        return <AddField fieldRef={fieldEl} addNewDir={addNewDir} toggleFn={toggleField} />
     }
 
     return <AddButton clickFn={toggleField} />
@@ -22,11 +22,11 @@ export function AddDir({addNewDir}: {addNewDir: (name: string) => void;}) {
 
 type AddFieldProps = {
     fieldRef: (node: any) => void;
-    submitFn: (name: string) => void;
+    addNewDir: (name: string) => void;
     toggleFn: () => void;
 }
 
-function AddField({fieldRef, submitFn, toggleFn}: AddFieldProps) {
+function AddField({fieldRef, addNewDir, toggleFn}: AddFieldProps) {
     const [dirName, setDirName] = useState("");
 
     function handleTyping(e: React.FormEvent<HTMLInputElement>) {
@@ -34,8 +34,11 @@ function AddField({fieldRef, submitFn, toggleFn}: AddFieldProps) {
     }
 
     function handleBlur() {
-        submitFn(dirName);
         toggleFn();
+        if (dirName === "") {
+            return;
+        }
+        addNewDir(dirName);
     }
 
     return (
