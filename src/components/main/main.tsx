@@ -178,7 +178,7 @@ function insertDuplicateFile(files: File[], f: File, newFile: File, isSorted: bo
 }
 
 function insertNewFile(files: File[], f: File, isSorted: boolean): File[] {
-    if (!isSorted) {
+    if (isSorted) {
         return [f].concat(files)
     }
     return orgSort(files.concat(f))
