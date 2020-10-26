@@ -11,14 +11,16 @@ import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
 import { navObj, errObj } from 'app';
 import { ErrComponent } from 'components/nav/error';
+import { AddText } from 'components/main/parts/add';
 
 type NavProps = {
     pathname: string;
     nav: navObj;
     err: errObj;
+    newFile: () => void;
 }
 
-export default function Nav({pathname, nav, err}: NavProps) {
+export default function Nav({pathname, nav, err, newFile}: NavProps) {
     const { targets, saveTargets } = useContext(TargetsContext);
 
     /* theme */
@@ -86,6 +88,9 @@ export default function Nav({pathname, nav, err}: NavProps) {
         </nav>
         <nav id="bar">
             <CrumbNav path={pathname} nav={nav}/>
+            <span className="addtext--crumb">
+                <AddText createNewFile={newFile} />
+            </span>
             <TargetsList targets={targets} saveTargets={saveTargets}/>
         </nav>
         </>

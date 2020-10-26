@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useContext } from 'react';
 import 'css/main.scss';
 import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
 import Main from 'components/main/main';
-import Nav from 'components/nav/nav';
+//import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import { isToday, pageTitle, isText } from 'funcs/paths';
@@ -135,8 +135,7 @@ function Loader() {
 
     return (
         <>
-        <Nav pathname={path} nav={dir.nav} err={err} />
-        <Main path={path} files={dir.main.files} sorted={dir.main.sorted} setMain={setMain} setErr={setErr} />
+        <Main path={path} files={dir.main.files} sorted={dir.main.sorted} nav={dir.nav} err={err} setMain={setMain} setErr={setErr} />
         </>
     )
 }
