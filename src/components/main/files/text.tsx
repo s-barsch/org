@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import TextareaAutosize from 'react-textarea-autosize';
+//import TextareaAutosize from 'react-textarea-autosize';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { Info } from 'components/main/files/meta';
 import { modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
@@ -41,7 +42,7 @@ export default function TextField({file, modFuncs, isSingle}: TextFieldProps) {
         }
         <TextareaAutosize value={body}
         ref={ref}
-        minRows={!isSingle ? 1 : fullScreenRows()}
+        rowsMin={!isSingle ? 1 : fullScreenRows()}
         onChange={handleTyping}
         onBlur={submit} />
         </div>

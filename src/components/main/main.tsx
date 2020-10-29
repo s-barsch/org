@@ -89,7 +89,11 @@ export default function Main({path, files, sorted, nav, err, setMain, setErr}: M
     }
 
     function renameFile(oldPath: string, f: File) {
-        update(files.slice(), sorted);
+        let newFiles = files.slice()
+        if (!sorted) {
+            newFiles = orgSort(newFiles)
+        }
+        update(newFiles, sorted);
         moveRequest(oldPath, f.path, setErr);
     }
 

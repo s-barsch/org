@@ -278,13 +278,46 @@ func createInfo(path string) error {
 		return nil
 	}
 
-	str := fmt.Sprintf(
-		"title: %v\ndate:  %v\n",
-		strings.Title(name),
-		time.Now().Format("060102_150405"),
-	)
+	return ioutil.WriteFile(ROOT+path+"/info", []byte(getInfoText(path)), 0755)
+}
 
-	return ioutil.WriteFile(ROOT+path+"/info", []byte(str), 0755)
+func getInfoText(path string) string {
+	title := ""
+	date := time.Time{}
+
+	t, err := parsePathDate(path)
+	if err != nil {
+		date = time.Now()
+		title = strings.Title(p.Base(path))
+	} else {
+		date = t
+	}
+
+	text := ""
+
+	if title != "" {
+		text = fmt.Sprintf("title: %v\n", title)
+	}
+
+	return fmt.Sprintf("%vdate: %v\n", text, date.Format("060102_150405"))
+}
+
+func getDirDate(path string) time.Time {
+	t, err := parsePathDate(path)
+	if err != nil {
+		return time.Now()
+	}
+	return t
+}
+
+func parsePathDate(path string) (time.Time, error) {
+	format := "/06/06-01/02"
+	lenPath := len(path)
+	lenFormat := len(format)
+	if lenPath > lenFormat {
+		return time.Parse(format, path[lenPath-lenFormat:])
+	}
+	return time.Time{}, fmt.Errorf("getDirDate: path too short")
 }
 
 func writeFile(w http.ResponseWriter, r *http.Request) *Err {
