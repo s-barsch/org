@@ -178,6 +178,10 @@ func fileType(path string) string {
 	switch p.Ext(strings.ToLower(path)) {
 	case ".jpg", ".png", ".gif":
 		return "image"
+	case ".mp4":
+		return "video"
+	case ".mp3", ".wav":
+		return "audio"
 	case ".txt", ".info":
 		return "text"
 	}

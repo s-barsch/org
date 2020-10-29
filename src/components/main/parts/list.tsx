@@ -6,6 +6,7 @@ import { basename } from 'path';
 import { Meta } from 'components/main/files/meta';
 import Text from 'components/main/files/text';
 import Image from 'components/main/files/image';
+import Video from 'components/main/files/video';
 import { modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
 import { setActiveTarget } from 'funcs/targets';
@@ -29,6 +30,8 @@ function FileSwitch({file, modFuncs, isSingle}: FileSwitchProps) {
             return <Text file={file} modFuncs={modFuncs} isSingle={isSingle}/>
         case "image":
             return <Image file={file} modFuncs={modFuncs} />
+        case "video":
+            return <Video file={file} modFuncs={modFuncs} />
         default:
             return <Meta file={file} modFuncs={modFuncs} />
     }

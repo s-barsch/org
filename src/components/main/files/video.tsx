@@ -4,17 +4,18 @@ import File from 'funcs/files';
 import { modFuncsObj } from 'components/main/main';
 import Info from './info';
 
-type ImageProps = {
+type VideoProps = {
     file: File;
     modFuncs: modFuncsObj;
 }
 
-export default function Image({file, modFuncs}: ImageProps) {
+export default function Video({file, modFuncs}: VideoProps) {
     return (
         <div>
-        <img alt="" src={"/file" + file.path} />
+        <video src={"/file" + file.path}></video>
         <Del file={file} deleteFile={modFuncs.deleteFile} />
         <Info mainFilePath={file.path} modFuncs={modFuncs} />
         </div>
     )
 }
+
