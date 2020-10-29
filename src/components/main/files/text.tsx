@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 //import TextareaAutosize from 'react-textarea-autosize';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { Info } from 'components/main/files/meta';
+import { Meta } from 'components/main/files/meta';
 import { modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
 
@@ -38,7 +38,7 @@ export default function TextField({file, modFuncs, isSingle}: TextFieldProps) {
     return (
         <div className={"text" + (isNoSort(file.name) ? " no-sort" : "")}>
         { !isSingle &&
-            <Info file={file} modFuncs={modFuncs}/>
+            <Meta file={file} modFuncs={modFuncs}/>
         }
         <TextareaAutosize value={body}
         ref={ref}

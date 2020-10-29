@@ -32,12 +32,12 @@ export function BotToggle({file, moveFile}: BotToggleProps) {
     return <button className="info__bot" onClick={move}>{target}</button>
 }
 
-type InfoProps = {
+type MetaProps = {
     file: File;
     modFuncs: modFuncsObj;
 }
 
-export function Info({file, modFuncs}: InfoProps) {
+export function Meta({file, modFuncs}: MetaProps) {
 
     function moveToTarget(evt: React.MouseEvent<HTMLButtonElement>) {
         modFuncs.moveToTarget(file);
@@ -66,7 +66,7 @@ export function Info({file, modFuncs}: InfoProps) {
     )
 }
 
-function FileName({file, modFuncs}: InfoProps) {
+function FileName({file, modFuncs}: MetaProps) {
     const [edit, setEdit] = useState(false);
 
     const [name, setName] = useState("");

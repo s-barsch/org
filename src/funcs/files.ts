@@ -1,5 +1,5 @@
 import { newTimestamp } from './paths';
-import { extname, dirname, join } from 'path';
+import { basename,extname, dirname, join } from 'path';
 
 type File = {
     id:   number;
@@ -10,6 +10,18 @@ type File = {
 }
 
 export default File;
+
+export function newInfoFile(mainFilePath: string): File {
+    const path = mainFilePath + ".info"
+
+    return {
+        id:   Date.now(),
+        path: path,
+        name: basename(path),
+        type: "info",
+        body: ""
+    }
+}
 
 export function newFile(path: string): File {
     const name = newTimestamp() + ".txt";

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ReverseIcon from '@material-ui/icons/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
 import { basename } from 'path';
-import { Info } from 'components/main/files/meta';
+import { Meta } from 'components/main/files/meta';
 import Text from 'components/main/files/text';
 import Image from 'components/main/files/image';
 import { modFuncsObj } from 'components/main/main';
@@ -21,7 +21,7 @@ type FileSwitchProps = {
 function FileSwitch({file, modFuncs, isSingle}: FileSwitchProps) {
     /*
   if (file.name === ".sort") {
-    return <div className="no-sort"><Info file={file} modFuncs={modFuncs} /></div>
+    return <div className="no-sort"><Meta file={file} modFuncs={modFuncs} /></div>
   }
      */
     switch (file.type) {
@@ -30,7 +30,7 @@ function FileSwitch({file, modFuncs, isSingle}: FileSwitchProps) {
         case "image":
             return <Image file={file} modFuncs={modFuncs} />
         default:
-            return <Info file={file} modFuncs={modFuncs} />
+            return <Meta file={file} modFuncs={modFuncs} />
     }
 }
 

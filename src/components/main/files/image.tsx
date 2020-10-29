@@ -1,9 +1,8 @@
 import React from 'react';
-import { basename } from 'path';
-import TextField from 'components/main/files/text';
 import { Del } from 'components/main/files/meta';
 import File from 'funcs/files';
 import { modFuncsObj } from 'components/main/main';
+import Info from './info';
 
 type ImageProps = {
     file: File;
@@ -11,21 +10,11 @@ type ImageProps = {
 }
 
 function Image({file, modFuncs}: ImageProps) {
-    const path = file.path + ".info"
-
-    const info: File = {
-        id:   Date.now(),
-        path: path,
-        name: basename(path),
-        type: "info",
-        body: ""
-    }
-
     return (
         <div>
         <img alt="" src={"/file" + file.path} />
         <Del file={file} deleteFile={modFuncs.deleteFile} />
-        <TextField file={info} modFuncs={modFuncs} isSingle={false} />
+        <Info mainFilePath={file.path} modFuncs={modFuncs} />
         </div>
     )
 }
