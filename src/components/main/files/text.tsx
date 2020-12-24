@@ -14,17 +14,17 @@ type TextFieldProps = {
 export default function TextField({file, modFuncs, isSingle}: TextFieldProps) {
     const [body, setBody] = useState(file.body);
 
-    useEffect(() => {
-        setBody(file.body);
-    }, [file]);
-
     const ref = useRef<HTMLTextAreaElement>(null!)
 
     useEffect(() => {
+
+        setBody(file.body);
+
         if (isSingle && ref && ref.current) {
             ref.current.focus({preventScroll:true});
         }
-    }, [isSingle]);
+
+    }, [file, isSingle]);
 
     function handleTyping(e: React.FormEvent<HTMLTextAreaElement>) {
         setBody(e.currentTarget.value);
