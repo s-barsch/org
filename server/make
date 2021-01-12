@@ -1,0 +1,3 @@
+#!/bin/sh
+go build
+mv ./server ~/go/bin/org-server
