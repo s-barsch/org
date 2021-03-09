@@ -329,7 +329,12 @@ func parsePathDate(path string) (time.Time, error) {
 	lenPath := len(path)
 	lenFormat := len(format)
 	if lenPath > lenFormat {
-		return time.Parse(format, path[lenPath-lenFormat:])
+		t, err := time.Parse(format, path[lenPath-lenFormat:])
+		if err != nil {
+			return time.Time{}, err
+		}
+		// this is because years start on second 0, months on 1, days on 2)
+		return t.Add(time.Second * 2), nil
 	}
 	return time.Time{}, fmt.Errorf("getDirDate: path too short")
 }
