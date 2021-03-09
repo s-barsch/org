@@ -25,6 +25,7 @@ export type modFuncsObj = {
     deleteFile: actionFunc;
 
     moveFile: (f: File, newPath: string) => void;
+    copyFile: (f: File, newPath: string) => void;
     renameFile: (oldPath: string, f: File) => void;
 
     copyToTarget: actionFunc;
@@ -154,6 +155,7 @@ export default function Main({path, files, sorted, nav, err, setMain, setErr}: M
         writeFile:      writeFile,
         deleteFile:     deleteFile,
         moveFile:       moveFile,
+        copyFile:       copyFile,
         renameFile:     renameFile,
         duplicateFile:  duplicateFile,
         copyToTarget:   copyToTarget,

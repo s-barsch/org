@@ -32,6 +32,29 @@ export function BotToggle({file, moveFile}: BotToggleProps) {
     return <button className="info__bot" onClick={move}>{target}</button>
 }
 
+type PubButtonProps = {
+    file: File;
+    copyFile: (f: File, newPath: string) => void;
+}
+
+export function PubButton({file, copyFile}: PubButtonProps) {
+    const i = file.path.indexOf("/private/")
+
+    if (i < 0 ) {
+        return null;
+    };
+
+
+    const move = () => {
+        const publicPath = file.path.replace("/private", "/public/");
+        copyFile(file, publicPath);
+        return;
+    }
+
+    return <button className="info__bot" onClick={move}>pub</button>
+}
+
+
 type MetaProps = {
     file: File;
     modFuncs: modFuncsObj;
@@ -58,6 +81,7 @@ export function Meta({file, modFuncs}: MetaProps) {
             <button className="info__dupli" onClick={duplicateFile}>⧺</button>
             <button onClick={copyToTarget}><img className="rarr" alt="Copy" src="/rarrc.svg"/></button>
             <button onClick={moveToTarget}><img className="rarr" alt="Move" src="/rarr.svg"/></button>
+            <PubButton file={file} copyFile={modFuncs.copyFile} />
             <span className="info__drag"></span>
             <span className="info__del">
                 <Del file={file} deleteFile={modFuncs.deleteFile} />

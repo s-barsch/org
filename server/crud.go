@@ -88,13 +88,26 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 		Code: 500,
 	}
 
-	newPath, err := getRenamePath(r)
+	newPath, err := getBodyPath(r)
 	if err != nil {
 		e.Err = err
 		return e
 	}
 
-	copyFileFunc(path, newPath)
+	if strings.Contains(newPath, "/public/") {
+		dir := p.Dir(newPath) 
+		err := os.MkdirAll(ROOT + dir, 0755)
+		if err != nil {
+			e.Err = err
+			return e
+		}
+		err = createInfo(dir)
+		if err != nil {
+			return e
+		}
+	}
+
+	err = copyFileFunc(path, newPath)
 	if err != nil {
 		e.Err = fmt.Errorf("Faulty target path: %v", newPath)
 		return e
@@ -121,7 +134,7 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 		Code: 500,
 	}
 
-	newPath, err := getRenamePath(r)
+	newPath, err := getBodyPath(r)
 	if err != nil {
 		e.Err = err
 		return e
@@ -130,6 +143,7 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 	println(path)
 	println(newPath)
 
+	// dont like that.
 	err = createBot(newPath)
 	if err != nil {
 		e.Err = err
@@ -191,7 +205,7 @@ func createBot(path string) error {
 	return os.Mkdir(dir, 0755)
 }
 
-func getRenamePath(r *http.Request) (string, error) {
+func getBodyPath(r *http.Request) (string, error) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return "", err
