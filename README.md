@@ -1,6 +1,6 @@
 # org
 
-file organization app
+File organization app
 
 ### Installation
 
