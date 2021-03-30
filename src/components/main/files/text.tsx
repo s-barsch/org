@@ -30,6 +30,12 @@ export default function TextField({file, modFuncs, isSingle}: TextFieldProps) {
         setBody(e.currentTarget.value);
     }
 
+    function checkSubmit(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+        if (e.ctrlKey && e.key === "Enter") {
+            console.log("new text")
+        }
+    }
+
     function submit(e: React.FormEvent<HTMLTextAreaElement>) {
         file.body = body;
         modFuncs.writeFile(file);
@@ -43,6 +49,7 @@ export default function TextField({file, modFuncs, isSingle}: TextFieldProps) {
         <TextareaAutosize value={body}
         ref={ref}
         rowsMin={!isSingle ? 1 : fullScreenRows()}
+        onKeyPress={checkSubmit}
         onChange={handleTyping}
         onBlur={submit} />
         </div>

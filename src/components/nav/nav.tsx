@@ -88,11 +88,17 @@ export default function Nav({pathname, nav, err, newFile}: NavProps) {
         </nav>
         <nav id="bar">
             <CrumbNav path={pathname} nav={nav}/>
+            {/*
             <span className="addtext--crumb">
                 <AddText createNewFile={newFile} />
             </span>
+            */}
             <TargetsList targets={targets} saveTargets={saveTargets}/>
         </nav>
+            <AddText createNewFile={newFile} />
+        {/*
+            <AddDir addNewDir={addNewDir} />
+            */}
         </>
     )
 }

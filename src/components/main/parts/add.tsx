@@ -1,8 +1,7 @@
 import React, {useRef, useCallback, useState} from 'react';
-import NewTextIcon from '@material-ui/icons/Flare';
 
 export function AddText({createNewFile}: {createNewFile: () => void}) {
-    return <button onClick={createNewFile}><NewTextIcon /></button>
+    return <button className="add-text" onClick={createNewFile}>+ Text</button>
 }
 
 export function AddDir({addNewDir}: {addNewDir: (name: string) => void;}) {
