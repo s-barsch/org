@@ -7,7 +7,7 @@ import { Meta } from 'components/main/files/meta';
 import Text from 'components/main/files/text';
 import Image from 'components/main/files/image';
 import Video from 'components/main/files/video';
-import { modFuncsObj } from 'components/main/main';
+import { mainFuncsObj, modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
 import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
@@ -15,11 +15,12 @@ import { separate } from 'funcs/sort';
 
 type FileSwitchProps = {
     file: File;
+    mainFuncs: mainFuncsObj;
     modFuncs: modFuncsObj;
     isSingle: boolean;
 }
 
-function FileSwitch({file, modFuncs, isSingle}: FileSwitchProps) {
+function FileSwitch({file, mainFuncs, modFuncs, isSingle}: FileSwitchProps) {
     /*
   if (file.name === ".sort") {
     return <div className="no-sort"><Meta file={file} modFuncs={modFuncs} /></div>
@@ -27,7 +28,7 @@ function FileSwitch({file, modFuncs, isSingle}: FileSwitchProps) {
      */
     switch (file.type) {
         case "text":
-            return <Text file={file} modFuncs={modFuncs} isSingle={isSingle}/>
+            return <Text file={file} mainFuncs={mainFuncs} modFuncs={modFuncs} isSingle={isSingle}/>
         case "image":
             return <Image file={file} modFuncs={modFuncs} />
         case "video":
@@ -40,10 +41,11 @@ function FileSwitch({file, modFuncs, isSingle}: FileSwitchProps) {
 type FileListProps = {
     files: File[];
     saveSort: (part: File[], type: string) => void;
+    mainFuncs: mainFuncsObj;
     modFuncs: modFuncsObj;
 }
 
-export function FileList({files, saveSort, modFuncs}: FileListProps) {
+export function FileList({files, saveSort, mainFuncs, modFuncs}: FileListProps) {
     const [state, setState] = useState(files);
 
     useEffect(() => {
@@ -74,7 +76,7 @@ export function FileList({files, saveSort, modFuncs}: FileListProps) {
                 animation={200} list={state} setList={setState}>
 
                     { state.map((file, i) => (
-                        <FileSwitch key={file.id} file={file} modFuncs={modFuncs} isSingle={false} />
+                        <FileSwitch key={file.id} file={file} mainFuncs={mainFuncs} modFuncs={modFuncs} isSingle={false} />
                     ))}
 
             </ReactSortable>

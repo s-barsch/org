@@ -29,7 +29,7 @@ export default function DirView({path, files, mainFuncs, modFuncs, nav, err}: Di
                 { /* 
                 <AddText createNewFile={mainFuncs.createNewFile} />
                    */ }
-                <FileList files={filesOnly(files)} modFuncs={modFuncs} saveSort={mainFuncs.saveSort} />
+                <FileList files={filesOnly(files)} mainFuncs={mainFuncs} modFuncs={modFuncs} saveSort={mainFuncs.saveSort} />
             </section>
         </>
     )

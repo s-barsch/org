@@ -34,7 +34,7 @@ export default function TextView({path, files, mainFuncs, modFuncs, nav, err}: T
         <>
             <Nav pathname={path} newFile={mainFuncs.createNewFile} nav={nav} err={err} />
             <Head path={path} renameView={mainFuncs.renameView} />
-            <Text file={text} modFuncs={modFuncs} isSingle={true} />
+            <Text file={text} mainFuncs={mainFuncs} modFuncs={modFuncs} isSingle={true} />
         </>
     )
 }
