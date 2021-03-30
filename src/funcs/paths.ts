@@ -83,3 +83,7 @@ export function isToday(path: string): boolean {
 }
 
 
+export function isWrite(path: string): boolean {
+    return path === "/write";
+}
+

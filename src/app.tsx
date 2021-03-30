@@ -141,9 +141,12 @@ function Loader() {
 }
 
 async function todayRedirect(history: H.History<any>) {
-    const resp = await fetch("/api/today");
-    const todayPath = await resp.text();
-    history.push(todayPath)
+    return new Promise<void>(async (resolve, reject) => {
+        const resp = await fetch("/api/today");
+        const todayPath = await resp.text();
+        history.push(todayPath)
+        resolve();
+    })
 }
 
 function shouldLoad(path: string, dir: viewObj): boolean {
