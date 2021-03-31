@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	p "path/filepath"
@@ -126,7 +127,7 @@ func getToday(w http.ResponseWriter, r *http.Request) *Err {
 		Code: 500,
 	}
 
-	path, err := getCurrent()
+	path, err := makeToday()
 	if err != nil {
 		e.Err = err
 		return e
@@ -136,8 +137,8 @@ func getToday(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func getCurrent() (string, error) {
-	path := currentDatePath()
+func makeToday() (string, error) {
+	path := todayPath()
 	_, err := os.Stat(path)
 	if err != nil {
 		err := os.MkdirAll(ROOT+path, 0755)
@@ -148,10 +149,38 @@ func getCurrent() (string, error) {
 	return path, nil
 }
 
-func currentDatePath() string {
+func todayPath() string {
 	t := time.Now()
 	if t.Hour() < 6 {
 		t = time.Now().AddDate(0, 0, -1)
 	}
 	return fmt.Sprintf("/private/graph/%v", t.Format("06/06-01/02"))
+}
+
+func getNow(w http.ResponseWriter, r *http.Request) *Err {
+	e := &Err{
+		Func: "getNow",
+		Code: 500,
+	}
+
+	today, err := makeToday()
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	now, err := makeNow(today)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	fmt.Fprint(w, now)
+	return nil
+}
+
+func makeNow(today string) (string, error) {
+	t := time.Now()
+	path := p.Join(today, t.Format("060201_150405.txt"))
+	return path, ioutil.WriteFile(ROOT + path, []byte(""), 0644)
 }

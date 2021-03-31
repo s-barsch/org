@@ -29,6 +29,7 @@ func routes() *mux.Router {
 	r.PathPrefix("/file/").HandlerFunc(h(serveStatic))
 
 	r.HandleFunc("/api/today", h(getToday))
+	r.HandleFunc("/api/now", h(getNow))
 
 	r.PathPrefix("/api/sort").HandlerFunc(h(writeSort))
 	r.PathPrefix("/api/copy").HandlerFunc(h(copyFile))

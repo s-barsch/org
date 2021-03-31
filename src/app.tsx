@@ -5,7 +5,7 @@ import Main from 'components/main/main';
 //import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
 import TargetsProvider, { TargetsContext } from './context/targets';
-import { isToday, pageTitle, isText } from 'funcs/paths';
+import { isToday, isWrite, pageTitle, isText } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import H from 'history';
 import File from 'funcs/files';
@@ -84,6 +84,10 @@ function Loader() {
             todayRedirect(history);
             return;
         }
+        if (isWrite(path)) {
+            writeRedirect(history);
+            return;
+        }
     }, [path, history]);
 
     // only load when a new *dir* is requested
@@ -114,8 +118,7 @@ function Loader() {
 
         if (!resp.ok) {
             if (resp.status === 404) {
-                console.log(path);
-                if (path !== "/today") {
+                if (path !== "/today" && path !== "/write") {
                     setStatus("404 - not found.");
                     return;
                 }
@@ -143,13 +146,16 @@ function Loader() {
     )
 }
 
+async function writeRedirect(history: H.History<any>) {
+    const resp = await fetch("/api/now");
+    const writePath = await resp.text();
+    history.push(writePath)
+}
+
 async function todayRedirect(history: H.History<any>) {
-    return new Promise<void>(async (resolve, reject) => {
-        const resp = await fetch("/api/today");
-        const todayPath = await resp.text();
-        history.push(todayPath)
-        resolve();
-    })
+    const resp = await fetch("/api/today");
+    const todayPath = await resp.text();
+    history.push(todayPath)
 }
 
 function shouldLoad(path: string, dir: viewObj): boolean {
