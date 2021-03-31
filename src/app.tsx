@@ -114,8 +114,11 @@ function Loader() {
 
         if (!resp.ok) {
             if (resp.status === 404) {
-                setStatus("404 - not found.");
-                return;
+                console.log(path);
+                if (path !== "/today") {
+                    setStatus("404 - not found.");
+                    return;
+                }
             }
             if (resp.status === 502) {
                 setStatus("502 - server down.");
