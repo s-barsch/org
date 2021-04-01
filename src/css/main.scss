@@ -2,6 +2,10 @@
     box-sizing:border-box
 }
 
+div[tabindex="-1"]:focus {
+  outline: 0;
+}
+
 :root {
     --color-fg: black;
     --color-bg: white;
