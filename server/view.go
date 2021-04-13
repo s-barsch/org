@@ -181,6 +181,6 @@ func getNow(w http.ResponseWriter, r *http.Request) *Err {
 
 func makeNow(today string) (string, error) {
 	t := time.Now()
-	path := p.Join(today, t.Format("060201_150405.txt"))
+	path := p.Join(today, t.Format("060102_150405.txt"))
 	return path, ioutil.WriteFile(ROOT + path, []byte(""), 0644)
 }
