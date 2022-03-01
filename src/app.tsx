@@ -7,7 +7,7 @@ import Targets from 'funcs/targets';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import { isToday, isWrite, pageTitle, isText } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
-import H from 'history';
+//import H from 'history';
 import File from 'funcs/files';
 
 export default function App() {
@@ -146,13 +146,15 @@ function Loader() {
     )
 }
 
-async function writeRedirect(history: H.History<any>) {
+// TODO: add type
+async function writeRedirect(history: any) {
     const resp = await fetch("/api/now");
     const writePath = await resp.text();
     history.push(writePath)
 }
 
-async function todayRedirect(history: H.History<any>) {
+// TODO: add type
+async function todayRedirect(history: any) {
     const resp = await fetch("/api/today");
     const todayPath = await resp.text();
     history.push(todayPath)
