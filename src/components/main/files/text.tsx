@@ -50,7 +50,7 @@ export default function TextField({file, mainFuncs, modFuncs, isSingle}: TextFie
         }
         <TextareaAutosize value={body}
         ref={ref}
-        rowsMin={!isSingle ? 1 : fullScreenRows()}
+        minRows={!isSingle ? 1 : fullScreenRows()}
         onKeyPress={checkSubmit}
         onChange={handleTyping}
         onBlur={submit} />
