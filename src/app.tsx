@@ -114,7 +114,13 @@ function Loader() {
     }, [listenForWrite]);
 
     async function loadView(path: string) {
-        const resp = await fetch("/api/view" + path);
+        let req = "/api/view" + path;
+
+        if (path.substr(0, 7) === "/search") {
+            req = "/api" + path;
+        }
+
+        const resp = await fetch(req);
 
         if (!resp.ok) {
             if (resp.status === 404) {
