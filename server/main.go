@@ -19,6 +19,11 @@ func main() {
 
 	siteConfig = c
 
+	err = loadIndex(ROOT)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	http.Handle("/", routes())
 	http.ListenAndServe(":8334", nil)
 }
@@ -37,6 +42,7 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/delete").HandlerFunc(h(deleteFile))
 	r.PathPrefix("/api/write").HandlerFunc(h(writeSwitch))
 	r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
+	//r.PathPrefix("/api/search").HandlerFunc(h(search))
 
 	r.PathPrefix("/").HandlerFunc(serveBuild)
 
