@@ -11,6 +11,10 @@ type File struct {
 	Byte []byte
 }
 
+func (f *File) Name() string {
+	return filepath.Base(f.Path)
+}
+
 func (f *File) String() string {
 	return string(f.Byte)
 }

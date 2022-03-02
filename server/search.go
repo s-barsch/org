@@ -1,48 +1,44 @@
 package main
-/*
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
-	"os"
-	p "path/filepath"
-	"strings"
-	"time"
 )
 
 func search(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/search"):]
+	query := r.URL.Path[len("/api/search"):]
 
 	e := &Err{
 		Func: "search",
-		Path: path,
+		Path: query,
 		Code: 500,
 	}
 
-	files, sorted, err := getFiles(path)
-	if err != nil {
-		e.Err = err
-		return e
+	files := []*File{}
+	matches := idx.Search(query)
+
+	for i, f := range matches {
+		files = append(files, &File{
+			Num:  i,
+			Path: f.Path,
+			Name: f.Name(),
+			Type: "text",
+			Body: f.String(),
+		})
 	}
 
-	if files == nil {
-		files = []*File{}
-	}
-
-	nav, err := getNav(path)
+	nav, err := getNav(query)
 	if err != nil {
 		e.Err = err
 		return e
 	}
 
 	v := &DirView{
-		Path: path,
+		Path: query,
 		Nav:  nav,
 		Main: &Main{
 			Files:  files,
-			Sorted: sorted,
+			Sorted: false,
 		},
 	}
 
@@ -54,4 +50,4 @@ func search(w http.ResponseWriter, r *http.Request) *Err {
 
 	return nil
 }
-*/
+
