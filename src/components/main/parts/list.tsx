@@ -38,6 +38,8 @@ function FileSwitch({file, mainFuncs, modFuncs, isSingle}: FileSwitchProps) {
     }
 }
 
+const ReactSortable1: any = ReactSortable;
+
 type FileListProps = {
     files: File[];
     saveSort: (part: File[], type: string) => void;
@@ -70,7 +72,7 @@ export function FileList({files, saveSort, mainFuncs, modFuncs}: FileListProps) 
             <span className="right">
                 <button onClick={reverseFiles}><ReverseIcon /></button>
             </span>
-            <ReactSortable 
+            <ReactSortable1 
                 handle=".info__drag" 
                 onEnd={callOnEnd}
                 animation={200} list={state} setList={setState}>
@@ -79,7 +81,7 @@ export function FileList({files, saveSort, mainFuncs, modFuncs}: FileListProps) 
                         <FileSwitch key={file.id} file={file} mainFuncs={mainFuncs} modFuncs={modFuncs} isSingle={false} />
                     ))}
 
-            </ReactSortable>
+            </ReactSortable1>
         </>
     );
 }
@@ -116,11 +118,11 @@ export function DirList({dirs, saveSort}: DirListProps) {
     };
 
     return (
-        <ReactSortable className="dirs__list" onEnd={callOnEnd}
+        <ReactSortable1 className="dirs__list" onEnd={callOnEnd}
         animation={200} list={state} setList={setState}>
         {state.map((dir) => (
             <Dir key={dir.id} dir={dir} />
         ))}
-        </ReactSortable>
+        </ReactSortable1>
     )
 }

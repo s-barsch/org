@@ -15,7 +15,7 @@ function TargetsProvider({ children }: {children: React.ReactNode}) {
 
     /* watch localStorage for multi tab support */
 
-    const listenForTargets = useCallback(evt => {
+    const listenForTargets = useCallback(() => {
         setTargets(readTargets());
     }, []);
 

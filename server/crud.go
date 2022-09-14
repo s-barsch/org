@@ -55,29 +55,29 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 /*
-func viewListing(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/list"):]
+	func viewListing(w http.ResponseWriter, r *http.Request) *Err {
+		path := r.URL.Path[len("/api/list"):]
 
-	e := &Err{
-		Func: "dirListing",
-		Path: path,
-		Code: 500,
+		e := &Err{
+			Func: "dirListing",
+			Path: path,
+			Code: 500,
+		}
+
+		files, err := getFiles(path)
+		if err != nil {
+			e.Err = err
+			return e
+		}
+
+		err = json.NewEncoder(w).Encode(files)
+		if err != nil {
+			e.Err = err
+			return e
+		}
+
+		return nil
 	}
-
-	files, err := getFiles(path)
-	if err != nil {
-		e.Err = err
-		return e
-	}
-
-	err = json.NewEncoder(w).Encode(files)
-	if err != nil {
-		e.Err = err
-		return e
-	}
-
-	return nil
-}
 */
 func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api/copy"):]
@@ -95,8 +95,8 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	if strings.Contains(newPath, "/public/") {
-		dir := p.Dir(newPath) 
-		err := os.MkdirAll(ROOT + dir, 0755)
+		dir := p.Dir(newPath)
+		err := os.MkdirAll(ROOT+dir, 0755)
 		if err != nil {
 			e.Err = err
 			return e

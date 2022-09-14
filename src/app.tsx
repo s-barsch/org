@@ -98,7 +98,7 @@ function Loader() {
     }, [path, dir]);
 
     // listen if another tab sends files to this tab.
-    const listenForWrite = useCallback(evt => {
+    const listenForWrite = useCallback(() => {
         if (isActiveTarget(targets, path)) {
             loadView(path);
             blinkFavicon(path);

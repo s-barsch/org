@@ -54,7 +54,7 @@ const AddButton = ({clickFn}: {clickFn: () => void}) => {
 // from here https://gist.github.com/thebuilder/fb07c989093d4a82811625de361884e7
 function useHookWithRefCallback(): ((node: any) => void)[] {
     const ref = useRef(null)
-    const setRef = useCallback(node => {
+    const setRef = useCallback((node: any) => {
         if (ref.current) {
             // Make sure to cleanup any events/references added to the last instance
         }
