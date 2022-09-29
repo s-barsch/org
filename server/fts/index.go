@@ -3,7 +3,6 @@ package fts
 // from https://github.com/akrylysov/simplefts
 
 import (
-	"log"
 )
 
 // index is an inverted index. It maps tokens to document IDs.
@@ -23,20 +22,19 @@ func (idx Index) Add(files []*File) {
 	}
 }
 
-/*
 // intersection returns the set intersection between a and b.
 // a and b have to be sorted in ascending order and contain no duplicates.
-func intersection(a []string, b []string) []string{
+func intersection(a []*File, b []*File) []*File{
 	maxLen := len(a)
 	if len(b) > maxLen {
 		maxLen = len(b)
 	}
-	r := make([]int, 0, maxLen)
+	r := make([]*File, 0, maxLen)
 	var i, j int
 	for i < len(a) && j < len(b) {
-		if a[i] < b[j] {
+		if a[i].Path < b[j].Path {
 			i++
-		} else if a[i] > b[j] {
+		} else if a[i].Path > b[j].Path {
 			j++
 		} else {
 			r = append(r, a[i])
@@ -46,7 +44,6 @@ func intersection(a []string, b []string) []string{
 	}
 	return r
 }
-*/
 
 // search queries the index for the given text.
 func (idx Index) Search(text string) []*File {
@@ -56,8 +53,7 @@ func (idx Index) Search(text string) []*File {
 			if r == nil {
 				r = paths
 			} else {
-				log.Println("intersection not implemented")			
-				//r = intersection(r, ids)
+				r = intersection(r, paths)
 			}
 		} else {
 			// Token doesn't exist.
