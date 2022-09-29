@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-var idx fts.Index
+var IDX fts.Index
 
 func loadIndex(root string) error {
 	path, err := filepath.EvalSymlinks(root)
@@ -23,8 +23,8 @@ func loadIndex(root string) error {
 	log.Printf("Loaded %d documents in %v", len(files), time.Since(start))
 
 	start = time.Now()
-	idx = make(fts.Index)
-	idx.Add(files)
+	IDX = make(fts.Index)
+	IDX.Add(files)
 	log.Printf("Indexed %d documents in %v", len(files), time.Since(start))
 	return nil
 }

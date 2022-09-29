@@ -15,7 +15,7 @@ func search(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	files := []*File{}
-	matches := idx.Search(query)
+	matches := IDX.Search(query)
 
 	for i, f := range matches {
 		files = append(files, &File{
