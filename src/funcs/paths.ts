@@ -82,6 +82,9 @@ export function isToday(path: string): boolean {
     return path === "/today";
 }
 
+export function isSearch(path: string): boolean {
+    return (path.substr(0, 7) === "/search")
+}
 
 export function isWrite(path: string): boolean {
     return path === "/write";

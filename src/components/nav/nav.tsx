@@ -17,7 +17,7 @@ type NavProps = {
     pathname: string;
     nav: navObj;
     err: errObj;
-    newFile: () => void;
+    newFile?: () => void;
 }
 
 export default function Nav({pathname, nav, err, newFile}: NavProps) {
@@ -73,6 +73,8 @@ export default function Nav({pathname, nav, err, newFile}: NavProps) {
         return null
     }
 
+    let newFileFn = newFile === undefined ? () => {} : newFile;
+
     return (
         <>
         <nav id="links">
@@ -95,10 +97,9 @@ export default function Nav({pathname, nav, err, newFile}: NavProps) {
             */}
             <TargetsList targets={targets} saveTargets={saveTargets}/>
         </nav>
-            <AddText createNewFile={newFile} />
-        {/*
-            <AddDir addNewDir={addNewDir} />
-            */}
+        { newFile &&
+            <AddText createNewFile={newFileFn} />
+        }
         </>
     )
 }

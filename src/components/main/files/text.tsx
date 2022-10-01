@@ -34,7 +34,8 @@ export default function TextField({file, mainFuncs, modFuncs, isSingle}: TextFie
     function checkSubmit(e: React.KeyboardEvent<HTMLTextAreaElement>) {
         if (e.ctrlKey && e.key === "Enter" && mainFuncs !== undefined) {
             submit(e);
-            mainFuncs.createNewFile();
+            const newFile = mainFuncs === undefined ? () => {} : mainFuncs.createNewFile;
+            newFile();
         }
     }
 

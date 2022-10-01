@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
-import { isText } from 'funcs/paths';
+import { isText, isSearch } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
 import { mainObj, navObj, errObj } from 'app';
 import File, { newFile, merge, insertBefore, createDuplicate, 
@@ -11,11 +11,14 @@ import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
     copyRequest, newFileRequest, deleteRequest, renameViewRequest } from './requests';
 import TextView from 'components/main/views/text';
 import DirView from 'components/main/views/dir';
+import SearchView from 'components/main/views/search';
+
 
 export type mainFuncsObj = {
     createNewFile: () => void;
     addNewDir: (name: string) => void;
     renameView: (name: string) => void;
+    renameSearch: (name:string) => void;
     saveSort: (part: File[], type:string) => void;
 }
 
@@ -86,6 +89,12 @@ export default function Main({path, files, sorted, nav, err, setMain, setErr}: M
         }
 
         await renameViewRequest(path, newPath, setErr);
+        history.push(newPath);
+    }
+
+    function renameSearch(newName: string) {
+        let newPath = join(dirname(path), newName);
+
         history.push(newPath);
     }
 
@@ -165,12 +174,21 @@ export default function Main({path, files, sorted, nav, err, setMain, setErr}: M
     const mainFuncs: mainFuncsObj = {
         createNewFile:  createNewFile,
         addNewDir:      addNewDir,
+        renameSearch:   renameSearch,
         renameView:     renameView,
         saveSort:       saveSort
     }
 
     if (isText(path)) {
-        return <TextView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} nav={nav} err={err} />;
+        return <TextView path={path} files={files}
+            mainFuncs={mainFuncs} modFuncs={modFuncs}
+            nav={nav} err={err} />;
+    }
+
+    if (isSearch(path)) {
+        return <SearchView path={path} files={files}
+            mainFuncs={mainFuncs} modFuncs={modFuncs}
+            nav={nav} err={err} />;
     }
 
     return <DirView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} nav={nav} err={err}/>

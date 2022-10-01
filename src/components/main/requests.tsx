@@ -29,7 +29,7 @@ function request(path: string, options: reqOptions, err: errObj, setErr: setErrF
         err.code = 200;
         setErr(err);
         resolve("success");
-    });
+    })
 }
 
 export async function moveRequest(path: string, newPath: string, setErr: setErrFn) {
