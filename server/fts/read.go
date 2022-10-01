@@ -1,8 +1,8 @@
 package fts
 
 import (
-	"os"
 	"io/fs"
+	"os"
 	"path/filepath"
 )
 
@@ -19,7 +19,8 @@ func (f *File) String() string {
 	return string(f.Byte)
 }
 
-func ReadFiles(root string) ([]*File, error) {
+// root is path of the project. folder is a specified subfolder of that project.
+func ReadFiles(root, folder string) ([]*File, error) {
 	files := []*File{}
 
 	wfn := func(path string, d fs.DirEntry, err error) error {
@@ -30,7 +31,7 @@ func ReadFiles(root string) ([]*File, error) {
 		if x := filepath.Ext(path); x != ".txt" && x != ".info" {
 			return nil
 		}
-		f, err := readFile(path)
+		f, err := readFile(root, path)
 		if err != nil {
 			return err
 		}
@@ -38,7 +39,7 @@ func ReadFiles(root string) ([]*File, error) {
 		return nil
 	}
 
-	err := filepath.WalkDir(root, wfn)
+	err := filepath.WalkDir(filepath.Join(root, folder), wfn)
 
 	if err != nil {
 		return nil, err
@@ -46,13 +47,13 @@ func ReadFiles(root string) ([]*File, error) {
 	return files, nil
 }
 
-func readFile(path string) (*File, error) {
+func readFile(root, path string) (*File, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
 	return &File{
-		Path: path,
+		Path: path[len(root):],
 		Byte: b,
 	}, nil
 }
