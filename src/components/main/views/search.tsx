@@ -22,7 +22,7 @@ export default function SearchView({path, files, mainFuncs, modFuncs, nav, err}:
     return (
         <>
             <Nav pathname={path} nav={nav} err={err} />
-            <Head path={path} renameView={mainFuncs.renameSearch} />
+            <Head path={path} renameFn={mainFuncs.renameSearch} />
             <section id="files">
                 <FileList files={filesOnly(files)} mainFuncs={mainFuncs} modFuncs={modFuncs} />
             </section>

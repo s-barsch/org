@@ -30,7 +30,7 @@ const handlers = {
     return (
         <HotKeys keyMap={keyMap} handlers={handlers}>
             <Nav pathname={path} newFile={mainFuncs.createNewFile} nav={nav} err={err} />
-            <Head path={path} renameView={mainFuncs.renameView} />
+            <Head path={path} renameFn={mainFuncs.renameView} />
             <nav id="dirs">
                 <DirList  dirs={dirsOnly(files)} saveSort={mainFuncs.saveSort} />
                 <AddDir addNewDir={mainFuncs.addNewDir} />

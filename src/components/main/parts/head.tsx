@@ -4,24 +4,24 @@ import { dirname } from 'path';
 import { orgBase } from 'funcs/paths';
 type HeadProps = {
     path: string;
-    renameView: (name: string) => void;
+    renameFn: (name: string) => void;
 }
 
-export default function Head({path, renameView}: HeadProps) {
+export default function Head({path, renameFn}: HeadProps) {
     return (
         <h1 className="name">
         <Link className="parent" to={dirname(path)}>^</Link>
-        <RenameView path={path} renameView={renameView} />
+        <Rename path={path} renameFn={renameFn} />
         </h1>
     )
 }
 
 type RenameViewProps = {
     path: string;
-    renameView: (name: string) => void;
+    renameFn: (name: string) => void;
 }
 
-function RenameView({path, renameView}: RenameViewProps) {
+function Rename({path, renameFn}: RenameViewProps) {
     const [name, setName] = useState(orgBase(path));
 
     useEffect(() => {
@@ -37,7 +37,7 @@ function RenameView({path, renameView}: RenameViewProps) {
         if (old === name || name === '') {
             return;
         }
-        renameView(name);
+        renameFn(name);
     }
 
     return (
