@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import File from 'funcs/files';
 import { mainFuncsObj, modFuncsObj } from 'components/main/main';
-import { FileSwitch } from 'components/main/parts/switch'
+import { FileSwitch } from 'components/main/parts/switch-plain'
 
 type FileListProps = {
     files: File[];

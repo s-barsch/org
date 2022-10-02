@@ -48,13 +48,14 @@ export default function TextField({file, mainFuncs, modFuncs, isSingle}: TextFie
         <div className={"text" + (isNoSort(file.name) ? " no-sort" : "")}>
         { !isSingle &&
             <Meta file={file} modFuncs={modFuncs}/>
-        }
-        <TextareaAutosize value={body}
-        ref={ref}
-        minRows={!isSingle ? 1 : fullScreenRows()}
-        onKeyPress={checkSubmit}
-        onChange={handleTyping}
-        onBlur={submit} />
+            }
+            <TextareaAutosize value={body}
+                className="text-field"
+                ref={ref}
+                minRows={!isSingle ? 1 : fullScreenRows()}
+                onKeyPress={checkSubmit}
+                onChange={handleTyping}
+                onBlur={submit} />
         </div>
     )
 }
