@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { dirname } from 'path';
 import { orgBase } from 'funcs/paths';
@@ -24,15 +24,25 @@ type RenameViewProps = {
 function Rename({path, renameFn}: RenameViewProps) {
     const [name, setName] = useState(orgBase(path));
 
+    const ref = useRef<HTMLInputElement>(null!)
+
     useEffect(() => {
-        setName(orgBase(path));
+        const base = orgBase(path);
+        setName(base);
+
+        if (base === "search") {
+            ref.current.focus({ preventScroll: true });
+            ref.current.classList.add("search-active")
+            setName('');
+        }
     }, [path]);
+
 
     function handleTyping(e: React.FormEvent<HTMLInputElement>) {
         setName(e.currentTarget.value);
     }
 
-    function submit(e: React.FormEvent<HTMLInputElement>) {
+    function submit() {
         const old = orgBase(path);
         if (old === name || name === '') {
             return;
@@ -40,10 +50,16 @@ function Rename({path, renameFn}: RenameViewProps) {
         renameFn(name);
     }
 
+    function detectEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === 'Enter') {
+            submit();
+        }
+    }
+
     return (
         <input type="text" value={name} size={name.length}
-        disabled={name === "org" ? true : false} 
-        onChange={handleTyping} onBlur={submit} />
+            ref={ref} disabled={name === "org" ? true : false}
+            onChange={handleTyping} onKeyPress={detectEnter} onBlur={submit} />
     )
 }
 

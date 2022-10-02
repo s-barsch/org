@@ -93,9 +93,12 @@ export default function Main({path, files, sorted, nav, err, setMain, setErr}: M
     }
 
     function renameSearch(newName: string) {
-        let newPath = join(dirname(path), newName);
+        let dir = dirname(path);
+        if (path === '/search') {
+            dir = path;
+        }
 
-        history.push(newPath);
+        history.push(join(dir, newName));
     }
 
     function renameFile(oldPath: string, f: File) {
