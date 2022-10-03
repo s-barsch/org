@@ -3,7 +3,7 @@ import { mainFuncsObj, modFuncsObj } from 'components/main/main';
 import Head from 'components/main/parts/head';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
 import { DirList, FileList } from 'components/main/parts/sort-list';
-import { AddDir } from 'components/main/parts/add';
+import { AddDir, AddText } from 'components/main/parts/add';
 import { navObj, errObj } from 'app';
 import Nav from 'components/nav/nav';
 import { HotKeys } from "react-hotkeys";
@@ -36,9 +36,7 @@ const handlers = {
                 <AddDir addNewDir={mainFuncs.addNewDir} />
             </nav>
             <section id="files">
-                { /* 
                 <AddText createNewFile={mainFuncs.createNewFile} />
-                   */ }
                 <FileList files={filesOnly(files)} mainFuncs={mainFuncs} modFuncs={modFuncs} saveSort={mainFuncs.saveSort} />
             </section>
         </HotKeys>
