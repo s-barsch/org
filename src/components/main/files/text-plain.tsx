@@ -13,7 +13,7 @@ type TextFieldProps = {
 export default function TextField({file, modFuncs}: TextFieldProps) {
     return (
         <div className={"text" + (isNoSort(file.name) ? " no-sort" : "")}>
-            <Meta file={file} modFuncs={modFuncs} />
+            <Meta file={file} modFuncs={modFuncs} isSearch={true} />
             <code className="text-field">{file.body}</code>
         </div>
     )

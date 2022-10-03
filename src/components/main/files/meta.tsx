@@ -58,9 +58,10 @@ export function PubButton({file, copyFile}: PubButtonProps) {
 type MetaProps = {
     file: File;
     modFuncs: modFuncsObj;
+    isSearch?: boolean;
 }
 
-export function Meta({file, modFuncs}: MetaProps) {
+export function Meta({file, modFuncs, isSearch}: MetaProps) {
 
     function moveToTarget(evt: React.MouseEvent<HTMLButtonElement>) {
         modFuncs.moveToTarget(file);
@@ -76,7 +77,7 @@ export function Meta({file, modFuncs}: MetaProps) {
 
     return (
         <div className="info">
-            <FileName file={file} modFuncs={modFuncs} />
+            <FileName file={file} modFuncs={modFuncs} isSearch={isSearch} />
             <BotToggle file={file} moveFile={modFuncs.moveFile} />
             <button className="info__dupli" onClick={duplicateFile}>⧺</button>
             <button onClick={copyToTarget}><img className="rarr" alt="Copy" src="/rarrc.svg"/></button>
@@ -90,7 +91,18 @@ export function Meta({file, modFuncs}: MetaProps) {
     )
 }
 
-function FileName({file, modFuncs}: MetaProps) {
+function FileName({file, modFuncs, isSearch}: MetaProps) {
+    if (isSearch) {
+        return <FileNamePlain file={file} modFuncs={modFuncs} />
+    }
+    return <FileNameEdit file={file} modFuncs={modFuncs} />
+}
+
+function FileNamePlain({file, modFuncs}: MetaProps) {
+    return <FileLink file={file} isEdit={false}><span className="info__name">{file.name}</span></FileLink>
+}
+
+function FileNameEdit({file, modFuncs}: MetaProps) {
     const [edit, setEdit] = useState(false);
 
     const [name, setName] = useState("");
