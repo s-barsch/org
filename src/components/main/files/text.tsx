@@ -2,17 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 //import TextareaAutosize from 'react-textarea-autosize';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { Meta } from 'components/main/files/meta';
-import { mainFuncsObj, modFuncsObj } from 'components/main/main';
+import { modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
 
 type TextFieldProps = {
     file: File;
-    mainFuncs?: mainFuncsObj;
+    createNewFile?: () => void;
     modFuncs: modFuncsObj;
     isSingle: boolean;
 }
 
-export default function TextField({file, mainFuncs, modFuncs, isSingle}: TextFieldProps) {
+export default function TextField({file, createNewFile, modFuncs, isSingle}: TextFieldProps) {
     const [body, setBody] = useState(file.body);
 
     const ref = useRef<HTMLTextAreaElement>(null!)
@@ -32,10 +32,10 @@ export default function TextField({file, mainFuncs, modFuncs, isSingle}: TextFie
     }
 
     function checkSubmit(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-        if (e.ctrlKey && e.key === "Enter" && mainFuncs !== undefined) {
+        if (e.ctrlKey && e.key === "Enter" && createNewFile !== undefined) {
             submit(e);
-            const newFile = mainFuncs === undefined ? () => {} : mainFuncs.createNewFile;
-            newFile();
+            //const newFile = createNewFile === undefined ? () => {} : createNewFile;
+            createNewFile();
         }
     }
 

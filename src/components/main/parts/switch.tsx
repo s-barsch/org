@@ -4,16 +4,16 @@ import Text from 'components/main/files/text';
 import Image from 'components/main/files/image';
 import Video from 'components/main/files/video';
 import File from 'funcs/files';
-import { mainFuncsObj, modFuncsObj } from 'components/main/main';
+import { modFuncsObj } from 'components/main/main';
 
 export type FileSwitchProps = {
     file: File;
-    mainFuncs: mainFuncsObj;
     modFuncs: modFuncsObj;
+    createNewFile: () => void;
     isSingle: boolean;
 }
 
-export function FileSwitch({file, mainFuncs, modFuncs, isSingle}: FileSwitchProps) {
+export function FileSwitch({file, modFuncs, createNewFile, isSingle}: FileSwitchProps) {
     /*
   if (file.name === ".sort") {
     return <div className="no-sort"><Meta file={file} modFuncs={modFuncs} /></div>
@@ -21,7 +21,7 @@ export function FileSwitch({file, mainFuncs, modFuncs, isSingle}: FileSwitchProp
      */
     switch (file.type) {
         case "text":
-            return <Text file={file} mainFuncs={mainFuncs} modFuncs={modFuncs} isSingle={isSingle}/>
+            return <Text file={file} createNewFile={createNewFile} modFuncs={modFuncs} isSingle={isSingle}/>
         case "image":
             return <Image file={file} modFuncs={modFuncs} />
         case "video":

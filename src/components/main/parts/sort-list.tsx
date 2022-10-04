@@ -4,7 +4,7 @@ import ReverseIcon from '@material-ui/icons/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
 import { basename } from 'path';
 import File from 'funcs/files';
-import { mainFuncsObj, modFuncsObj } from 'components/main/main';
+import { modFuncsObj } from 'components/main/main';
 import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
 import { separate } from 'funcs/sort';
@@ -15,11 +15,11 @@ const ReactSortable1: any = ReactSortable;
 type FileListProps = {
     files: File[];
     saveSort: (part: File[], type: string) => void;
-    mainFuncs: mainFuncsObj;
+    createNewFile: () => void;
     modFuncs: modFuncsObj;
 }
 
-export function FileList({files, saveSort, mainFuncs, modFuncs}: FileListProps) {
+export function FileList({files, saveSort, createNewFile, modFuncs}: FileListProps) {
     const [state, setState] = useState(files);
 
     useEffect(() => {
@@ -50,7 +50,7 @@ export function FileList({files, saveSort, mainFuncs, modFuncs}: FileListProps) 
                 animation={200} list={state} setList={setState}>
 
                     { state.map((file, i) => (
-                        <FileSwitch key={file.id} file={file} mainFuncs={mainFuncs} modFuncs={modFuncs} isSingle={false} />
+                        <FileSwitch key={file.id} file={file} createNewFile={createNewFile} modFuncs={modFuncs} isSingle={false} />
                     ))}
 
             </ReactSortable1>

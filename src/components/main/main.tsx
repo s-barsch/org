@@ -18,7 +18,6 @@ export type mainFuncsObj = {
     createNewFile: () => void;
     addNewDir: (name: string) => void;
     renameView: (name: string) => void;
-    renameSearch: (name:string) => void;
     saveSort: (part: File[], type:string) => void;
 }
 
@@ -86,15 +85,6 @@ export default function Main({path, files, sorted, setMain, setErr}: MainProps) 
 
         await renameViewRequest(path, newPath, setErr);
         history.push(newPath);
-    }
-
-    function renameSearch(newName: string) {
-        let dir = dirname(path);
-        if (path === '/search') {
-            dir = path;
-        }
-
-        history.push(join(dir, newName));
     }
 
     function renameFile(oldPath: string, f: File) {
@@ -173,7 +163,6 @@ export default function Main({path, files, sorted, setMain, setErr}: MainProps) 
     const mainFuncs: mainFuncsObj = {
         createNewFile:  createNewFile,
         addNewDir:      addNewDir,
-        renameSearch:   renameSearch,
         renameView:     renameView,
         saveSort:       saveSort
     }

@@ -32,7 +32,8 @@ const handlers = {
             </nav>
             <section id="files">
                 <AddText createNewFile={mainFuncs.createNewFile} />
-                <FileList files={filesOnly(files)} mainFuncs={mainFuncs} modFuncs={modFuncs} saveSort={mainFuncs.saveSort} />
+                <FileList files={filesOnly(files)} createNewFile={mainFuncs.createNewFile}
+                    modFuncs={modFuncs} saveSort={mainFuncs.saveSort} />
             </section>
         </HotKeys>
     )

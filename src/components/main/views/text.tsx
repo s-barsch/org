@@ -29,7 +29,7 @@ export default function TextView({path, files, mainFuncs, modFuncs}: TextViewPro
     return (
         <>
             <Head path={path} renameFn={mainFuncs.renameView} />
-            <Text file={text} mainFuncs={mainFuncs} modFuncs={modFuncs} isSingle={true} />
+            <Text file={text} createNewFile={mainFuncs.createNewFile} modFuncs={modFuncs} isSingle={true} />
         </>
     )
 }
