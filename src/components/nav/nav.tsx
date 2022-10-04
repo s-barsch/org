@@ -16,7 +16,6 @@ type NavProps = {
     pathname: string;
     nav: navObj;
     err: errObj;
-    newFile?: () => void;
 }
 
 export default function Nav({pathname, nav, err}: NavProps) {

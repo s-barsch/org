@@ -8,6 +8,7 @@ import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import { isToday, isWrite, pageTitle, isText } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
+import Nav from 'components/nav/nav';
 //import H from 'history';
 import File from 'funcs/files';
 
@@ -71,6 +72,8 @@ function Loader() {
     const [err, setErr] = useState(newErr());
     const [dir, setDir] = useState(newView());
     const [status, setStatus] = useState("");
+
+    console.log(dir)
 
     function setMain(main: mainObj) {
         dir.main = main;
@@ -155,7 +158,9 @@ function Loader() {
 
     return (
         <>
-        <Main path={path} files={dir.main.files} sorted={dir.main.sorted} nav={dir.nav} err={err} setMain={setMain} setErr={setErr} />
+            <Nav pathname={path} nav={dir.nav} err={err} />
+            <Main path={path} files={dir.main.files} sorted={dir.main.sorted}
+            setMain={setMain} setErr={setErr} />
         </>
     )
 }

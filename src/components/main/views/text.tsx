@@ -1,7 +1,5 @@
 import React from 'react';
-import { navObj, errObj } from 'app';
 
-import Nav from 'components/nav/nav';
 import Head from 'components/main/parts/head';
 import Text from 'components/main/files/text';
 import File from 'funcs/files';
@@ -14,11 +12,9 @@ type TextViewProps = {
     files: File[];
     mainFuncs: mainFuncsObj;
     modFuncs: modFuncsObj;
-    nav: navObj;
-    err: errObj;
 }
 
-export default function TextView({path, files, mainFuncs, modFuncs, nav, err}: TextViewProps) {
+export default function TextView({path, files, mainFuncs, modFuncs}: TextViewProps) {
     if (!files || files.length === 0) {
         return <>No files found.</>;
     }
@@ -32,7 +28,6 @@ export default function TextView({path, files, mainFuncs, modFuncs, nav, err}: T
 
     return (
         <>
-            <Nav pathname={path} newFile={mainFuncs.createNewFile} nav={nav} err={err} />
             <Head path={path} renameFn={mainFuncs.renameView} />
             <Text file={text} mainFuncs={mainFuncs} modFuncs={modFuncs} isSingle={true} />
         </>

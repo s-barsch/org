@@ -4,7 +4,7 @@ import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
 import { isText, isSearch } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
-import { mainObj, navObj, errObj } from 'app';
+import { mainObj, errObj } from 'app';
 import File, { newFile, merge, insertBefore, createDuplicate, 
     isPresent, removeFromArr } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
@@ -41,13 +41,11 @@ type MainProps = {
     path: string;
     files: File[];
     sorted: boolean;
-    nav: navObj;
-    err: errObj;
     setMain: (main: mainObj) => void;
     setErr: (err: errObj) => void;
 }
 
-export default function Main({path, files, sorted, nav, err, setMain, setErr}: MainProps) {
+export default function Main({path, files, sorted, setMain, setErr}: MainProps) {
     let { targets } = useContext(TargetsContext);
 
     const history = useHistory();
@@ -184,17 +182,15 @@ export default function Main({path, files, sorted, nav, err, setMain, setErr}: M
 
     if (isText(path)) {
         return <TextView path={path} files={files}
-            mainFuncs={mainFuncs} modFuncs={modFuncs}
-            nav={nav} err={err} />;
+            mainFuncs={mainFuncs} modFuncs={modFuncs} />;
     }
 
     if (isSearch(path)) {
         return <SearchView path={path} files={files}
-            mainFuncs={mainFuncs} modFuncs={modFuncs}
-            nav={nav} err={err} />;
+            mainFuncs={mainFuncs} modFuncs={modFuncs} />;
     }
 
-    return <DirView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} nav={nav} err={err}/>
+    return <DirView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />
 }
 
 function insertDuplicateFile(files: File[], f: File, newFile: File, isSorted: boolean) {

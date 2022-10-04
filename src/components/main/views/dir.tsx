@@ -4,8 +4,6 @@ import Head from 'components/main/parts/head';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
 import { DirList, FileList } from 'components/main/parts/sort-list';
 import { AddDir, AddText } from 'components/main/parts/add';
-import { navObj, errObj } from 'app';
-import Nav from 'components/nav/nav';
 import { HotKeys } from "react-hotkeys";
 
 type DirViewProps = {
@@ -13,12 +11,10 @@ type DirViewProps = {
     files: File[];
     mainFuncs: mainFuncsObj;
     modFuncs: modFuncsObj;
-    err: errObj;
-    nav: navObj;
 }
 
 
-export default function DirView({path, files, mainFuncs, modFuncs, nav, err}: DirViewProps) {
+export default function DirView({path, files, mainFuncs, modFuncs}: DirViewProps) {
 const keyMap = {
     NEW_TEXT: "ctrl+enter"
 };
@@ -29,7 +25,6 @@ const handlers = {
 
     return (
         <HotKeys keyMap={keyMap} handlers={handlers}>
-            <Nav pathname={path} newFile={mainFuncs.createNewFile} nav={nav} err={err} />
             <Head path={path} renameFn={mainFuncs.renameView} />
             <nav id="dirs">
                 <DirList  dirs={dirsOnly(files)} saveSort={mainFuncs.saveSort} />
