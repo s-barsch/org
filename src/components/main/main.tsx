@@ -23,19 +23,17 @@ export type mainFuncsObj = {
 }
 
 export type modFuncsObj = {
-    writeFile: actionFunc;
-    duplicateFile: actionFunc;
-    deleteFile: actionFunc;
+    writeFile: (f: File) => void;
+    duplicateFile: (f: File) => void;
+    deleteFile: (f: File) => void;
 
     moveFile: (f: File, newPath: string) => void;
     copyFile: (f: File, newPath: string) => void;
     renameFile: (oldPath: string, f: File) => void;
 
-    copyToTarget: actionFunc;
-    moveToTarget: actionFunc;
+    copyToTarget: (f: File) => void;
+    moveToTarget: (f: File) => void;
 }
-
-export type actionFunc = (f: File) => void;
 
 type MainProps = {
     path: string;
