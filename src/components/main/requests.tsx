@@ -15,12 +15,13 @@ function setWriteTime() {
 function request(path: string, options: reqOptions, err: errObj, setErr: setErrFn): Promise<string> {
     return new Promise(async (resolve, reject) => {
         const resp = await fetch(path, options);
+        const text = await resp.text();
         if (!resp.ok) {
             err.code = resp.status;
             if (err.code === 502) {
                 err.msg = 'Server not running.';
             } else {
-                err.msg = await resp.text();
+                err.msg = text;
             }
             setErr(err);
             reject(err);
@@ -28,12 +29,12 @@ function request(path: string, options: reqOptions, err: errObj, setErr: setErrF
         }
         err.code = 200;
         setErr(err);
-        resolve("success");
+        resolve(text);
     })
 }
 
 export async function moveRequest(path: string, newPath: string, setErr: setErrFn) {
-    let e = {
+    const e = {
         func: 'moveRequest',
         path: path,
         code: 0,
@@ -47,7 +48,7 @@ export async function moveRequest(path: string, newPath: string, setErr: setErrF
 }
 
 export async function copyRequest(path: string, newPath: string, setErr: setErrFn) {
-    let e = {
+    const e = {
         func: 'copyRequest',
         path: path,
         code: 0,
@@ -61,40 +62,40 @@ export async function copyRequest(path: string, newPath: string, setErr: setErrF
 }
 
 export function writeRequest(path: string, body: string, setErr: setErrFn) {
-    let e = {
+    const e = {
         func: 'writeRequest',
         path: path,
         code: 0,
         msg:  ''
     }
-    request("/api/write" + path, {
+    return request("/api/write" + path, {
         method: "POST",
         body:   body
     }, e, setErr);
 }
 
 export function deleteRequest(path: string, setErr: setErrFn) {
-    let e = {
+    const e = {
         func: 'deleteRequest',
         path: path,
         code: 0,
         msg:  ''
     }
-    request("/api/delete" + path, {} as reqOptions, e, setErr);
+    return request("/api/delete" + path, {} as reqOptions, e, setErr);
 }
 
 export function newDirRequest(path: string, setErr: setErrFn) {
-    let e = {
+    const e = {
         func: 'newDirRequest',
         path: path,
         code: 0,
         msg:  ''
     }
-    request("/api/write" + path, {} as reqOptions, e, setErr);
+    return request("/api/write" + path, {} as reqOptions, e, setErr);
 }
 
 export function renameViewRequest(path: string, body: string, setErr: setErrFn): Promise<string> {
-    let e = {
+    const e = {
         func: 'viewRequest',
         path: path,
         code: 0,
@@ -107,26 +108,26 @@ export function renameViewRequest(path: string, body: string, setErr: setErrFn):
 }
 
 export function saveSortRequest(path: string, files: File[], setErr: setErrFn) {
-    let e = {
+    const e = {
         func: 'saveSortRequest',
         path: path,
         code: 0,
         msg:  ''
     }
-    request("/api/sort" + path, {
+    return request("/api/sort" + path, {
         method: "POST",
         body: JSON.stringify(makeStringArr(files))
     }, e, setErr);
 }
 
 export function newFileRequest(path: string, setErr: setErrFn) {
-    let e = {
+    const e = {
         func: 'newFileRequest',
         path: path,
         code: 0,
         msg:  ''
     }
-    request("/api/write" + path, {
+    return request("/api/write" + path, {
             method: "POST",
             body: "newfile"
     }, e, setErr);
