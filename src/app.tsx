@@ -4,6 +4,7 @@ import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-d
 import Main from 'components/main/main';
 //import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
+import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import { isToday, isWrite, pageTitle, isText } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
@@ -13,9 +14,9 @@ import File from 'funcs/files';
 export default function App() {
     return (
         <Router>
-        <TargetsProvider>
-        <Loader />
-        </TargetsProvider>
+            <TargetsProvider>
+                <Loader />
+            </TargetsProvider>
         </Router>
     )
 }
@@ -42,7 +43,7 @@ function newView(): viewObj {
     return {
         path: "",
         nav:  {} as navObj,
-        main: {} as mainObj,
+        main: { files: [], sorted: false } as mainObj,
     };
 }
 
@@ -76,8 +77,10 @@ function Loader() {
         setDir({ ...dir });
     }
 
+
     // "/today" redirects to "/graph/20/20-10/24" (current day)
     useEffect(() => {
+
         document.title = pageTitle(path);
         setFavicon(path);
         if (isToday(path)) {
@@ -92,10 +95,13 @@ function Loader() {
 
     // only load when a new *dir* is requested
     useEffect(() => {
+        if (path === "/write" || path === "/today") {
+            return;
+        }
         if (shouldLoad(path, dir)) {
             loadView(path);
         }
-    }, [path, dir]);
+    }, [dir, path]);
 
     // listen if another tab sends files to this tab.
     const listenForWrite = useCallback(() => {
@@ -114,6 +120,7 @@ function Loader() {
     }, [listenForWrite]);
 
     async function loadView(path: string) {
+        //console.log("LOADING VIEW: " + path)
         let req = "/api/view" + path;
 
         if (path.substr(0, 7) === "/search") {
@@ -145,6 +152,7 @@ function Loader() {
         return <>{status}</>
     }
 
+
     return (
         <>
         <Main path={path} files={dir.main.files} sorted={dir.main.sorted} nav={dir.nav} err={err} setMain={setMain} setErr={setErr} />
@@ -157,6 +165,7 @@ async function writeRedirect(history: any) {
     const resp = await fetch("/api/now");
     const writePath = await resp.text();
     history.push(writePath)
+    //loadView(writePath)
 }
 
 // TODO: add type
@@ -167,9 +176,17 @@ async function todayRedirect(history: any) {
 }
 
 function shouldLoad(path: string, dir: viewObj): boolean {
+    if (path === "/write" || path === "/today") {
+        return false;
+    }
     if (path === dir.path) {
         return false
     }
+
+    if (isText(path) && !isPresentPath(dir.main.files, path)) {
+        return true
+    }
+
     if (isText(path) && dir.path && dir.path !== "") {
         return false;
     }

@@ -54,6 +54,15 @@ function splitName(name: string): SplitName {
     }
 }
 
+export function isPresentPath(files: File[], path: string): boolean {
+    for (const f of files) {
+        if (f.path === path) {
+            return true
+        }
+    }
+    return false
+}
+
 export function isPresent(files: File[], name: string): boolean {
     for (const f of files) {
         if (f.name === name) {
