@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-//import TextareaAutosize from 'react-textarea-autosize';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { Meta } from 'components/main/files/meta';
-import { modFuncsObj } from 'components/main/main';
 import File from 'funcs/files';
 
 type TextFieldProps = {
     file: File;
-    createNewFile?: () => void;
-    modFuncs: modFuncsObj;
+    createNewText?: () => void;
+    writeText: (f: File) => void;
     isSingle: boolean;
 }
 
-export default function TextField({file, createNewFile, modFuncs, isSingle}: TextFieldProps) {
+export default function TextField({file, writeText, createNewText, isSingle}: TextFieldProps) {
     const [body, setBody] = useState(file.body);
 
     const ref = useRef<HTMLTextAreaElement>(null!)
@@ -32,23 +29,20 @@ export default function TextField({file, createNewFile, modFuncs, isSingle}: Tex
     }
 
     function checkSubmit(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-        if (e.ctrlKey && e.key === "Enter" && createNewFile !== undefined) {
+        if (e.ctrlKey && e.key === "Enter" && createNewText !== undefined) {
             submit(e);
             //const newFile = createNewFile === undefined ? () => {} : createNewFile;
-            createNewFile();
+            createNewText();
         }
     }
 
     function submit(e: React.FormEvent<HTMLTextAreaElement>) {
         file.body = body;
-        modFuncs.writeFile(file);
+        writeText(file);
     }
 
     return (
         <div className={"text" + (isNoSort(file.name) ? " no-sort" : "")}>
-        { !isSingle &&
-            <Meta file={file} modFuncs={modFuncs}/>
-            }
             <TextareaAutosize value={body}
                 className="text-field"
                 ref={ref}

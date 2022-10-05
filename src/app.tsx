@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import 'css/main.scss';
-import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import Main from 'components/main/main';
 //import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
@@ -16,10 +16,21 @@ export default function App() {
     return (
         <Router>
             <TargetsProvider>
-                <Loader />
+                <Switch>
+                    <Route path="/write">
+                        <New />
+                    </Route>
+                    <Route path="/">
+                        <Loader />
+                    </Route>
+                </Switch>
             </TargetsProvider>
         </Router>
     )
+}
+
+function New() {
+    return null;
 }
 
 export type viewObj = {

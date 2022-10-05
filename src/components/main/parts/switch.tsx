@@ -21,7 +21,10 @@ export function FileSwitch({file, modFuncs, createNewFile, isSingle}: FileSwitch
      */
     switch (file.type) {
         case "text":
-            return <Text file={file} createNewFile={createNewFile} modFuncs={modFuncs} isSingle={isSingle}/>
+            return <>
+                <Meta file={file} modFuncs={modFuncs} />
+                <Text file={file} createNewText={createNewFile} writeText={modFuncs.writeFile} isSingle={isSingle} />
+            </>
         case "image":
             return <Image file={file} modFuncs={modFuncs} />
         case "video":
