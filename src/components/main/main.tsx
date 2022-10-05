@@ -47,6 +47,34 @@ export default function Main({path, files, sorted, setMain, setErr}: MainProps) 
 
     const history = useHistory();
 
+    const modFuncs: modFuncsObj = {
+        writeFile:      writeFile,
+        deleteFile:     deleteFile,
+        moveFile:       moveFile,
+        copyFile:       copyFile,
+        renameFile:     renameFile,
+        duplicateFile:  duplicateFile,
+        copyToTarget:   copyToTarget,
+        moveToTarget:   moveToTarget,
+    }
+
+    const mainFuncs: mainFuncsObj = {
+        createNewFile:  createNewFile,
+        addNewDir:      addNewDir,
+        renameView:     renameView,
+        saveSort:       saveSort
+    }
+
+    if (isText(path)) {
+        return <TextView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />;
+    }
+
+    if (isSearch(path)) {
+        return <SearchView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />;
+    }
+
+    return <DirView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />
+
     function update(newFiles: File[], isSorted: boolean) {
         setMain({
             sorted: isSorted,
@@ -130,8 +158,8 @@ export default function Main({path, files, sorted, setMain, setErr}: MainProps) 
         if (f.name === ".sort") {
             sorted = false;
         }
-        update(removeFromArr(files.slice(), f.name), sorted);
         deleteRequest(f.path, setErr);
+        update(removeFromArr(files.slice(), f.name), sorted);
     }
 
     function createNewFile() {
@@ -149,36 +177,28 @@ export default function Main({path, files, sorted, setMain, setErr}: MainProps) 
         update(New, true);
     }
 
-    const modFuncs: modFuncsObj = {
-        writeFile:      writeFile,
-        deleteFile:     deleteFile,
-        moveFile:       moveFile,
-        copyFile:       copyFile,
-        renameFile:     renameFile,
-        duplicateFile:  duplicateFile,
-        copyToTarget:   copyToTarget,
-        moveToTarget:   moveToTarget,
-    }
 
-    const mainFuncs: mainFuncsObj = {
-        createNewFile:  createNewFile,
-        addNewDir:      addNewDir,
-        renameView:     renameView,
-        saveSort:       saveSort
-    }
-
-    if (isText(path)) {
-        return <TextView path={path} files={files}
-            mainFuncs={mainFuncs} modFuncs={modFuncs} />;
-    }
-
-    if (isSearch(path)) {
-        return <SearchView path={path} files={files}
-            mainFuncs={mainFuncs} modFuncs={modFuncs} />;
-    }
-
-    return <DirView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function insertDuplicateFile(files: File[], f: File, newFile: File, isSorted: boolean) {
     if (isSorted) {
