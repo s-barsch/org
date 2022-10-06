@@ -45,7 +45,6 @@ export type navObj = {
     path: string;
     switcher: string;
     siblings: File[];
-    links: string[];
 }
 
 function newView(): viewObj {

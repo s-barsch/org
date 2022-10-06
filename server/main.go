@@ -9,17 +9,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var siteConfig *Config
-
 func main() {
-	c, err := loadConfig()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	siteConfig = c
-
-	err = loadIndex(ROOT)
+	err := loadIndex(ROOT)
 	if err != nil {
 		log.Fatal(err)
 	}

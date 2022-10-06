@@ -107,6 +107,7 @@ func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
+/*
 func viewLinks(w http.ResponseWriter, r *http.Request) *Err {
 	e := &Err{
 		Func: "viewLinks",
@@ -120,6 +121,7 @@ func viewLinks(w http.ResponseWriter, r *http.Request) *Err {
 	}
 	return nil
 }
+*/
 
 func getToday(w http.ResponseWriter, r *http.Request) *Err {
 	e := &Err{

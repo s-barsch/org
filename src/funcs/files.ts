@@ -1,8 +1,8 @@
 import { newTimestamp } from './paths';
-import { basename,extname, dirname, join } from 'path';
+import { basename, extname, dirname, join } from 'path';
 
 type File = {
-    id:   number;
+    id: number;
     path: string;
     name: string;
     type: string;
@@ -15,7 +15,7 @@ export function newInfoFile(mainFilePath: string): File {
     const path = mainFilePath + ".info"
 
     return {
-        id:   Date.now(),
+        id: Date.now(),
         path: path,
         name: basename(path),
         type: "info",
@@ -42,7 +42,7 @@ export type SplitName = {
 // 120912+2.txt -> 120912.txt
 function splitName(name: string): SplitName {
     let ext = extname(name);
-    let trunk = name.substr(0, name.length-ext.length);
+    let trunk = name.substr(0, name.length - ext.length);
 
     const x = trunk.indexOf("+");
     if (x >= 0) {
@@ -103,7 +103,7 @@ export function merge(all: File[], part: File[], type: string): File[] {
     let diff = subtract(all, part)
     if (type === "files") {
         return diff.concat(part)
-    } 
+    }
     return part.concat(diff)
 }
 
@@ -144,7 +144,7 @@ export function createDuplicate(file: File, files: File[]): File {
 
     let name = splitName(f.name);
     for (let i = 1; i < 10; i++) {
-        const newName = name.trunk + "+" + i + name.ext; 
+        const newName = name.trunk + "+" + i + name.ext;
         if (!isPresent(files, newName)) {
             f.id = Date.now();
             f.name = newName;

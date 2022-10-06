@@ -11,6 +11,7 @@ import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
 import { navObj, errObj } from 'app';
 import { ErrComponent } from 'components/nav/error';
+import Config from 'config';
 
 type NavProps = {
     pathname: string;
@@ -75,7 +76,7 @@ export default function Nav({pathname, nav, err}: NavProps) {
         <>
         <nav id="links">
             <span className="links__top">
-                <LinkList links={nav.links} active="" />
+                <LinkList links={Config.links} active="" />
             </span>
             <span className="right">
                 <ErrComponent err={err} />
