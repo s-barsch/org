@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import Head from 'components/main/parts/head';
-import Text from 'components/main/files/text';
+import TextField from 'components/main/files/text';
 import { newTimestamp, timestampDir } from 'funcs/paths';
 import File, { newFile } from 'funcs/files';
 import Nav from 'components/nav/nav';
@@ -22,8 +22,8 @@ export default function New() {
     return (
         <>
             <Nav path={text.path} />
-            <Head path={text.path} renameFn={renameFn} />
-            <Text file={text} writeText={writeFile} isSingle={true} />
+            <Head path={text.path} disabled={true} renameFn={renameFn} />
+            <TextField file={text} writeText={writeFile} isSingle={true} />
         </>
     )
 }

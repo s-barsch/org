@@ -4,24 +4,20 @@ import { dirname } from 'path';
 import { orgBase } from 'funcs/paths';
 type HeadProps = {
     path: string;
+    disabled?: boolean;
     renameFn: (name: string) => void;
 }
 
-export default function Head({path, renameFn}: HeadProps) {
+export default function Head({path, renameFn, disabled}: HeadProps) {
     return (
         <h1 className="name">
         <Link className="parent" to={dirname(path)}>^</Link>
-        <Rename path={path} renameFn={renameFn} />
+        <Rename path={path} disabled={disabled} renameFn={renameFn} />
         </h1>
     )
 }
 
-type RenameViewProps = {
-    path: string;
-    renameFn: (name: string) => void;
-}
-
-function Rename({path, renameFn}: RenameViewProps) {
+function Rename({path, renameFn, disabled}: HeadProps) {
     const [name, setName] = useState(orgBase(path));
 
     const ref = useRef<HTMLInputElement>(null!)
@@ -58,7 +54,7 @@ function Rename({path, renameFn}: RenameViewProps) {
 
     return (
         <input type="text" value={name} size={name.length}
-            ref={ref} disabled={name === "org" ? true : false}
+            ref={ref} disabled={name === "org" || disabled}
             onChange={handleTyping} onKeyPress={detectEnter} onBlur={submit} />
     )
 }

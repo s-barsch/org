@@ -37,6 +37,9 @@ export default function TextField({file, writeText, createNewText, isSingle}: Te
     }
 
     function submit(e: React.FormEvent<HTMLTextAreaElement>) {
+        if (body === "") {
+            return;
+        }
         file.body = body;
         writeText(file);
     }
