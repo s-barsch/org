@@ -7,7 +7,7 @@ export type errObj = {
     msg:  string;
 }
 
-function newErr(): errObj {
+export function newErr(): errObj {
     return {
         path: "",
         func: "",
@@ -21,24 +21,13 @@ export type errProp = {
     setErr: (err: errObj) => void;
 }
 
-function newErrProp(): errProp {
-    return {
-        err: newErr(),
-        setErr: (err: errObj) => {}
-    }
-}
+export const ErrContext = createContext<errProp>({} as errProp);
 
-export const ErrContext = createContext<errProp>(newErrProp());
-export default ErrProvider; 
-
-
-function ErrProvider({ children }: {children: React.ReactNode}) {
+export default function ErrProvider({ children }: {children: React.ReactNode}) {
     const [err, setErr] = useState(newErr());
 
     return (
-        <ErrContext.Provider value={{ 
-            err, setErr
-        }}>
+        <ErrContext.Provider value={{ err, setErr }}>
             {children}
         </ErrContext.Provider>
     );

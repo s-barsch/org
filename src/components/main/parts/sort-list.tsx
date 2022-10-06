@@ -63,7 +63,6 @@ function Dir({dir}: {dir: File;}) {
 
     function setTarget(e: React.MouseEvent<HTMLAnchorElement>) {
         if (e.shiftKey) {
-            console.log("try to set something");
             e.preventDefault();
             saveTargets(setActiveTarget(targets, e.currentTarget.pathname));
         }

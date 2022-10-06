@@ -66,6 +66,7 @@ export default function Nav({path}: NavProps) {
         fetchNav();
     }, [path]);
 
+
     const history = useHistory();
 
     async function deleteDir(viewFile: File) {

@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useCallback, useState } from 'react';
 import Targets, { storeTargets, readTargets } from '../funcs/targets';
 
-function TargetsProvider({ children }: {children: React.ReactNode}) {
+export default function TargetsProvider({ children }: {children: React.ReactNode}) {
     const [targets, setTargets] = useState(readTargets());
 
     useEffect(() => {
@@ -29,9 +29,7 @@ function TargetsProvider({ children }: {children: React.ReactNode}) {
 
 
     return (
-        <TargetsContext.Provider value={{ 
-            targets, saveTargets
-        }}>
+        <TargetsContext.Provider value={{ targets, saveTargets }}>
         {children}
         </TargetsContext.Provider>
     );
@@ -43,4 +41,3 @@ export type TargetsProps = {
 }
 
 export const TargetsContext = createContext<TargetsProps>({} as TargetsProps);
-export default TargetsProvider; 

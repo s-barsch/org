@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { TargetsContext } from 'context/targets';
-import { ErrContext } from 'context/err';
 import { basename, dirname, join } from 'path';
 import { isText, isSearch } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
@@ -13,6 +12,7 @@ import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
 import TextView from 'components/main/views/text';
 import DirView from 'components/main/views/dir';
 import SearchView from 'components/main/views/search';
+import { ErrContext } from 'context/err';
 
 
 export type mainFuncsObj = {
@@ -46,7 +46,38 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
     let { targets } = useContext(TargetsContext);
     let { setErr } = useContext(ErrContext);
 
+
     const history = useHistory();
+
+    const modFuncs: modFuncsObj = {
+        writeFile:      writeFile,
+        deleteFile:     deleteFile,
+        moveFile:       moveFile,
+        copyFile:       copyFile,
+        renameFile:     renameFile,
+        duplicateFile:  duplicateFile,
+        copyToTarget:   copyToTarget,
+        moveToTarget:   moveToTarget,
+    }
+
+    const mainFuncs: mainFuncsObj = {
+        createNewFile:  createNewFile,
+        addNewDir:      addNewDir,
+        renameView:     renameView,
+        saveSort:       saveSort
+    }
+
+    if (isText(path)) {
+        return <TextView path={path} files={files}
+            mainFuncs={mainFuncs} modFuncs={modFuncs} />;
+    }
+
+    if (isSearch(path)) {
+        return <SearchView path={path} files={files}
+            mainFuncs={mainFuncs} modFuncs={modFuncs} />;
+    }
+
+    return <DirView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />
 
     function update(newFiles: File[], isSorted: boolean) {
         setMain({
@@ -150,35 +181,6 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         update(New, true);
     }
 
-    const modFuncs: modFuncsObj = {
-        writeFile:      writeFile,
-        deleteFile:     deleteFile,
-        moveFile:       moveFile,
-        copyFile:       copyFile,
-        renameFile:     renameFile,
-        duplicateFile:  duplicateFile,
-        copyToTarget:   copyToTarget,
-        moveToTarget:   moveToTarget,
-    }
-
-    const mainFuncs: mainFuncsObj = {
-        createNewFile:  createNewFile,
-        addNewDir:      addNewDir,
-        renameView:     renameView,
-        saveSort:       saveSort
-    }
-
-    if (isText(path)) {
-        return <TextView path={path} files={files}
-            mainFuncs={mainFuncs} modFuncs={modFuncs} />;
-    }
-
-    if (isSearch(path)) {
-        return <SearchView path={path} files={files}
-            mainFuncs={mainFuncs} modFuncs={modFuncs} />;
-    }
-
-    return <DirView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />
 }
 
 function insertDuplicateFile(files: File[], f: File, newFile: File, isSorted: boolean) {

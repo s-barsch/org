@@ -6,7 +6,7 @@ import Main from 'components/main/main';
 import Targets from 'funcs/targets';
 import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
-import ErrProvider from './context/targets';
+import ErrProvider from './context/err';
 import { isToday, isWrite, pageTitle, isText } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import Write from 'components/main/views/write';
@@ -16,20 +16,20 @@ import File from 'funcs/files';
 
 export default function App() {
     return (
+    <TargetsProvider>
+    <ErrProvider>
         <Router>
-            <TargetsProvider>
-            <ErrProvider>
-                <Switch>
-                    <Route path="/write">
-                        <Write />
-                    </Route>
-                    <Route path="/">
-                        <Loader />
-                    </Route>
-                </Switch>
-            </ErrProvider>
-            </TargetsProvider>
+            <Switch>
+                <Route path="/write">
+                    <Write />
+                </Route>
+                <Route path="/">
+                    <Loader />
+                </Route>
+            </Switch>
         </Router>
+    </ErrProvider>
+    </TargetsProvider>
     )
 }
 
