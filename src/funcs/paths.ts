@@ -1,6 +1,14 @@
-import { basename, extname, dirname } from 'path';
+import { basename, extname, dirname, join } from 'path';
 
 /* date */
+
+export function timestampDir(ts: string): string {
+    const year = ts.substr(0, 2),
+    month = ts.substr(2, 2),
+    day = ts.substr(7, 2);
+
+    return join(year, year + "-" + month, day);
+}
 
 export function newTimestamp(): string {
     return dateToTimestamp(new Date());

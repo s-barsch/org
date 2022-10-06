@@ -8,6 +8,7 @@ import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import { isToday, isWrite, pageTitle, isText } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
+import Write from 'components/main/views/write';
 import Nav from 'components/nav/nav';
 //import H from 'history';
 import File from 'funcs/files';
@@ -18,7 +19,7 @@ export default function App() {
             <TargetsProvider>
                 <Switch>
                     <Route path="/write">
-                        <New />
+                        <Write />
                     </Route>
                     <Route path="/">
                         <Loader />
@@ -27,10 +28,6 @@ export default function App() {
             </TargetsProvider>
         </Router>
     )
-}
-
-function New() {
-    return null;
 }
 
 export type viewObj = {
