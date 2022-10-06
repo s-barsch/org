@@ -27,6 +27,8 @@ func routes() *mux.Router {
 	r.HandleFunc("/api/today", h(getToday))
 	r.HandleFunc("/api/now", h(getNow))
 
+	r.PathPrefix("/api/nav").HandlerFunc(h(viewNav))
+
 	r.PathPrefix("/api/sort").HandlerFunc(h(writeSort))
 	r.PathPrefix("/api/copy").HandlerFunc(h(copyFile))
 	r.PathPrefix("/api/move").HandlerFunc(h(renameFile))

@@ -107,22 +107,6 @@ func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-/*
-func viewLinks(w http.ResponseWriter, r *http.Request) *Err {
-	e := &Err{
-		Func: "viewLinks",
-		Code: 500,
-	}
-
-	err := json.NewEncoder(w).Encode(siteConfig.Links)
-	if err != nil {
-		e.Err = err
-		return e
-	}
-	return nil
-}
-*/
-
 func getToday(w http.ResponseWriter, r *http.Request) *Err {
 	e := &Err{
 		Func: "getToday",

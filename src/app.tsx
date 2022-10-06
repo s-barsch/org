@@ -32,7 +32,6 @@ export default function App() {
 
 export type viewObj = {
     path: string;
-    nav: navObj;
     main: mainObj;
 }
 
@@ -41,16 +40,9 @@ export type mainObj = {
     sorted: boolean;
 }
 
-export type navObj = {
-    path: string;
-    switcher: string;
-    siblings: File[];
-}
-
 function newView(): viewObj {
     return {
         path: "",
-        nav:  {} as navObj,
         main: { files: [], sorted: false } as mainObj,
     };
 }
@@ -79,8 +71,6 @@ function Loader() {
     const [err, setErr] = useState(newErr());
     const [dir, setDir] = useState(newView());
     const [status, setStatus] = useState("");
-
-    console.log(dir)
 
     function setMain(main: mainObj) {
         dir.main = main;
@@ -165,7 +155,7 @@ function Loader() {
 
     return (
         <>
-            <Nav pathname={path} nav={dir.nav} err={err} />
+            <Nav path={path} err={err} />
             <Main path={path} files={dir.main.files} sorted={dir.main.sorted}
             setMain={setMain} setErr={setErr} />
         </>
