@@ -5,7 +5,7 @@ import { basename, extname, dirname, join } from 'path';
 export function timestampDir(ts: string): string {
     const year = ts.substr(0, 2),
     month = ts.substr(2, 2),
-    day = ts.substr(7, 2);
+    day = ts.substr(4, 2);
 
     return join(year, year + "-" + month, day);
 }

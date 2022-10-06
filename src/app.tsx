@@ -6,6 +6,7 @@ import Main from 'components/main/main';
 import Targets from 'funcs/targets';
 import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
+import ErrProvider from './context/targets';
 import { isToday, isWrite, pageTitle, isText } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import Write from 'components/main/views/write';
@@ -17,6 +18,7 @@ export default function App() {
     return (
         <Router>
             <TargetsProvider>
+            <ErrProvider>
                 <Switch>
                     <Route path="/write">
                         <Write />
@@ -25,6 +27,7 @@ export default function App() {
                         <Loader />
                     </Route>
                 </Switch>
+            </ErrProvider>
             </TargetsProvider>
         </Router>
     )
@@ -47,28 +50,11 @@ function newView(): viewObj {
     };
 }
 
-export type errObj = {
-    path: string;
-    func: string;
-    code: number;
-    msg:  string;
-}
-
-function newErr(): errObj {
-    return {
-        path: "",
-        func: "",
-        code: 0,
-        msg:  ""
-    }
-}
-
 function Loader() {
     const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
     const history = useHistory();
 
-    const [err, setErr] = useState(newErr());
     const [dir, setDir] = useState(newView());
     const [status, setStatus] = useState("");
 
@@ -155,9 +141,9 @@ function Loader() {
 
     return (
         <>
-            <Nav path={path} err={err} />
+            <Nav path={path} />
             <Main path={path} files={dir.main.files} sorted={dir.main.sorted}
-            setMain={setMain} setErr={setErr} />
+            setMain={setMain} />
         </>
     )
 }

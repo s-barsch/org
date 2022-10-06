@@ -7,15 +7,14 @@ import CrumbNav from 'components/nav/crumbs';
 import { Del } from 'components/main/files/meta';
 import { extendedBase, section } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
+import { ErrContext } from 'context/err';
 import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
-import { errObj } from 'app';
 import { ErrComponent } from 'components/nav/error';
 import Config from 'config';
 
 type NavProps = {
     path: string;
-    err: errObj;
 }
 
 type NavMeta = {
@@ -30,8 +29,9 @@ function newNavMeta() {
     }
 }
 
-export default function Nav({path, err}: NavProps) {
+export default function Nav({path}: NavProps) {
     const { targets, saveTargets } = useContext(TargetsContext);
+    const { err } = useContext(ErrContext);
 
     /* theme */
 

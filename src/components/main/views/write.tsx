@@ -3,12 +3,14 @@ import Head from 'components/main/parts/head';
 import Text from 'components/main/files/text';
 import { newTimestamp, timestampDir } from 'funcs/paths';
 import File, { newFile } from 'funcs/files';
+import Nav from 'components/nav/nav';
+import { join } from 'path';
 
 export default function New() {
     const text = newFile(getTodayPath());
     return (
         <>
-            {/* <Nav pathname={path} nav={dir.nav} err={err} />*/}
+            <Nav path={text.path} />
             <Head path={text.path} renameFn={renameFn} />
             <Text file={text} writeText={(f: File) => {}} isSingle={true} />
         </>
@@ -22,5 +24,5 @@ function renameFn(name: string) {
 function getTodayPath(): string {
     const ts = newTimestamp();
     const tsDir = timestampDir(ts);
-    return ["private/graph", tsDir, ts].join('');
+    return join("/private/graph", tsDir);
 }

@@ -1,5 +1,5 @@
 import File, { makeStringArr } from 'funcs/files';
-import { errObj } from 'app';
+import { errObj } from 'context/err';
 
 type setErrFn = (err: errObj) => void;
 

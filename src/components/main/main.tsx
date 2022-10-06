@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { TargetsContext } from 'context/targets';
+import { ErrContext } from 'context/err';
 import { basename, dirname, join } from 'path';
 import { isText, isSearch } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
-import { mainObj, errObj } from 'app';
+import { mainObj } from 'app';
 import File, { newFile, merge, insertBefore, createDuplicate, 
     isPresent, removeFromArr } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
@@ -39,11 +40,11 @@ type MainProps = {
     files: File[];
     sorted: boolean;
     setMain: (main: mainObj) => void;
-    setErr: (err: errObj) => void;
 }
 
-export default function Main({path, files, sorted, setMain, setErr}: MainProps) {
+export default function Main({path, files, sorted, setMain}: MainProps) {
     let { targets } = useContext(TargetsContext);
+    let { setErr } = useContext(ErrContext);
 
     const history = useHistory();
 
