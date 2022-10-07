@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"net/http"
 	"os"
 	p "path/filepath"
 	"strings"
@@ -10,10 +12,33 @@ type Nav struct {
 	// Path is necessary here to give this object some sort of a life cycle.
 	// React’s renderings are much faster than the server-side response.
 	// Therefore, it has to know with what object it is dealing with.
-	Path     string   `json:"path"`
-	Switcher string   `json:"switcher"`
-	Siblings []*File  `json:"siblings"`
-	Links    []string `json:"links"`
+	// Path     string  `json:"path"`
+	Switcher string  `json:"switcher"`
+	Siblings []*File `json:"siblings"`
+}
+
+func viewNav(w http.ResponseWriter, r *http.Request) *Err {
+	path := r.URL.Path[len("/api/nav"):]
+
+	e := &Err{
+		Func: "viewNav",
+		Path: path,
+		Code: 500,
+	}
+
+	nav, err := getNav(path)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	err = json.NewEncoder(w).Encode(nav)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
+	return nil
 }
 
 func getNav(path string) (*Nav, error) {
@@ -28,10 +53,8 @@ func getNav(path string) (*Nav, error) {
 	}
 
 	return &Nav{
-		Path:     path,
 		Siblings: siblings,
 		Switcher: switchPath(path),
-		Links:    siteConfig.Links,
 	}, nil
 }
 
@@ -69,7 +92,9 @@ func getSiblings(path string) ([]*File, error) {
 }
 
 // Switch path is the closest corresponding public or private path to a directory.
-//    /public/graph/20/20-10/10/subdir
+//
+//	/public/graph/20/20-10/10/subdir
+//
 // -> /private/graph/20/20-10
 func switchPath(path string) string {
 	public := false

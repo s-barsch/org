@@ -9,6 +9,7 @@ import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
 import { separate } from 'funcs/sort';
 import { FileSwitch } from 'components/main/parts/switch'
+import { Meta } from '../files/meta';
 
 const ReactSortable1: any = ReactSortable;
 
@@ -50,7 +51,10 @@ export function FileList({files, saveSort, createNewFile, modFuncs}: FileListPro
                 animation={200} list={state} setList={setState}>
 
                     { state.map((file, i) => (
-                        <FileSwitch key={file.id} file={file} createNewFile={createNewFile} modFuncs={modFuncs} isSingle={false} />
+                        <div key={file.id}>
+                        <Meta file={file} modFuncs={modFuncs} />
+                        <FileSwitch file={file} createNewFile={createNewFile} modFuncs={modFuncs} isSingle={false} />
+                        </div>
                     ))}
 
             </ReactSortable1>
@@ -63,7 +67,6 @@ function Dir({dir}: {dir: File;}) {
 
     function setTarget(e: React.MouseEvent<HTMLAnchorElement>) {
         if (e.shiftKey) {
-            console.log("try to set something");
             e.preventDefault();
             saveTargets(setActiveTarget(targets, e.currentTarget.pathname));
         }

@@ -1,30 +1,41 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import 'css/main.scss';
-import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import Main from 'components/main/main';
 //import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
 import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
-import { isToday, isWrite, pageTitle, isText } from 'funcs/paths';
+import ErrProvider from './context/err';
+import { isToday, isWrite, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
+import Write from 'components/main/views/write';
 import Nav from 'components/nav/nav';
 //import H from 'history';
 import File from 'funcs/files';
+import { dirname } from 'path';
 
 export default function App() {
     return (
+    <TargetsProvider>
+    <ErrProvider>
         <Router>
-            <TargetsProvider>
-                <Loader />
-            </TargetsProvider>
+            <Switch>
+                <Route path="/write">
+                    <Write />
+                </Route>
+                <Route path="/">
+                    <Loader />
+                </Route>
+            </Switch>
         </Router>
+    </ErrProvider>
+    </TargetsProvider>
     )
 }
 
 export type viewObj = {
     path: string;
-    nav: navObj;
     main: mainObj;
 }
 
@@ -33,35 +44,11 @@ export type mainObj = {
     sorted: boolean;
 }
 
-export type navObj = {
-    path: string;
-    switcher: string;
-    siblings: File[];
-    links: string[];
-}
-
 function newView(): viewObj {
     return {
         path: "",
-        nav:  {} as navObj,
         main: { files: [], sorted: false } as mainObj,
     };
-}
-
-export type errObj = {
-    path: string;
-    func: string;
-    code: number;
-    msg:  string;
-}
-
-function newErr(): errObj {
-    return {
-        path: "",
-        func: "",
-        code: 0,
-        msg:  ""
-    }
 }
 
 function Loader() {
@@ -69,11 +56,8 @@ function Loader() {
     const path = useLocation().pathname;
     const history = useHistory();
 
-    const [err, setErr] = useState(newErr());
     const [dir, setDir] = useState(newView());
     const [status, setStatus] = useState("");
-
-    console.log(dir)
 
     function setMain(main: mainObj) {
         dir.main = main;
@@ -123,7 +107,7 @@ function Loader() {
     }, [listenForWrite]);
 
     async function loadView(path: string) {
-        //console.log("LOADING VIEW: " + path)
+        console.log("LOADING VIEW: " + path)
         let req = "/api/view" + path;
 
         if (path.substr(0, 7) === "/search") {
@@ -158,9 +142,9 @@ function Loader() {
 
     return (
         <>
-            <Nav pathname={path} nav={dir.nav} err={err} />
+            <Nav path={path} />
             <Main path={path} files={dir.main.files} sorted={dir.main.sorted}
-            setMain={setMain} setErr={setErr} />
+            setMain={setMain} />
         </>
     )
 }
@@ -184,16 +168,32 @@ function shouldLoad(path: string, dir: viewObj): boolean {
     if (path === "/write" || path === "/today") {
         return false;
     }
-    if (path === dir.path) {
+    
+    if (!isNewDir(path, dir.path)) {
         return false
     }
 
+    if (isPresentPath(dir.main.files, path)) {
+        return false
+    }
+    /*
     if (isText(path) && !isPresentPath(dir.main.files, path)) {
         return true
     }
 
     if (isText(path) && dir.path && dir.path !== "") {
         return false;
+    }
+    */
+    return true;
+}
+
+function isNewDir(path: string, dirPath: string): boolean {
+    if (path === dirPath) {
+        return false
+    }
+    if (path.indexOf('.') !== -1 && dirname(path) === dirPath) {
+        return false
     }
     return true;
 }

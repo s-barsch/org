@@ -9,17 +9,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var siteConfig *Config
-
 func main() {
-	c, err := loadConfig()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	siteConfig = c
-
-	err = loadIndex(ROOT)
+	err := loadIndex(ROOT)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,6 +26,8 @@ func routes() *mux.Router {
 
 	r.HandleFunc("/api/today", h(getToday))
 	r.HandleFunc("/api/now", h(getNow))
+
+	r.PathPrefix("/api/nav").HandlerFunc(h(viewNav))
 
 	r.PathPrefix("/api/sort").HandlerFunc(h(writeSort))
 	r.PathPrefix("/api/copy").HandlerFunc(h(copyFile))

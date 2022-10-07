@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { basename } from 'path';
 import { TargetsContext } from 'context/targets';
 import { isText } from 'funcs/paths';
-import { navObj } from 'app';
 import File from 'funcs/files';
 import { setActiveTarget } from 'funcs/targets';
 
@@ -21,18 +20,19 @@ function RootLink() {
 
 type CrumbNavProps = {
     path: string;
-    nav: navObj;
+    siblings: File[];
+    switcher: string;
 }
 
-function CrumbNav({path, nav}: CrumbNavProps) {
-    const sibs = nav.siblings && nav.siblings.length > 0;
+function CrumbNav({path, siblings, switcher}: CrumbNavProps) {
+    const sibs = siblings && siblings.length > 0;
     const text = isText(path);
     return (
         <nav className="crumbs">
         <RootLink />
-        <CrumbList path={path} switcher={nav.switcher} trim={sibs || text} />
+        <CrumbList path={path} switcher={switcher} trim={sibs || text} />
         { sibs &&
-            <Siblings path={path} files={nav.siblings} siblingPath={nav.path} />
+            <Siblings path={path} files={siblings} siblingPath={path} />
         }
         { text &&
                 <>

@@ -7,19 +7,31 @@ import CrumbNav from 'components/nav/crumbs';
 import { Del } from 'components/main/files/meta';
 import { extendedBase, section } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
+import { ErrContext } from 'context/err';
 import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
-import { navObj, errObj } from 'app';
 import { ErrComponent } from 'components/nav/error';
+import Config from 'config';
 
 type NavProps = {
-    pathname: string;
-    nav: navObj;
-    err: errObj;
+    path: string;
 }
 
-export default function Nav({pathname, nav, err}: NavProps) {
+type NavMeta = {
+    switcher: string;
+    siblings: File[];
+}
+
+function newNavMeta() {
+    return {
+        "switcher": "",
+        "siblings": []
+    }
+}
+
+export default function Nav({path}: NavProps) {
     const { targets, saveTargets } = useContext(TargetsContext);
+    const { err } = useContext(ErrContext);
 
     /* theme */
 
@@ -29,7 +41,7 @@ export default function Nav({pathname, nav, err}: NavProps) {
         darkTheme
             ? document.body.dataset["theme"] = "dark"
             : document.body.dataset["theme"] = ""
-    })
+    }, [darkTheme])
 
     function toggleTheme() {
         setDarkTheme(!darkTheme);
@@ -41,8 +53,19 @@ export default function Nav({pathname, nav, err}: NavProps) {
     }
 
     function setThisActive() {
-        saveTargets(setActiveTarget(targets, pathname));
+        saveTargets(setActiveTarget(targets, path));
     }
+
+    const [meta, setMeta] = useState(newNavMeta());
+
+    useEffect(() => {
+        async function fetchNav() {
+            const resp = await fetch('/api/nav' + path);
+            setMeta(await resp.json());
+        }
+        fetchNav();
+    }, [path]);
+
 
     const history = useHistory();
 
@@ -60,22 +83,18 @@ export default function Nav({pathname, nav, err}: NavProps) {
     }
 
     const viewFile: File = {
-        name: basename(pathname),
-        path: pathname,
+        name: basename(path),
+        path: path,
         type: 'dir',
         body: '',
         id:   Date.now()
-    }
-
-    if (!nav) {
-        return null
     }
 
     return (
         <>
         <nav id="links">
             <span className="links__top">
-                <LinkList links={nav.links} active="" />
+                <LinkList links={Config.links} active="" />
             </span>
             <span className="right">
                 <ErrComponent err={err} />
@@ -85,7 +104,7 @@ export default function Nav({pathname, nav, err}: NavProps) {
             </span>
         </nav>
         <nav id="bar">
-            <CrumbNav path={pathname} nav={nav}/>
+            <CrumbNav path={path} switcher={meta.switcher} siblings={meta.siblings}/>
             <TargetsList targets={targets} saveTargets={saveTargets}/>
         </nav>
         </>
