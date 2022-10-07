@@ -2,7 +2,7 @@ import React from 'react';
 import { mainFuncsObj, modFuncsObj } from 'components/main/main';
 import Head from 'components/main/parts/head';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
-import { DirList, FileList } from 'components/main/parts/sort-list';
+import { DirList, FileList } from 'components/main/parts/list';
 import { AddDir, AddText } from 'components/main/parts/add';
 import { HotKeys } from "react-hotkeys";
 
