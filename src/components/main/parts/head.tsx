@@ -13,10 +13,18 @@ export default function Head({path, renameFn, isNew, disabled}: HeadProps) {
     return (
         <h1 className="name">
         <Link className="parent" to={dirname(path)}>^</Link>
-        <Rename path={path} disabled={disabled} renameFn={renameFn} />
-        {isNew ? "NEW!!!" : ""}
+        <IsNew isNew={isNew}>
+            <Rename path={path} disabled={disabled} renameFn={renameFn} />
+        </IsNew>
         </h1>
     )
+}
+
+function IsNew({ children, isNew }: {children: React.ReactNode, isNew?: boolean}) {
+    if (isNew) {
+        return <span className="nonexistent">{children}</span>;
+    }
+    return <>{children}</>;
 }
 
 function Rename({path, renameFn, disabled}: HeadProps) {

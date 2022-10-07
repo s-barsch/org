@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Head from 'components/main/parts/head';
 import TextField from 'components/main/files/text';
 import { newTimestamp, timestampDir } from 'funcs/paths';
-import File, { newFile } from 'funcs/files';
+import File, { newFileDir } from 'funcs/files';
 import Nav from 'components/nav/nav';
 import { join } from 'path';
 import { writeRequest } from 'components/main/requests';
@@ -11,7 +11,7 @@ import { ErrContext } from 'context/err';
 
 export default function New() {
     let { setErr } = useContext(ErrContext);
-    const text = newFile(getTodayPath());
+    const text = newFileDir(getTodayPath());
     const history = useHistory();
 
     async function writeFile(f: File) {

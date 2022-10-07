@@ -65,6 +65,32 @@ export function isPublic(path: string): boolean {
     return section(path) === "public"
 }
 
+export function fileType(path: string): string {
+    if (isText(path)) {
+        return "text";
+    }
+    if (isMedia(path)) {
+        return "media"
+    }
+    if ("path".indexOf('.') === -1) {
+        return "dir"
+    }
+    return "file"
+}
+
+export function isMedia(path: string): boolean {
+    switch (extname(path)) {
+        case ".jpg":
+        case ".svg":
+        case ".png":
+        case ".mp4":
+        case ".mp3":
+        case ".wav":
+            return true
+    }
+    return false
+}
+
 export function isText(path: string): boolean {
     const file = basename(path);
     if (file === "info" || file === ".sort") {
@@ -77,6 +103,14 @@ export function isText(path: string): boolean {
         default:
             return false;
     }
+}
+
+export function isDir(path: string): boolean {
+    if (basename(path) === "info") {
+        return true
+    }
+    return path.indexOf('.') === -1
+
 }
 
 export function pageTitle(path: string): string {

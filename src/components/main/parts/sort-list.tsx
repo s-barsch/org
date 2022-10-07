@@ -51,10 +51,10 @@ export function FileList({files, saveSort, createNewFile, modFuncs}: FileListPro
                 animation={200} list={state} setList={setState}>
 
                     { state.map((file, i) => (
-                        <>
+                        <div key={file.id}>
                         <Meta file={file} modFuncs={modFuncs} />
-                        <FileSwitch key={file.id} file={file} createNewFile={createNewFile} modFuncs={modFuncs} isSingle={false} />
-                        </>
+                        <FileSwitch file={file} createNewFile={createNewFile} modFuncs={modFuncs} isSingle={false} />
+                        </div>
                     ))}
 
             </ReactSortable1>

@@ -178,7 +178,7 @@ type DelProps = {
 
 export function Del({file, deleteFile}: DelProps) {
     const del = () => {
-        if (window.confirm("Delete this " + file.type + "?")) {
+        if (window.confirm("Delete this " + file.name + "?")) {
             deleteFile(file);
         }
     }

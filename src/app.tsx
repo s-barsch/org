@@ -7,12 +7,13 @@ import Targets from 'funcs/targets';
 import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import ErrProvider from './context/err';
-import { isToday, isWrite, pageTitle, isText } from 'funcs/paths';
+import { isToday, isWrite, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import Write from 'components/main/views/write';
 import Nav from 'components/nav/nav';
 //import H from 'history';
 import File from 'funcs/files';
+import { dirname } from 'path';
 
 export default function App() {
     return (
@@ -167,18 +168,32 @@ function shouldLoad(path: string, dir: viewObj): boolean {
     if (path === "/write" || path === "/today") {
         return false;
     }
-    if (path === dir.path) {
+    
+    if (!isNewDir(path, dir.path)) {
         return false
     }
 
+    if (isPresentPath(dir.main.files, path)) {
+        return false
+    }
     /*
     if (isText(path) && !isPresentPath(dir.main.files, path)) {
         return true
     }
-    */
 
     if (isText(path) && dir.path && dir.path !== "") {
         return false;
+    }
+    */
+    return true;
+}
+
+function isNewDir(path: string, dirPath: string): boolean {
+    if (path === dirPath) {
+        return false
+    }
+    if (path.indexOf('.') !== -1 && dirname(path) === dirPath) {
+        return false
     }
     return true;
 }

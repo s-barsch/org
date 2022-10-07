@@ -1,5 +1,6 @@
 import { newTimestamp } from './paths';
 import { basename, extname, dirname, join } from 'path';
+import { orgSort } from 'funcs/sort';
 
 type File = {
     id: number;
@@ -24,6 +25,16 @@ export function newInfoFile(mainFilePath: string): File {
 }
 
 export function newFile(path: string): File {
+    return {
+        id: Date.now(),
+        name: basename(path),
+        path: path,
+        type: "text",
+        body: ""
+    }
+}
+
+export function newFileDir(path: string): File {
     const name = newTimestamp() + ".txt";
     return {
         id: Date.now(),
@@ -129,10 +140,10 @@ export function removeFromArr(files: File[], name: string): File[] {
     throw new Error("Could not delete " + name + "from files.");
 }
 
-export function insertBefore(files: File[], f: File, newFile: File): File[] {
+export function insertBefore(files: File[], f: File, newF: File): File[] {
     for (let i = 0; i < files.length; i++) {
         if (files[i].name === f.name) {
-            files.splice(i, 0, newFile)
+            files.splice(i, 0, newF)
             return files;
         }
     }
@@ -156,4 +167,52 @@ export function createDuplicate(file: File, files: File[]): File {
     throw new Error("Couldn’t create duplicate. No free name available.");
 }
 
+
+export function insertDuplicateFile(files: File[], f: File, newF: File, isSorted: boolean) {
+    if (isSorted) {
+        return insertBefore(files, f, newF);
+    }
+    return orgSort(files.concat(newF));
+}
+
+export function insertNewFile(files: File[], f: File, isSorted: boolean): File[] {
+    if (isSorted) {
+        return [f].concat(files)
+    }
+    return orgSort(files.concat(f))
+}
+
+export function updateFile(files: File[], f: File, sorted: boolean): File[] {
+    let oldFile = files.find(x => x.name === f.name);
+    if (!oldFile) {
+        return insertNewFile(files, f, sorted)
+    }
+    oldFile = f
+    return files
+}
+
+export function renameText(files: File[], oldName: string, newName: string): File[] {
+    const f = files.find(f => f.name === oldName);
+    if (!f) {
+        throw new Error("renameFile: Couldn’t find file. " + oldName)
+    }
+    f.path = join(dirname(f.path), newName);
+    f.name = newName;
+    return files
+}
+
+export function insertNewDir(files: File[], path: string, isSorted: boolean): File[] {
+    let f = {
+        id: Date.now(),
+        name: basename(path),
+        path: path,
+        type: "dir",
+        body: ""
+    }
+    let newFiles = files.concat(f)
+    if (!isSorted) {
+        return orgSort(newFiles);
+    }
+    return newFiles;
+}
 
