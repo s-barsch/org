@@ -7,10 +7,11 @@ import Targets from 'funcs/targets';
 import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import ErrProvider from './context/err';
-import { isToday, isWrite, pageTitle } from 'funcs/paths';
+import { isToday, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import Write from 'components/main/views/write';
 import Nav from 'components/nav/nav';
+import Search from 'components/search/main';
 //import H from 'history';
 import File from 'funcs/files';
 import { dirname } from 'path';
@@ -23,6 +24,9 @@ export default function App() {
             <Switch>
                 <Route path="/write">
                     <Write />
+                </Route>
+                <Route path="/search">
+                    <Search />
                 </Route>
                 <Route path="/">
                     <Loader />
@@ -44,7 +48,7 @@ export type mainObj = {
     sorted: boolean;
 }
 
-function newView(): viewObj {
+export function newView(): viewObj {
     return {
         path: "",
         main: { files: [], sorted: false } as mainObj,
@@ -53,8 +57,8 @@ function newView(): viewObj {
 
 function Loader() {
     const { targets } = useContext(TargetsContext);
-    const path = useLocation().pathname;
     const history = useHistory();
+    const path = useLocation().pathname;
 
     const [dir, setDir] = useState(newView());
     const [status, setStatus] = useState("");
@@ -74,15 +78,11 @@ function Loader() {
             todayRedirect(history);
             return;
         }
-        if (isWrite(path)) {
-            writeRedirect(history);
-            return;
-        }
     }, [path, history]);
 
     // only load when a new *dir* is requested
     useEffect(() => {
-        if (path === "/write" || path === "/today") {
+        if ( path === "/today") {
             return;
         }
         if (shouldLoad(path, dir)) {
@@ -149,13 +149,6 @@ function Loader() {
     )
 }
 
-// TODO: add type
-async function writeRedirect(history: any) {
-    const resp = await fetch("/api/now");
-    const writePath = await resp.text();
-    history.push(writePath)
-    //loadView(writePath)
-}
 
 // TODO: add type
 async function todayRedirect(history: any) {

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
-import { isText, isSearch, fileType } from 'funcs/paths';
+import { isText, fileType } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
 import { mainObj } from 'app';
 import File, { newFileDir, merge, insertNewDir, renameText, insertDuplicateFile,
@@ -11,7 +11,6 @@ import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
     copyRequest, newFileRequest, deleteRequest, renameViewRequest } from './requests';
 import TextView from 'components/main/views/text';
 import DirView from 'components/main/views/dir';
-import SearchView from 'components/main/views/search';
 import { ErrContext } from 'context/err';
 import MediaView from './views/media';
 
@@ -66,11 +65,6 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         addNewDir:      addNewDir,
         renameView:     renameView,
         saveSort:       saveSort
-    }
-
-    if (isSearch(path)) {
-        return <SearchView path={path} files={files}
-            mainFuncs={mainFuncs} modFuncs={modFuncs} />;
     }
 
     switch (fileType(path)) {
