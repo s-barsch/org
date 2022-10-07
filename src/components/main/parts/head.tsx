@@ -5,14 +5,16 @@ import { orgBase } from 'funcs/paths';
 type HeadProps = {
     path: string;
     disabled?: boolean;
+    isNew?: boolean;
     renameFn: (name: string) => void;
 }
 
-export default function Head({path, renameFn, disabled}: HeadProps) {
+export default function Head({path, renameFn, isNew, disabled}: HeadProps) {
     return (
         <h1 className="name">
         <Link className="parent" to={dirname(path)}>^</Link>
         <Rename path={path} disabled={disabled} renameFn={renameFn} />
+        {isNew ? "NEW!!!" : ""}
         </h1>
     )
 }

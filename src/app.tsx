@@ -106,7 +106,7 @@ function Loader() {
     }, [listenForWrite]);
 
     async function loadView(path: string) {
-        //console.log("LOADING VIEW: " + path)
+        console.log("LOADING VIEW: " + path)
         let req = "/api/view" + path;
 
         if (path.substr(0, 7) === "/search") {
@@ -171,9 +171,11 @@ function shouldLoad(path: string, dir: viewObj): boolean {
         return false
     }
 
+    /*
     if (isText(path) && !isPresentPath(dir.main.files, path)) {
         return true
     }
+    */
 
     if (isText(path) && dir.path && dir.path !== "") {
         return false;

@@ -15,26 +15,29 @@ type TextViewProps = {
 }
 
 export default function TextView({path, files, mainFuncs, modFuncs}: TextViewProps) {
+    let { text, isNew } = findText(files, path);
     return (
         <>
-            <Head path={path} renameFn={mainFuncs.renameView} />
-            <Text file={findText(files, path)} createNewText={mainFuncs.createNewFile} writeText={modFuncs.writeFile} isSingle={true} />
+            <Head path={path} isNew={isNew} disabled={isNew} renameFn={mainFuncs.renameView} />
+            <Text file={text} createNewText={mainFuncs.createNewFile} 
+            writeText={modFuncs.writeFile} isSingle={true} />
         </>
     )
 }
 
-function findText(files: File[], path: string): File {
+function findText(files: File[], path: string): { text: File; isNew: boolean; } {
+    const f = newFile(path)
     if (!files || files.length === 0) {
-        return newFile(path);
+        return { text: f, isNew: true }
     }
 
     const name = basename(path);
     const text = files.find(f => f.name === name);
 
     if (!text) {
-        return newFile(path);
+        return { text: f, isNew: true }
     }
-    return text
+    return { text: text, isNew: false }
     /*
     if (!text) {
         return <>{'Couldn’t find text: ' + name + '.'}</>

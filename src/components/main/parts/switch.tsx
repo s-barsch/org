@@ -22,7 +22,6 @@ export function FileSwitch({file, modFuncs, createNewFile, isSingle}: FileSwitch
     switch (file.type) {
         case "text":
             return <>
-                <Meta file={file} modFuncs={modFuncs} />
                 <Text file={file} createNewText={createNewFile} writeText={modFuncs.writeFile} isSingle={isSingle} />
             </>
         case "image":

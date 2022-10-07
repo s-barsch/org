@@ -14,6 +14,7 @@ export default function Image({file, modFuncs}: ImageProps) {
         <div>
         <img alt="" src={"/file" + file.path} />
         <Del file={file} deleteFile={modFuncs.deleteFile} />
+        <br /><button>+ Info</button>
         <Info mainFilePath={file.path} modFuncs={modFuncs} />
         </div>
     )

@@ -9,6 +9,7 @@ import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
 import { separate } from 'funcs/sort';
 import { FileSwitch } from 'components/main/parts/switch'
+import { Meta } from '../files/meta';
 
 const ReactSortable1: any = ReactSortable;
 
@@ -50,7 +51,10 @@ export function FileList({files, saveSort, createNewFile, modFuncs}: FileListPro
                 animation={200} list={state} setList={setState}>
 
                     { state.map((file, i) => (
+                        <>
+                        <Meta file={file} modFuncs={modFuncs} />
                         <FileSwitch key={file.id} file={file} createNewFile={createNewFile} modFuncs={modFuncs} isSingle={false} />
+                        </>
                     ))}
 
             </ReactSortable1>
