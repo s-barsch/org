@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import Head from 'components/main/parts/head';
-import TextField from 'components/main/files/text';
+import Head from 'components/view/parts/head';
+import TextField from 'components/view/files/text';
 import { newTimestamp, timestampDir } from 'funcs/paths';
 import File, { newFileDir } from 'funcs/files';
 import Nav from 'components/nav/nav';
 import { join } from 'path';
-import { writeRequest } from 'components/main/requests';
+import { writeRequest } from 'components/view/requests';
 import { useHistory } from 'react-router';
 import { ErrContext } from 'context/err';
 

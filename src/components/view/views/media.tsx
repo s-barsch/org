@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Head from 'components/main/parts/head';
+import Head from 'components/view/parts/head';
 import File from 'funcs/files';
 import Image from '../files/image';
 import Video from '../files/video';
 
-import { mainFuncsObj, modFuncsObj } from 'components/main/main';
+import { mainFuncsObj, modFuncsObj } from 'components/view/main';
 import { basename } from 'path';
 
 type TextViewProps = {

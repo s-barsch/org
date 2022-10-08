@@ -4,7 +4,7 @@ import DeleteIcon from '@material-ui/icons/ClearSharp';
 import EditIcon from '@material-ui/icons/Edit';
 import { basename, dirname, join } from 'path';
 import File from 'funcs/files';
-import { modFuncsObj } from 'components/main/main';
+import { modFuncsObj } from 'components/view/main';
 import { copyRequest } from '../requests';
 import { ErrContext } from 'context/err';
 import { TargetsContext } from 'context/targets';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import 'css/main.scss';
 import { BrowserRouter as Router, Switch, Route, useLocation, useHistory } from 'react-router-dom';
-import Main from 'components/main/main';
+import Main from 'components/view/main';
 //import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
 import { isPresentPath } from 'funcs/files';

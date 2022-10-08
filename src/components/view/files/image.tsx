@@ -1,6 +1,6 @@
 import React from 'react';
 import File from 'funcs/files';
-import { modFuncsObj } from 'components/main/main';
+import { modFuncsObj } from 'components/view/main';
 import Info from './info';
 import AddInfo from '../parts/add-info';
 

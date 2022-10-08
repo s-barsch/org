@@ -1,10 +1,10 @@
 import React from 'react';
-import { Meta } from 'components/main/files/meta';
-import Text from 'components/main/files/text';
-import Image from 'components/main/files/image';
-import Video from 'components/main/files/video';
+import { Meta } from 'components/view/files/meta';
+import Text from 'components/view/files/text';
+import Image from 'components/view/files/image';
+import Video from 'components/view/files/video';
 import File from 'funcs/files';
-import { modFuncsObj } from 'components/main/main';
+import { modFuncsObj } from 'components/view/main';
 
 export type FileSwitchProps = {
     file: File;

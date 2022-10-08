@@ -4,7 +4,7 @@ import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
 import { basename, dirname } from 'path';
 import CrumbNav from 'components/nav/crumbs';
-import { Del } from 'components/main/files/meta';
+import { Del } from 'components/view/files/meta';
 import { extendedBase, section } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
 import { ErrContext } from 'context/err';

@@ -9,8 +9,8 @@ import File, { newFileDir, merge, insertNewDir, renameText, insertDuplicateFile,
     insertNewFile, createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
     newFileRequest, deleteRequest } from './requests';
-import TextView from 'components/main/views/text';
-import DirView from 'components/main/views/dir';
+import TextView from 'components/view/views/text';
+import DirView from 'components/view/views/dir';
 import { ErrContext } from 'context/err';
 import MediaView from './views/media';
 

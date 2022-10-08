@@ -4,11 +4,11 @@ import ReverseIcon from '@material-ui/icons/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
 import { basename } from 'path';
 import File from 'funcs/files';
-import { modFuncsObj } from 'components/main/main';
+import { modFuncsObj } from 'components/view/main';
 import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
 import { separate } from 'funcs/sort';
-import { FileSwitch } from 'components/main/parts/switch'
+import { FileSwitch } from 'components/view/parts/switch'
 import { Meta } from '../files/meta';
 
 const ReactSortable1: any = ReactSortable;
