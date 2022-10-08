@@ -5,18 +5,17 @@ import File from 'funcs/files';
 import Image from '../files/image';
 import Video from '../files/video';
 
-import { mainFuncsObj, modFuncsObj } from 'components/view/main';
+import { modFuncsObj } from 'components/view/main';
 import { basename } from 'path';
 
 type TextViewProps = {
     path: string;
     files: File[];
     renameView: (name: string) => void;
-    mainFuncs: mainFuncsObj;
     modFuncs: modFuncsObj;
 }
 
-export default function MediaView({path, files, renameView, mainFuncs, modFuncs}: TextViewProps) {
+export default function MediaView({path, files, renameView, modFuncs}: TextViewProps) {
     if (!files || files.length === 0) {
         return <>No files. (MediaView)</>
     }

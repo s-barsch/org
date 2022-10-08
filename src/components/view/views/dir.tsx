@@ -1,5 +1,5 @@
 import React from 'react';
-import { mainFuncsObj, modFuncsObj } from 'components/view/main';
+import { modFuncsObj } from 'components/view/main';
 import Head from 'components/head/main';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
 import { DirList, FileList } from 'components/view/parts/list';
@@ -9,32 +9,33 @@ import { HotKeys } from "react-hotkeys";
 type DirViewProps = {
     path: string;
     files: File[];
+    addNewDir: (name: string) => void;
     renameView: (name: string) => void;
-    mainFuncs: mainFuncsObj;
+    saveSort: (part: File[], type: string) => void;
     modFuncs: modFuncsObj;
 }
 
 
-export default function DirView({path, files, renameView, mainFuncs, modFuncs}: DirViewProps) {
+export default function DirView({path, files, addNewDir, renameView, saveSort, modFuncs}: DirViewProps) {
 const keyMap = {
     NEW_TEXT: "ctrl+enter"
 };
 
 const handlers = {
-    NEW_TEXT: mainFuncs.createNewFile
+    NEW_TEXT: modFuncs.createNewFile
 };
 
     return (
         <HotKeys keyMap={keyMap} handlers={handlers}>
             <Head path={path} renameFn={renameView} />
             <nav id="dirs">
-                <DirList  dirs={dirsOnly(files)} saveSort={mainFuncs.saveSort} />
-                <AddDir addNewDir={mainFuncs.addNewDir} />
+                <DirList  dirs={dirsOnly(files)} saveSort={saveSort} />
+                <AddDir addNewDir={addNewDir} />
             </nav>
             <section id="files">
-                <AddText createNewFile={mainFuncs.createNewFile} />
-                <FileList files={filesOnly(files)} createNewFile={mainFuncs.createNewFile}
-                    modFuncs={modFuncs} saveSort={mainFuncs.saveSort} />
+                <AddText createNewFile={modFuncs.createNewFile} />
+                <FileList files={filesOnly(files)} createNewFile={modFuncs.createNewFile}
+                    modFuncs={modFuncs} saveSort={saveSort} />
             </section>
         </HotKeys>
     )

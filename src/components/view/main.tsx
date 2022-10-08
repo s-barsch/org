@@ -8,18 +8,11 @@ import { mainObj } from 'app';
 import File, { newFileDir, merge, insertNewDir, renameText, insertDuplicateFile,
     insertNewFile, createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
-    newFileRequest, deleteRequest } from './requests';
+    deleteRequest } from './requests';
 import TextView from 'components/view/views/text';
 import DirView from 'components/view/views/dir';
 import { ErrContext } from 'context/err';
 import MediaView from './views/media';
-
-
-export type mainFuncsObj = {
-    createNewFile: () => void;
-    addNewDir: (name: string) => void;
-    saveSort: (part: File[], type:string) => void;
-}
 
 export type modFuncsObj = {
     writeFile: (f: File) => void;
@@ -30,6 +23,8 @@ export type modFuncsObj = {
     renameFile: (oldPath: string, f: File) => void;
 
     moveToTarget: (f: File) => void;
+
+    createNewFile: () => void;
 }
 
 type MainProps = {
@@ -53,24 +48,17 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         renameFile:     renameFile,
         duplicateFile:  duplicateFile,
         moveToTarget:   moveToTarget,
-    }
-
-    const mainFuncs: mainFuncsObj = {
         createNewFile:  createNewFile,
-        addNewDir:      addNewDir,
-        saveSort:       saveSort
     }
 
     switch (fileType(path)) {
         case "text":
-            return <TextView path={path} files={files} renameView={renameView}
-                mainFuncs={mainFuncs} modFuncs={modFuncs} />;
+            return <TextView path={path} files={files} renameView={renameView} modFuncs={modFuncs} />;
         case "media":
-            return <MediaView path={path} files={files} renameView={renameView}
-                mainFuncs={mainFuncs} modFuncs={modFuncs} />;
+            return <MediaView path={path} files={files} renameView={renameView} modFuncs={modFuncs} />;
         default:
             return <DirView path={path} files={files} renameView={renameView}
-            mainFuncs={mainFuncs} modFuncs={modFuncs} />
+            addNewDir={addNewDir} saveSort={saveSort} modFuncs={modFuncs} />
     }
 
 
@@ -167,7 +155,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         const newFiles = insertNewFile(files.slice(), f, sorted);
 
         update(newFiles, sorted);
-        newFileRequest(f.path, setErr);
+        //newFileRequest(f.path, setErr);
         history.push(f.path);
     }
 

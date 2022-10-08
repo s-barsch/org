@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import 'css/main.scss';
-import { BrowserRouter as Router, Switch, Route, useLocation, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, useLocation } from 'react-router-dom';
 import Main from 'components/view/main';
 //import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
 import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import ErrProvider from './context/err';
-import { isToday, pageTitle } from 'funcs/paths';
+import { pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import Write from 'components/write/write';
 import Nav from 'components/nav/main';
 import Search from 'components/search/main';
 import File from 'funcs/files';
 import { dirname } from 'path';
+import Today from 'components/today/main';
 
 export default function App() {
     return (
@@ -21,14 +22,17 @@ export default function App() {
     <ErrProvider>
         <Router>
             <Switch>
-                <Route path="/write">
+                <Route exact path="/write">
                     <Write />
+                </Route>
+                <Route exact path="/today">
+                    <Today />
                 </Route>
                 <Route path="/search">
                     <Search />
                 </Route>
                 <Route path="/">
-                    <Loader />
+                    <ViewLoader />
                 </Route>
             </Switch>
         </Router>
@@ -54,9 +58,8 @@ export function newView(): viewObj {
     };
 }
 
-function Loader() {
+function ViewLoader() {
     const { targets } = useContext(TargetsContext);
-    const history = useHistory();
     const path = useLocation().pathname;
 
     const [dir, setDir] = useState(newView());
@@ -67,23 +70,13 @@ function Loader() {
         setDir({ ...dir });
     }
 
-
-    // "/today" redirects to "/graph/20/20-10/24" (current day)
     useEffect(() => {
-
         document.title = pageTitle(path);
         setFavicon(path);
-        if (isToday(path)) {
-            todayRedirect(history);
-            return;
-        }
-    }, [path, history]);
+    }, [path]);
 
     // only load when a new *dir* is requested
     useEffect(() => {
-        if ( path === "/today") {
-            return;
-        }
         if (shouldLoad(path, dir)) {
             loadView(path);
         }
@@ -107,14 +100,8 @@ function Loader() {
 
     async function loadView(path: string) {
         console.log("LOADING VIEW: " + path)
-        let req = "/api/view" + path;
 
-        if (path.substr(0, 7) === "/search") {
-            req = "/api" + path;
-        }
-
-        const resp = await fetch(req);
-
+        const resp = await fetch("/api/view" + path);
         if (!resp.ok) {
             if (resp.status === 404) {
                 if (path !== "/today" && path !== "/write") {
@@ -146,13 +133,6 @@ function Loader() {
             setMain={setMain} />
         </>
     )
-}
-
-// TODO: add type
-async function todayRedirect(history: any) {
-    const resp = await fetch("/api/today");
-    const todayPath = await resp.text();
-    history.push(todayPath)
 }
 
 function shouldLoad(path: string, dir: viewObj): boolean {
