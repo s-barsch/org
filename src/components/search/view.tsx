@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import Head from 'components/view/parts/head';
+import Head from 'components/head/main';
 import File, { filesOnly } from 'funcs/files';
 import { FileList } from './list';
 import { dirname, join } from 'path';

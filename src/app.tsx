@@ -10,9 +10,8 @@ import ErrProvider from './context/err';
 import { isToday, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import Write from 'components/write/write';
-import Nav from 'components/nav/nav';
+import Nav from 'components/nav/main';
 import Search from 'components/search/main';
-//import H from 'history';
 import File from 'funcs/files';
 import { dirname } from 'path';
 

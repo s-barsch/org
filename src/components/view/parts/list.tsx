@@ -9,7 +9,7 @@ import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
 import { separate } from 'funcs/sort';
 import { FileSwitch } from 'components/view/parts/switch'
-import { Meta } from '../files/meta';
+import { Meta } from '../meta/main';
 
 const ReactSortable1: any = ReactSortable;
 

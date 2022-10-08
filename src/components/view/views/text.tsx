@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Head from 'components/view/parts/head';
+import Head from 'components/head/main';
 import Text from 'components/view/files/text';
 import File, { newFile } from 'funcs/files';
 

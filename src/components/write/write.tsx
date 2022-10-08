@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import Head from 'components/view/parts/head';
+import Head from 'components/head/main';
 import TextField from 'components/view/files/text';
 import { newTimestamp, timestampDir } from 'funcs/paths';
 import File, { newFileDir } from 'funcs/files';
-import Nav from 'components/nav/nav';
+import Nav from 'components/nav/main';
 import { join } from 'path';
 import { writeRequest } from 'components/view/requests';
 import { useHistory } from 'react-router';

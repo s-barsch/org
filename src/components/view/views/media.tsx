@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Head from 'components/view/parts/head';
+import Head from 'components/head/main';
 import File from 'funcs/files';
 import Image from '../files/image';
 import Video from '../files/video';

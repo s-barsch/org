@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta } from 'components/view/files/meta';
+import { Meta } from 'components/view/meta/main';
 import Text from 'components/view/files/text';
 import Image from 'components/view/files/image';
 import Video from 'components/view/files/video';

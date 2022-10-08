@@ -1,6 +1,6 @@
 import React from 'react';
 import { mainFuncsObj, modFuncsObj } from 'components/view/main';
-import Head from 'components/view/parts/head';
+import Head from 'components/head/main';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
 import { DirList, FileList } from 'components/view/parts/list';
 import { AddDir, AddText } from 'components/view/parts/add';
