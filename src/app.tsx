@@ -54,7 +54,7 @@ export type mainObj = {
 export function newView(): viewObj {
     return {
         path: "",
-        main: { files: [], sorted: false } as mainObj,
+        main: { files: [], sorted: false },
     };
 }
 
