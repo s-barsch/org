@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/ClearSharp';
 import EditIcon from '@material-ui/icons/Edit';
 import { basename, dirname, join } from 'path';
 import File from 'funcs/files';
 import { modFuncsObj } from 'components/main/main';
+import { copyRequest } from '../requests';
+import { ErrContext } from 'context/err';
+import { TargetsContext } from 'context/targets';
 
 type BotToggleProps = {
     file: File;
@@ -62,16 +65,22 @@ type MetaProps = {
 }
 
 export function Meta({file, modFuncs, isSearch}: MetaProps) {
+    let { setErr } = useContext(ErrContext);
+    let { targets } = useContext(TargetsContext);
 
-    function moveToTarget(evt: React.MouseEvent<HTMLButtonElement>) {
+    function copyFile(f: File, newPath: string) {
+        copyRequest(f.path, newPath, setErr);
+    }
+
+    function moveToTarget() {
         modFuncs.moveToTarget(file);
     }
 
-    function copyToTarget(evt: React.MouseEvent<HTMLButtonElement>) {
-        modFuncs.copyToTarget(file);
+    function copyToTarget() {
+        copyFile(file, join(targets.active, file.name));
     }
 
-    function duplicateFile(evt: React.MouseEvent<HTMLButtonElement>) {
+    function duplicateFile() {
         modFuncs.duplicateFile(file);
     }
 
@@ -82,7 +91,7 @@ export function Meta({file, modFuncs, isSearch}: MetaProps) {
             <button className="info__dupli" onClick={duplicateFile}>⧺</button>
             <button onClick={copyToTarget}><img className="rarr" alt="Copy" src="/rarrc.svg"/></button>
             <button onClick={moveToTarget}><img className="rarr" alt="Move" src="/rarr.svg"/></button>
-            <PubButton file={file} copyFile={modFuncs.copyFile} />
+            <PubButton file={file} copyFile={copyFile} />
             <span className="info__drag"></span>
             <span className="info__del">
                 <Del file={file} deleteFile={modFuncs.deleteFile} />

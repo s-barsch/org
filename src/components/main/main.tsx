@@ -8,7 +8,7 @@ import { mainObj } from 'app';
 import File, { newFileDir, merge, insertNewDir, renameText, insertDuplicateFile,
     insertNewFile, createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
-    copyRequest, newFileRequest, deleteRequest, renameViewRequest } from './requests';
+    newFileRequest, deleteRequest, renameViewRequest } from './requests';
 import TextView from 'components/main/views/text';
 import DirView from 'components/main/views/dir';
 import { ErrContext } from 'context/err';
@@ -28,10 +28,8 @@ export type modFuncsObj = {
     deleteFile: (f: File) => void;
 
     moveFile: (f: File, newPath: string) => void;
-    copyFile: (f: File, newPath: string) => void;
     renameFile: (oldPath: string, f: File) => void;
 
-    copyToTarget: (f: File) => void;
     moveToTarget: (f: File) => void;
 }
 
@@ -53,10 +51,8 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         writeFile:      writeFile,
         deleteFile:     deleteFile,
         moveFile:       moveFile,
-        copyFile:       copyFile,
         renameFile:     renameFile,
         duplicateFile:  duplicateFile,
-        copyToTarget:   copyToTarget,
         moveToTarget:   moveToTarget,
     }
 
@@ -107,6 +103,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         writeRequest(f.path, f.body, setErr);
     }
 
+    // text, media, dir
     async function renameView(newName: string) {
         let oldName = basename(path);
         let newPath = join(dirname(path), newName);
@@ -120,6 +117,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         history.push(newPath);
     }
 
+    // meta
     function renameFile(oldPath: string, f: File) {
         let newFiles = files.slice()
         if (!sorted) {
@@ -129,6 +127,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         moveRequest(oldPath, f.path, setErr);
     }
 
+    // meta
     function duplicateFile(f: File) {
         let newF: File;
         try {
@@ -142,23 +141,18 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         writeRequest(newF.path, newF.body, setErr);
     }
 
-    function copyFile(f: File, newPath: string) {
-        copyRequest(f.path, newPath, setErr);
-    }
-
+    // meta
     function moveFile(f: File, newPath: string) {
         update(removeFromArr(files.slice(), f.name), sorted);
         moveRequest(f.path, newPath, setErr);
     }
 
-    function copyToTarget(f: File) {
-        copyFile(f, join(targets.active, f.name));
-    }
-
+    // meta
     function moveToTarget(f: File) {
         moveFile(f, join(targets.active, f.name));
     }
 
+    // meta, nav
     function deleteFile(f: File) {
         if (f.name === ".sort") {
             sorted = false;
@@ -167,6 +161,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         update(removeFromArr(files.slice(), f.name), sorted);
     }
 
+    // text, dir view
     function createNewFile() {
         const dirPath = isText(path) ? dirname(path) : path;
         const f = newFileDir(dirPath);
@@ -177,8 +172,9 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         history.push(f.path);
     }
 
+    // list view
     async function saveSort(part: File[], type: string) {
-        const New = merge(files.slice(), part, type);
-        update(New, true);
+        const newFiles = merge(files.slice(), part, type);
+        update(newFiles, true);
     }
 }
