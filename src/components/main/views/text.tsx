@@ -10,15 +10,16 @@ import { basename } from 'path';
 type TextViewProps = {
     path: string;
     files: File[];
+    renameView: (name: string) => void;
     mainFuncs: mainFuncsObj;
     modFuncs: modFuncsObj;
 }
 
-export default function TextView({path, files, mainFuncs, modFuncs}: TextViewProps) {
+export default function TextView({path, files, renameView, mainFuncs, modFuncs}: TextViewProps) {
     let { text, isNew } = findText(files, path);
     return (
         <>
-            <Head path={path} isNew={isNew} disabled={isNew} renameFn={mainFuncs.renameView} />
+            <Head path={path} isNew={isNew} disabled={isNew} renameFn={renameView} />
             <Text file={text} createNewText={mainFuncs.createNewFile} 
             writeText={modFuncs.writeFile} isSingle={true} />
         </>

@@ -8,7 +8,7 @@ import { mainObj } from 'app';
 import File, { newFileDir, merge, insertNewDir, renameText, insertDuplicateFile,
     insertNewFile, createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
-    newFileRequest, deleteRequest, renameViewRequest } from './requests';
+    newFileRequest, deleteRequest } from './requests';
 import TextView from 'components/main/views/text';
 import DirView from 'components/main/views/dir';
 import { ErrContext } from 'context/err';
@@ -18,7 +18,6 @@ import MediaView from './views/media';
 export type mainFuncsObj = {
     createNewFile: () => void;
     addNewDir: (name: string) => void;
-    renameView: (name: string) => void;
     saveSort: (part: File[], type:string) => void;
 }
 
@@ -59,19 +58,19 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
     const mainFuncs: mainFuncsObj = {
         createNewFile:  createNewFile,
         addNewDir:      addNewDir,
-        renameView:     renameView,
         saveSort:       saveSort
     }
 
     switch (fileType(path)) {
         case "text":
-            return <TextView path={path} files={files}
+            return <TextView path={path} files={files} renameView={renameView}
                 mainFuncs={mainFuncs} modFuncs={modFuncs} />;
         case "media":
-            return <MediaView path={path} files={files}
+            return <MediaView path={path} files={files} renameView={renameView}
                 mainFuncs={mainFuncs} modFuncs={modFuncs} />;
         default:
-            return <DirView path={path} files={files} mainFuncs={mainFuncs} modFuncs={modFuncs} />
+            return <DirView path={path} files={files} renameView={renameView}
+            mainFuncs={mainFuncs} modFuncs={modFuncs} />
     }
 
 
@@ -113,7 +112,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
             update(newFiles, sorted);
         }
 
-        await renameViewRequest(path, newPath, setErr);
+        await moveRequest(path, newPath, setErr);
         history.push(newPath);
     }
 

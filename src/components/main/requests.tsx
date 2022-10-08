@@ -8,10 +8,6 @@ type reqOptions = {
     body:   string;
 }
 
-function setWriteTime() {
-    localStorage.setItem("write", String(Date.now()));
-}
-
 function request(path: string, options: reqOptions, err: errObj, setErr: setErrFn): Promise<string> {
     return new Promise(async (resolve, reject) => {
         const resp = await fetch(path, options);
@@ -33,18 +29,17 @@ function request(path: string, options: reqOptions, err: errObj, setErr: setErrF
     })
 }
 
-export async function moveRequest(path: string, newPath: string, setErr: setErrFn) {
+export async function moveRequest(path: string, newPath: string, setErr: setErrFn): Promise<string> {
     const e = {
         func: 'moveRequest',
         path: path,
         code: 0,
         msg:  ''
     }
-    await request("/api/move" + path, {
+    return request("/api/move" + path, {
         method: "POST",
         body: newPath
     }, e, setErr);
-    setWriteTime();
 }
 
 export async function copyRequest(path: string, newPath: string, setErr: setErrFn) {
@@ -58,7 +53,6 @@ export async function copyRequest(path: string, newPath: string, setErr: setErrF
         method: "POST",
         body: newPath
     }, e, setErr);
-    setWriteTime();
 }
 
 export function writeRequest(path: string, body: string, setErr: setErrFn) {
@@ -92,19 +86,6 @@ export function newDirRequest(path: string, setErr: setErrFn) {
         msg:  ''
     }
     return request("/api/write" + path, {} as reqOptions, e, setErr);
-}
-
-export function renameViewRequest(path: string, body: string, setErr: setErrFn): Promise<string> {
-    const e = {
-        func: 'viewRequest',
-        path: path,
-        code: 0,
-        msg:  ''
-    }
-    return request("/api/move" + path, {
-        method: "POST",
-        body: body
-    }, e, setErr);
 }
 
 export function saveSortRequest(path: string, files: File[], setErr: setErrFn) {

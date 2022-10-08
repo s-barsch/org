@@ -9,7 +9,7 @@ import TargetsProvider, { TargetsContext } from './context/targets';
 import ErrProvider from './context/err';
 import { isToday, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
-import Write from 'components/main/views/write';
+import Write from 'components/write/write';
 import Nav from 'components/nav/nav';
 import Search from 'components/search/main';
 //import H from 'history';
@@ -148,7 +148,6 @@ function Loader() {
         </>
     )
 }
-
 
 // TODO: add type
 async function todayRedirect(history: any) {

@@ -9,12 +9,13 @@ import { HotKeys } from "react-hotkeys";
 type DirViewProps = {
     path: string;
     files: File[];
+    renameView: (name: string) => void;
     mainFuncs: mainFuncsObj;
     modFuncs: modFuncsObj;
 }
 
 
-export default function DirView({path, files, mainFuncs, modFuncs}: DirViewProps) {
+export default function DirView({path, files, renameView, mainFuncs, modFuncs}: DirViewProps) {
 const keyMap = {
     NEW_TEXT: "ctrl+enter"
 };
@@ -25,7 +26,7 @@ const handlers = {
 
     return (
         <HotKeys keyMap={keyMap} handlers={handlers}>
-            <Head path={path} renameFn={mainFuncs.renameView} />
+            <Head path={path} renameFn={renameView} />
             <nav id="dirs">
                 <DirList  dirs={dirsOnly(files)} saveSort={mainFuncs.saveSort} />
                 <AddDir addNewDir={mainFuncs.addNewDir} />

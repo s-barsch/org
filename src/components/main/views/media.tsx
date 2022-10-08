@@ -11,11 +11,12 @@ import { basename } from 'path';
 type TextViewProps = {
     path: string;
     files: File[];
+    renameView: (name: string) => void;
     mainFuncs: mainFuncsObj;
     modFuncs: modFuncsObj;
 }
 
-export default function MediaView({path, files, mainFuncs, modFuncs}: TextViewProps) {
+export default function MediaView({path, files, renameView, mainFuncs, modFuncs}: TextViewProps) {
     if (!files || files.length === 0) {
         return <>No files. (MediaView)</>
     }
@@ -28,7 +29,7 @@ export default function MediaView({path, files, mainFuncs, modFuncs}: TextViewPr
     }
     return (
         <>
-            <Head path={path} renameFn={mainFuncs.renameView} />
+            <Head path={path} renameFn={renameView} />
             <Media file={media} modFuncs={modFuncs} isSingle={true} />
         </>
     )
