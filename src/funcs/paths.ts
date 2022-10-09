@@ -131,3 +131,10 @@ export function isWrite(path: string): boolean {
     return path === "/write";
 }
 
+export function dirPath(path: string): string {
+    if (isDir(path)) {
+        return path;
+    }
+    return dirname(path)
+}
+

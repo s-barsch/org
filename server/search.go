@@ -27,22 +27,16 @@ func search(w http.ResponseWriter, r *http.Request) *Err {
 		})
 	}
 
-	nav, err := getNav(query)
-	if err != nil {
-		e.Err = err
-		return e
-	}
-
 	v := &DirView{
 		Path: query,
-		Nav:  nav,
-		Main: &Main{
+		// Nav:  nav,
+		Dir: &Dir{
 			Files:  files,
 			Sorted: false,
 		},
 	}
 
-	err = json.NewEncoder(w).Encode(v)
+	err := json.NewEncoder(w).Encode(v)
 	if err != nil {
 		e.Err = err
 		return e
@@ -50,4 +44,3 @@ func search(w http.ResponseWriter, r *http.Request) *Err {
 
 	return nil
 }
-

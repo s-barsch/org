@@ -13,11 +13,10 @@ import (
 
 type DirView struct {
 	Path string `json:"path"`
-	Nav  *Nav   `json:"nav"`
-	Main *Main  `json:"main"`
+	Dir  *Dir   `json:"dir"`
 }
 
-type Main struct {
+type Dir struct {
 	Files  []*File `json:"files"`
 	Sorted bool    `json:"sorted"`
 }
@@ -52,16 +51,9 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		files = []*File{}
 	}
 
-	nav, err := getNav(path)
-	if err != nil {
-		e.Err = err
-		return e
-	}
-
 	v := &DirView{
 		Path: path,
-		Nav:  nav,
-		Main: &Main{
+		Dir: &Dir{
 			Files:  files,
 			Sorted: sorted,
 		},

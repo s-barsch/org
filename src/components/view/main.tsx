@@ -4,7 +4,7 @@ import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
 import { isText, fileType } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
-import { mainObj } from 'app';
+import { dirContents } from 'app';
 import File, { newFileDir, merge, insertNewDir, renameText, insertDuplicateFile,
     insertNewFile, createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
@@ -27,14 +27,14 @@ export type modFuncsObj = {
     createNewFile: () => void;
 }
 
-type MainProps = {
+type ViewProps = {
     path: string;
     files: File[];
     sorted: boolean;
-    setMain: (main: mainObj) => void;
+    setDir: (dir: dirContents) => void;
 }
 
-export default function Main({path, files, sorted, setMain}: MainProps) {
+export default function View({path, files, sorted, setDir}: ViewProps) {
     let { targets } = useContext(TargetsContext);
     let { setErr } = useContext(ErrContext);
 
@@ -63,7 +63,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
 
 
     function update(newFiles: File[], isSorted: boolean) {
-        setMain({
+        setDir({
             sorted: isSorted,
             files:  newFiles
         });

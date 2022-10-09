@@ -19,7 +19,7 @@ export default function Search() {
     return (
         <>
             <Nav path={path} />
-            <SearchView path={path} files={view.main.files} />
+            <SearchView path={path} files={view.dir.files} />
         </>
     )
 }

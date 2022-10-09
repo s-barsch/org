@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import 'css/main.scss';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Main from 'components/view/main';
+import View from 'components/view/main';
 //import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
 import TargetsProvider, { TargetsContext } from './context/targets';
@@ -12,7 +12,7 @@ import Write from 'components/write/write';
 import Nav from 'components/nav/main';
 import Search from 'components/search/main';
 import File from 'funcs/files';
-import { dirname } from 'path';
+import { dirPath } from 'funcs/paths';
 import Today from 'components/today/main';
 
 export default function App() {
@@ -23,7 +23,7 @@ export default function App() {
             <Routes>
                 <Route path="/write" element={<Write />} />
                 <Route path="/today" element={<Today />} />
-                <Route path="/search*" element={<Search />} />
+                <Route path="/search/*" element={<Search />} />
                 <Route path="/*" element={<ViewLoader />} />
             </Routes>
         </Router>
@@ -32,20 +32,20 @@ export default function App() {
     )
 }
 
-export type viewObj = {
+export type viewObject = {
     path: string;
-    main: mainObj;
+    dir: dirContents;
 }
 
-export type mainObj = {
+export type dirContents = {
     files:  File[];
     sorted: boolean;
 }
 
-export function newView(): viewObj {
+export function newView(): viewObject {
     return {
         path: "",
-        main: { files: [], sorted: false },
+        dir: { files: [], sorted: false },
     };
 }
 
@@ -54,11 +54,11 @@ function ViewLoader() {
     const path = useLocation().pathname;
 
     const [status, setStatus] = useState("");
-    const [dir, setDir] = useState(newView());
+    const [view, setView] = useState(newView());
 
-    function setMain(main: mainObj) {
-        dir.main = main;
-        setDir({ ...dir });
+    function setDir(dir: dirContents) {
+        view.dir = dir;
+        setView({ ...view });
     }
 
     // only load when a new *dir* is requested
@@ -66,11 +66,31 @@ function ViewLoader() {
         document.title = pageTitle(path);
         setFavicon(path);
 
-        console.log(dir.path)
-        if (shouldLoad(path, dir)) {
+        if (shouldLoad(path, view)) {
             loadView(path);
         }
-    }, [path, dir]);
+    }, [path, view]);
+
+    async function loadView(path: string) {
+        const resp = await fetch("/api/view" + path);
+        if (!resp.ok) {
+            setStatus(resp.status + " - " + resp.statusText)
+        }
+        const newView = await resp.json();
+        setView(newView);
+    };
+
+    function shouldLoad(path: string, view: viewObject): boolean {
+        // load if is new dir
+        if (isDir(path) && dirPath(path) !== view.path) {
+            return true
+        }
+        // load if is file but no dir loaded
+        if (!isDir(path) && view.path === "") {
+            return true
+        }
+        return false
+    }
 
     // listen if another tab sends files to this tab.
     const listenForWrite = useCallback(() => {
@@ -88,87 +108,24 @@ function ViewLoader() {
         };
     }, [listenForWrite]);
 
-    async function loadView(path: string) {
-        // console.log("LOADING VIEW: " + path)
-
-        const resp = await fetch("/api/view" + path);
-        if (!resp.ok) {
-            setStatus(resp.status + " - " + resp.statusText)
-        }
-
-        const view = await resp.json();
-        setDir(view);
-    };
-    
     if (status !== "") {
-        return <>
+        return (
+            <>
             <Nav path={path} />
             <br />
             <code>{status}</code>
-        </>;
+        </>
+        );
     }
 
     return (
         <>
             <Nav path={path} />
-            <Main path={path} files={dir.main.files} sorted={dir.main.sorted}
-            setMain={setMain} />
+            <View path={path} files={view.dir.files} sorted={view.dir.sorted} setDir={setDir} />
         </>
-    )
-}
-
-function shouldLoad(path: string, dir: viewObj): boolean {
-    // load if is new dir
-    if (isDir(path) && dirPath(path) !== dir.path) {
-        return true
-    }
-    // load if is file but no dir loaded
-    if (!isDir(path) && dir.path === "") {
-        return true
-    }
-    return false
-}
-
-function dirPath(path: string): string {
-    if (isDir(path)) {
-        return path;
-    }
-    return dirname(path)
+    );
 }
 
 function isActiveTarget(targets: Targets, path: string): boolean {
     return targets && path === targets.active;
 }
-
-/*
-function isNewDir(path: string, dirPath: string): boolean {
-    if (path === dirPath) {
-        return false
-    }
-    if (path.indexOf('.') !== -1 && dirname(path) === dirPath) {
-        return false
-    }
-    return true;
-}
-
-function shouldLoad(
-        /*
-    if (!isNewDir(path, dir.path)) {
-        return false
-    }
-
-    if (isPresentPath(dir.main.files, path)) {
-        return false
-    }
-    */
-    /*
-    if (isText(path) && !isPresentPath(dir.main.files, path)) {
-        return true
-    }
-
-    if (isText(path) && dir.path && dir.path !== "") {
-        return false;
-    }
-    return true;
-)
-    */
