@@ -19,7 +19,7 @@ export default function TextView({path, files, renameView, modFuncs}: TextViewPr
     return (
         <>
             <Head path={path} isNew={isNew} disabled={isNew} renameFn={renameView} />
-            <TextField file={text} createNewText={modFuncs.createNewFile}
+            <TextField file={text} createFile={modFuncs.createFile}
                 writeText={modFuncs.writeFile} isSingle={true} />
         </>
     )

@@ -1,7 +1,7 @@
 import React, {useRef, useCallback, useState} from 'react';
 
-export function AddText({createNewFile}: {createNewFile: () => void}) {
-    return <button className="add-text" onClick={createNewFile}>+ Text</button>
+export function AddText({createFile}: {createFile: () => void}) {
+    return <button className="add-text" onClick={createFile}>+ Text</button>
 }
 
 export function AddDir({addNewDir}: {addNewDir: (name: string) => void;}) {

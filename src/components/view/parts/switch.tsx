@@ -9,11 +9,10 @@ import { modFuncsObj } from 'components/view/main';
 export type FileSwitchProps = {
     file: File;
     modFuncs: modFuncsObj;
-    createNewFile: () => void;
     isSingle: boolean;
 }
 
-export function FileSwitch({file, modFuncs, createNewFile, isSingle}: FileSwitchProps) {
+export function FileSwitch({file, modFuncs, isSingle}: FileSwitchProps) {
     /*
   if (file.name === ".sort") {
     return <div className="no-sort"><Meta file={file} modFuncs={modFuncs} /></div>
@@ -22,7 +21,7 @@ export function FileSwitch({file, modFuncs, createNewFile, isSingle}: FileSwitch
     switch (file.type) {
         case "text":
             return <>
-                <Text file={file} createNewText={createNewFile} writeText={modFuncs.writeFile} isSingle={isSingle} />
+                <Text file={file} createFile={modFuncs.createFile} writeText={modFuncs.writeFile} isSingle={isSingle} />
             </>
         case "image":
             return <Image file={file} modFuncs={modFuncs} />

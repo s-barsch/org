@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
 import { isText, fileType } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
@@ -22,9 +21,7 @@ export type modFuncsObj = {
     moveFile: (f: File, newPath: string) => void;
     renameFile: (oldPath: string, f: File) => void;
 
-    moveToTarget: (f: File) => void;
-
-    createNewFile: () => void;
+    createFile: () => void;
 }
 
 type ViewProps = {
@@ -35,7 +32,6 @@ type ViewProps = {
 }
 
 export default function View({path, files, sorted, setDir}: ViewProps) {
-    let { targets } = useContext(TargetsContext);
     let { setErr } = useContext(ErrContext);
 
 
@@ -47,8 +43,7 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
         moveFile:       moveFile,
         renameFile:     renameFile,
         duplicateFile:  duplicateFile,
-        moveToTarget:   moveToTarget,
-        createNewFile:  createNewFile,
+        createFile:  createFile,
     }
 
     switch (fileType(path)) {
@@ -72,21 +67,20 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
         }
     }
 
-    function addNewDir(name: string) {
+    async function addNewDir(name: string) {
         if (isPresent(files, name)) {
             alert("Dir with this name already exists.");
             return;
         }
-
         const dirPath = join(path, name);
 
+        await newDirRequest(dirPath, setErr);
         update(insertNewDir(files.slice(), dirPath, sorted), sorted);
-        newDirRequest(dirPath, setErr);
     }
 
-    function writeFile(f: File) {
+    async function writeFile(f: File) {
+        await writeRequest(f.path, f.body, setErr);
         update(updateFile(files.slice(), f, sorted), sorted)
-        writeRequest(f.path, f.body, setErr);
     }
 
     // text, media, dir
@@ -94,27 +88,27 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
         let oldName = basename(path);
         let newPath = join(dirname(path), newName);
 
+        await moveRequest(path, newPath, setErr);
+
         if (isText(path)) {
             const newFiles = renameText(files.slice(), oldName, newName)
             update(newFiles, sorted);
         }
-
-        await moveRequest(path, newPath, setErr);
         navigate(newPath);
     }
 
     // meta
-    function renameFile(oldPath: string, f: File) {
+    async function renameFile(oldPath: string, f: File) {
         let newFiles = files.slice()
         if (!sorted) {
             newFiles = orgSort(newFiles)
         }
+        await moveRequest(oldPath, f.path, setErr);
         update(newFiles, sorted);
-        moveRequest(oldPath, f.path, setErr);
     }
 
     // meta
-    function duplicateFile(f: File) {
+    async function duplicateFile(f: File) {
         let newF: File;
         try {
             newF = createDuplicate(f, files);
@@ -122,10 +116,10 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
             alert(err);
             return;
         }
+        await writeRequest(newF.path, newF.body, setErr);
 
         const newFiles = insertDuplicateFile(files.slice(), f, newF, sorted)
         update(newFiles, sorted);
-        writeRequest(newF.path, newF.body, setErr);
     }
 
     // meta
@@ -134,29 +128,24 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
         update(removeFromArr(files.slice(), f.name), sorted);
     }
 
-    // meta
-    function moveToTarget(f: File) {
-        moveFile(f, join(targets.active, f.name));
-    }
-
     // meta, nav
     async function deleteFile(f: File) {
+        let isSorted = sorted;
         if (f.name === ".sort") {
-            sorted = false;
+            isSorted = false;
         }
         await deleteRequest(f.path, setErr);
-        update(removeFromArr(files.slice(), f.name), sorted);
+        update(removeFromArr(files.slice(), f.name), isSorted);
     }
 
     // text, dir view
-    function createNewFile() {
+    function createFile() {
         const dirPath = isText(path) ? dirname(path) : path;
-        const f = newFileDir(dirPath);
-        const newFiles = insertNewFile(files.slice(), f, sorted);
+        const newFile = newFileDir(dirPath);
+        const newFiles = insertNewFile(files.slice(), newFile, sorted);
 
         update(newFiles, sorted);
-        //newFileRequest(f.path, setErr);
-        navigate(f.path);
+        navigate(newFile.path);
     }
 
     // list view

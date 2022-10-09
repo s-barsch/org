@@ -22,7 +22,7 @@ const keyMap = {
 };
 
 const handlers = {
-    NEW_TEXT: modFuncs.createNewFile
+    NEW_TEXT: modFuncs.createFile
 };
 
     return (
@@ -33,9 +33,8 @@ const handlers = {
                 <AddDir addNewDir={addNewDir} />
             </nav>
             <section id="files">
-                <AddText createNewFile={modFuncs.createNewFile} />
-                <FileList files={filesOnly(files)} createNewFile={modFuncs.createNewFile}
-                    modFuncs={modFuncs} saveSort={saveSort} />
+                <AddText createFile={modFuncs.createFile} />
+                <FileList files={filesOnly(files)} modFuncs={modFuncs} saveSort={saveSort} />
             </section>
         </HotKeys>
     )

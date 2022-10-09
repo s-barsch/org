@@ -16,11 +16,10 @@ const ReactSortable1: any = ReactSortable;
 type FileListProps = {
     files: File[];
     saveSort: (part: File[], type: string) => void;
-    createNewFile: () => void;
     modFuncs: modFuncsObj;
 }
 
-export function FileList({files, saveSort, createNewFile, modFuncs}: FileListProps) {
+export function FileList({files, saveSort, modFuncs}: FileListProps) {
     const [state, setState] = useState(files);
 
     useEffect(() => {
@@ -53,7 +52,7 @@ export function FileList({files, saveSort, createNewFile, modFuncs}: FileListPro
                     { state.map((file, i) => (
                         <div key={file.id}>
                         <Meta file={file} modFuncs={modFuncs} />
-                        <FileSwitch file={file} createNewFile={createNewFile} modFuncs={modFuncs} isSingle={false} />
+                        <FileSwitch file={file} modFuncs={modFuncs} isSingle={false} />
                         </div>
                     ))}
 

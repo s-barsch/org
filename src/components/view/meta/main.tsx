@@ -18,7 +18,7 @@ export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
     }
 
     function moveToTarget() {
-        modFuncs.moveToTarget(file);
+        modFuncs.moveFile(file, join(targets.active, file.name));
     }
 
     function copyToTarget() {

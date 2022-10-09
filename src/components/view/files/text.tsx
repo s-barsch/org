@@ -4,12 +4,12 @@ import File from 'funcs/files';
 
 type TextFieldProps = {
     file: File;
-    createNewText?: () => void;
+    createFile?: () => void;
     writeText: (f: File) => void;
     isSingle: boolean;
 }
 
-export default function TextField({file, writeText, createNewText, isSingle}: TextFieldProps) {
+export default function TextField({file, writeText, createFile, isSingle}: TextFieldProps) {
     const [body, setBody] = useState(file.body);
 
     const ref = useRef<HTMLTextAreaElement>(null!)
@@ -29,10 +29,10 @@ export default function TextField({file, writeText, createNewText, isSingle}: Te
     }
 
     function checkSubmit(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-        if (e.ctrlKey && e.key === "Enter" && createNewText !== undefined) {
+        if (e.ctrlKey && e.key === "Enter" && createFile !== undefined) {
             submit(e);
-            //const newFile = createNewFile === undefined ? () => {} : createNewFile;
-            createNewText();
+            //const newFile = createFile === undefined ? () => {} : createFile;
+            createFile();
         }
     }
 
