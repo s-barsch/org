@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ThemeIcon from '@material-ui/icons/WbSunnySharp';
 import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
 import { basename, dirname } from 'path';
@@ -7,7 +7,7 @@ import CrumbNav from 'components/nav/crumbs';
 import { Del } from 'components/view/meta/main';
 import { extendedBase, section } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
-import { ErrContext } from 'context/err';
+//import { ErrContext } from 'context/err';
 import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
 import { ErrComponent } from 'components/nav/error';
@@ -31,7 +31,6 @@ function newNavMeta() {
 
 export default function Nav({path}: NavProps) {
     const { targets, saveTargets } = useContext(TargetsContext);
-    const { err } = useContext(ErrContext);
 
     /* theme */
 
@@ -67,7 +66,7 @@ export default function Nav({path}: NavProps) {
     }, [path]);
 
 
-    const history = useHistory();
+    const navigate = useNavigate();
 
     async function deleteDir(viewFile: File) {
         try {
@@ -76,7 +75,7 @@ export default function Nav({path}: NavProps) {
                 alert( "Delete failed: " + viewFile.path + "\nreason: " +resp.statusText);
                 return;
             }
-            history.push(dirname(viewFile.path));
+            navigate(dirname(viewFile.path));
         } catch(err) {
             console.log(err);
         }
@@ -97,7 +96,7 @@ export default function Nav({path}: NavProps) {
                 <LinkList links={Config.links} active="" />
             </span>
             <span className="right">
-                <ErrComponent err={err} />
+                <ErrComponent />
                 <TargetButton clickFn={setThisActive} />
                 <button onClick={toggleTheme} ><ThemeIcon /></button>
                 <Del file={viewFile} deleteFile={deleteDir} />

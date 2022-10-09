@@ -107,10 +107,9 @@ export function isText(path: string): boolean {
 
 export function isDir(path: string): boolean {
     if (basename(path) === "info") {
-        return true
+        return false;
     }
     return path.indexOf('.') === -1
-
 }
 
 export function pageTitle(path: string): string {

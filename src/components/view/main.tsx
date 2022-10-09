@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { TargetsContext } from 'context/targets';
 import { basename, dirname, join } from 'path';
 import { isText, fileType } from 'funcs/paths';
@@ -39,7 +39,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
     let { setErr } = useContext(ErrContext);
 
 
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const modFuncs: modFuncsObj = {
         writeFile:      writeFile,
@@ -101,7 +101,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
         }
 
         await moveRequest(path, newPath, setErr);
-        history.push(newPath);
+        navigate(newPath);
     }
 
     // meta
@@ -156,7 +156,7 @@ export default function Main({path, files, sorted, setMain}: MainProps) {
 
         update(newFiles, sorted);
         //newFileRequest(f.path, setErr);
-        history.push(f.path);
+        navigate(f.path);
     }
 
     // list view

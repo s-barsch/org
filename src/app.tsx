@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import 'css/main.scss';
-import { BrowserRouter as Router, Switch, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Main from 'components/view/main';
 //import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
-import { isPresentPath } from 'funcs/files';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import ErrProvider from './context/err';
-import { pageTitle } from 'funcs/paths';
+import { isDir, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import Write from 'components/write/write';
 import Nav from 'components/nav/main';
@@ -21,20 +20,12 @@ export default function App() {
     <TargetsProvider>
     <ErrProvider>
         <Router>
-            <Switch>
-                <Route exact path="/write">
-                    <Write />
-                </Route>
-                <Route exact path="/today">
-                    <Today />
-                </Route>
-                <Route path="/search">
-                    <Search />
-                </Route>
-                <Route path="/">
-                    <ViewLoader />
-                </Route>
-            </Switch>
+            <Routes>
+                <Route path="/write" element={<Write />} />
+                <Route path="/today" element={<Today />} />
+                <Route path="/search*" element={<Search />} />
+                <Route path="/*" element={<ViewLoader />} />
+            </Routes>
         </Router>
     </ErrProvider>
     </TargetsProvider>
@@ -62,25 +53,24 @@ function ViewLoader() {
     const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
 
-    const [dir, setDir] = useState(newView());
     const [status, setStatus] = useState("");
+    const [dir, setDir] = useState(newView());
 
     function setMain(main: mainObj) {
         dir.main = main;
         setDir({ ...dir });
     }
 
+    // only load when a new *dir* is requested
     useEffect(() => {
         document.title = pageTitle(path);
         setFavicon(path);
-    }, [path]);
 
-    // only load when a new *dir* is requested
-    useEffect(() => {
+        console.log(dir.path)
         if (shouldLoad(path, dir)) {
             loadView(path);
         }
-    }, [dir, path]);
+    }, [path, dir]);
 
     // listen if another tab sends files to this tab.
     const listenForWrite = useCallback(() => {
@@ -99,32 +89,24 @@ function ViewLoader() {
     }, [listenForWrite]);
 
     async function loadView(path: string) {
-        console.log("LOADING VIEW: " + path)
+        // console.log("LOADING VIEW: " + path)
 
         const resp = await fetch("/api/view" + path);
         if (!resp.ok) {
-            if (resp.status === 404) {
-                if (path !== "/today" && path !== "/write") {
-                    setStatus("404 - not found.");
-                    return;
-                }
-            }
-            if (resp.status === 502) {
-                setStatus("502 - server down.");
-                return;
-            }
-            // let other errors bubble
+            setStatus(resp.status + " - " + resp.statusText)
         }
 
         const view = await resp.json();
-        setStatus("");
         setDir(view);
     };
-
+    
     if (status !== "") {
-        return <>{status}</>
+        return <>
+            <Nav path={path} />
+            <br />
+            <code>{status}</code>
+        </>;
     }
-
 
     return (
         <>
@@ -136,29 +118,29 @@ function ViewLoader() {
 }
 
 function shouldLoad(path: string, dir: viewObj): boolean {
-    if (path === "/write" || path === "/today") {
-        return false;
-    }
-    
-    if (!isNewDir(path, dir.path)) {
-        return false
-    }
-
-    if (isPresentPath(dir.main.files, path)) {
-        return false
-    }
-    /*
-    if (isText(path) && !isPresentPath(dir.main.files, path)) {
+    // load if is new dir
+    if (isDir(path) && dirPath(path) !== dir.path) {
         return true
     }
-
-    if (isText(path) && dir.path && dir.path !== "") {
-        return false;
+    // load if is file but no dir loaded
+    if (!isDir(path) && dir.path === "") {
+        return true
     }
-    */
-    return true;
+    return false
 }
 
+function dirPath(path: string): string {
+    if (isDir(path)) {
+        return path;
+    }
+    return dirname(path)
+}
+
+function isActiveTarget(targets: Targets, path: string): boolean {
+    return targets && path === targets.active;
+}
+
+/*
 function isNewDir(path: string, dirPath: string): boolean {
     if (path === dirPath) {
         return false
@@ -169,7 +151,24 @@ function isNewDir(path: string, dirPath: string): boolean {
     return true;
 }
 
-function isActiveTarget(targets: Targets, path: string): boolean {
-    return targets && path === targets.active;
-}
+function shouldLoad(
+        /*
+    if (!isNewDir(path, dir.path)) {
+        return false
+    }
 
+    if (isPresentPath(dir.main.files, path)) {
+        return false
+    }
+    */
+    /*
+    if (isText(path) && !isPresentPath(dir.main.files, path)) {
+        return true
+    }
+
+    if (isText(path) && dir.path && dir.path !== "") {
+        return false;
+    }
+    return true;
+)
+    */

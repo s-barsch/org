@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { errObj } from 'context/err';
+import React, { useState, useEffect, useContext } from 'react';
+import { ErrContext } from 'context/err';
 
 function StatusBox() {
     return <span className="errbox"></span>
 }
 
-export function ErrComponent({err}: {err: errObj}) {
+export function ErrComponent() {
+    const { err } = useContext(ErrContext);
     const [status, setStatus] = useState(err.code);
 
     useEffect(() => {

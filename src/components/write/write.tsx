@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Head from 'components/head/main';
 import TextField from 'components/view/files/text';
 import { newTimestamp, timestampDir } from 'funcs/paths';
@@ -6,30 +6,27 @@ import File, { newFileDir } from 'funcs/files';
 import Nav from 'components/nav/main';
 import { join } from 'path';
 import { writeRequest } from 'components/view/requests';
-import { useHistory } from 'react-router';
-import { ErrContext } from 'context/err';
+//import { ErrContext } from 'context/err';
+import { useNavigate } from 'react-router';
+import { errObj } from 'context/err';
 
 export default function New() {
-    let { setErr } = useContext(ErrContext);
+    //let { setErr } = useContext(ErrContext);
     const text = newFileDir(getTodayPath());
-    const history = useHistory();
+    const navigate = useNavigate();
 
     async function writeFile(f: File) {
-        await writeRequest(f.path, f.body, setErr);
-        history.push(f.path)
+        await writeRequest(f.path, f.body, (err: errObj) => {});
+        navigate(f.path)
     }
 
     return (
         <>
             <Nav path={text.path} />
-            <Head path={text.path} disabled={true} renameFn={renameFn} />
+            <Head path={text.path} disabled={true} renameFn={(name: string) => {}} />
             <TextField file={text} writeText={writeFile} isSingle={true} />
         </>
     )
-}
-
-function renameFn(name: string) {
-    return;
 }
 
 function getTodayPath(): string {

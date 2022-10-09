@@ -1,10 +1,10 @@
 import React from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 
 export default function AddInfo({ mainFilePath }: {mainFilePath: string}) {
-    const history = useHistory();
+    const navigate = useNavigate();
     function submit() {
-        history.push(mainFilePath + ".info");
+        navigate(mainFilePath + ".info");
     }
     return (
         <div>
