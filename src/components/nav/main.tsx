@@ -12,6 +12,7 @@ import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
 import { ErrComponent } from 'components/nav/error';
 import Config from 'config';
+import { ErrContext } from 'context/err';
 
 type NavProps = {
     path: string;
@@ -30,6 +31,7 @@ function newNavMeta() {
 }
 
 export default function Nav({path}: NavProps) {
+    const { err } = useContext(ErrContext);
     const { targets, saveTargets } = useContext(TargetsContext);
 
     /* theme */
@@ -96,7 +98,7 @@ export default function Nav({path}: NavProps) {
                 <LinkList links={Config.links} active="" />
             </span>
             <span className="right">
-                <ErrComponent />
+                <ErrComponent err={err} />
                 <TargetButton clickFn={setThisActive} />
                 <button onClick={toggleTheme} ><ThemeIcon /></button>
                 <Del file={viewFile} deleteFile={deleteDir} />

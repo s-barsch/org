@@ -1,20 +1,22 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { ErrContext } from 'context/err';
+import React, { useState, useEffect } from 'react';
+import { errObj } from 'context/err';
 
 function StatusBox() {
     return <span className="errbox"></span>
 }
 
-export function ErrComponent() {
-    const { err } = useContext(ErrContext);
+export function ErrComponent({err}: {err: errObj}) {
     const [status, setStatus] = useState(err.code);
+    let timeout: NodeJS.Timeout = setTimeout(() => {});
 
     useEffect(() => {
-        setStatus(err.code);
-    }, [err]);
+        return () => {
+            clearTimeout(timeout)
+        }
+    }, [timeout]);
 
     if (err.code === 200) {
-        setTimeout(() => {
+        timeout = setTimeout(() => {
             setStatus(0);
         }, 750);
     }
