@@ -111,10 +111,10 @@ function ViewLoader() {
     if (status !== "") {
         return (
             <>
-            <Nav path={path} />
-            <br />
-            <code>{status}</code>
-        </>
+                <Nav path={path} />
+                <br />
+                <code>{status}</code>
+            </>
         );
     }
 

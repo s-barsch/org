@@ -3,7 +3,7 @@ import DeleteIcon from '@material-ui/icons/ClearSharp';
 import { basename, dirname, join } from 'path';
 import File from 'funcs/files';
 import { modFuncsObj } from 'components/view/main';
-import { copyRequest } from '../requests';
+import { copyRequest } from '../../../funcs/requests';
 import { ErrContext } from 'context/err';
 import { TargetsContext } from 'context/targets';
 import FileName from './filename';

@@ -5,7 +5,7 @@ import { newTimestamp, timestampDir } from 'funcs/paths';
 import File, { newFileDir } from 'funcs/files';
 import Nav from 'components/nav/main';
 import { join } from 'path';
-import { writeRequest } from 'components/view/requests';
+import { writeRequest } from 'funcs/requests';
 import { ErrContext } from 'context/err';
 import { useNavigate } from 'react-router';
 import { errObj } from 'context/err';

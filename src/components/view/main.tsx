@@ -8,7 +8,7 @@ import { dirContents } from 'app';
 import File, { newFileDir, merge, insertNewDir, renameText, insertDuplicateFile,
     insertNewFile, createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
-    deleteRequest } from './requests';
+    deleteRequest } from '../../funcs/requests';
 import TextView from 'components/view/views/text';
 import DirView from 'components/view/views/dir';
 import { ErrContext } from 'context/err';
@@ -60,7 +60,6 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
             return <DirView path={path} files={files} renameView={renameView}
             addNewDir={addNewDir} saveSort={saveSort} modFuncs={modFuncs} />
     }
-
 
     function update(newFiles: File[], isSorted: boolean) {
         setDir({
@@ -124,14 +123,15 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
             return;
         }
 
-        update(insertDuplicateFile(files.slice(), f, newF, sorted), sorted);
+        const newFiles = insertDuplicateFile(files.slice(), f, newF, sorted)
+        update(newFiles, sorted);
         writeRequest(newF.path, newF.body, setErr);
     }
 
     // meta
-    function moveFile(f: File, newPath: string) {
+    async function moveFile(f: File, newPath: string) {
+        await moveRequest(f.path, newPath, setErr);
         update(removeFromArr(files.slice(), f.name), sorted);
-        moveRequest(f.path, newPath, setErr);
     }
 
     // meta
@@ -140,11 +140,11 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
     }
 
     // meta, nav
-    function deleteFile(f: File) {
+    async function deleteFile(f: File) {
         if (f.name === ".sort") {
             sorted = false;
         }
-        deleteRequest(f.path, setErr);
+        await deleteRequest(f.path, setErr);
         update(removeFromArr(files.slice(), f.name), sorted);
     }
 
