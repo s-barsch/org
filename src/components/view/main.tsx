@@ -14,14 +14,12 @@ import { ErrContext } from 'context/err';
 import MediaView from './views/media';
 
 export type modFuncsObj = {
+    createFile: () => void;
     writeFile: (f: File) => void;
     duplicateFile: (f: File) => void;
     deleteFile: (f: File) => void;
-
     moveFile: (f: File, newPath: string) => void;
     renameFile: (oldPath: string, f: File) => void;
-
-    createFile: () => void;
 }
 
 type ViewProps = {
@@ -38,12 +36,12 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
     const navigate = useNavigate();
 
     const modFuncs: modFuncsObj = {
+        createFile:  createFile,
         writeFile:      writeFile,
         deleteFile:     deleteFile,
         moveFile:       moveFile,
         renameFile:     renameFile,
         duplicateFile:  duplicateFile,
-        createFile:  createFile,
     }
 
     switch (fileType(path)) {

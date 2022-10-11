@@ -7,19 +7,20 @@ function StatusBox() {
 
 export function ErrComponent({err}: {err: errObj}) {
     const [status, setStatus] = useState(err.code);
-    let timeout: NodeJS.Timeout = setTimeout(() => {});
 
     useEffect(() => {
-        return () => {
-            clearTimeout(timeout)
-        }
-    }, [timeout]);
+        let timer: NodeJS.Timeout = setTimeout(() => { });
 
-    if (err.code === 200) {
-        timeout = setTimeout(() => {
-            setStatus(0);
-        }, 750);
-    }
+        if (err.code === 200) {
+            timer = setTimeout(() => {
+                setStatus(0);
+            }, 750);
+        }
+
+        return () => {
+            clearTimeout(timer)
+        }
+    }, [err]);
 
     switch (status) {
         case 0:
