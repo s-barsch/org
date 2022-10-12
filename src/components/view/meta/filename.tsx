@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
 import { modFuncsObj } from '../main';
 import File from 'funcs/files';
-import { join, dirname } from 'path';
+import { join, dirname } from 'path-browserify';
 
 export default function FileName({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
     const [edit, setEdit] = useState(false);

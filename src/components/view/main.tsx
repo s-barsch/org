@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { basename, dirname, join } from 'path';
+import { basename, dirname, join } from 'path-browserify';
 import { isText, fileType } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
 import { dirContents } from 'app';

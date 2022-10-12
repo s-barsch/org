@@ -5,7 +5,7 @@ import TextField from 'components/view/files/text';
 import File, { newFile } from 'funcs/files';
 
 import { modFuncsObj } from 'components/view/main';
-import { basename } from 'path';
+import { basename } from 'path-browserify';
 
 type TextViewProps = {
     path: string;

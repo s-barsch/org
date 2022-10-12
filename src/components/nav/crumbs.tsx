@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { basename } from 'path';
+import { basename } from 'path-browserify';
 import { TargetsContext } from 'context/targets';
 import { isText } from 'funcs/paths';
 import File from 'funcs/files';

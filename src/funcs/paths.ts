@@ -1,4 +1,4 @@
-import { basename, extname, dirname, join } from 'path';
+import { basename, extname, dirname, join } from 'path-browserify';
 
 /* date */
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { dirname } from 'path';
+import { dirname } from 'path-browserify';
 import { orgBase } from 'funcs/paths';
 type HeadProps = {
     path: string;

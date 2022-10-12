@@ -1,6 +1,6 @@
 import React, {useContext } from 'react';
 import DeleteIcon from '@material-ui/icons/ClearSharp';
-import { basename, dirname, join } from 'path';
+import { basename, dirname, join } from 'path-browserify';
 import File from 'funcs/files';
 import { modFuncsObj } from 'components/view/main';
 import { copyRequest } from '../../../funcs/requests';

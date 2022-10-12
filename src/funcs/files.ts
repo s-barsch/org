@@ -1,5 +1,5 @@
 import { newTimestamp } from './paths';
-import { basename, extname, dirname, join } from 'path';
+import { basename, extname, dirname, join } from 'path-browserify';
 import { orgSort } from 'funcs/sort';
 
 type File = {

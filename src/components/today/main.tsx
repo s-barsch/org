@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { newTimestamp, timestampDir } from "funcs/paths";
-import { join } from "path";
+import { join } from 'path-browserify';
 
 export default function Today(){
     const path = useLocation().pathname;

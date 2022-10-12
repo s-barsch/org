@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReverseIcon from '@material-ui/icons/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
-import { basename } from 'path';
+import { basename } from 'path-browserify';
 import File from 'funcs/files';
 import { modFuncsObj } from 'components/view/main';
 import { setActiveTarget } from 'funcs/targets';

@@ -6,7 +6,7 @@ import Image from '../files/image';
 import Video from '../files/video';
 
 import { modFuncsObj } from 'components/view/main';
-import { basename } from 'path';
+import { basename } from 'path-browserify';
 
 type TextViewProps = {
     path: string;

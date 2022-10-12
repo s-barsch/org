@@ -4,7 +4,7 @@ import TextField from 'components/view/files/text';
 import { newTimestamp, timestampDir } from 'funcs/paths';
 import File, { newFileDir } from 'funcs/files';
 import Nav from 'components/nav/main';
-import { join } from 'path';
+import { join } from 'path-browserify';
 import { writeRequest } from 'funcs/requests';
 import { ErrContext } from 'context/err';
 import { useNavigate } from 'react-router';
