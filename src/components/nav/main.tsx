@@ -18,10 +18,12 @@ type NavProps = {
     path: string;
 }
 
+/*
 type NavMeta = {
     switcher: string;
     siblings: File[];
 }
+*/
 
 function newNavMeta() {
     return {
