@@ -77,4 +77,4 @@ func (e *Err) Error() string {
 	return fmt.Sprintf("%v: %v (%d)\npath: %v", e.Func, e.Err.Error(), e.Code, e.Path)
 }
 
-var ROOT = "org"
+var ROOT = "data"

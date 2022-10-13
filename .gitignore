@@ -24,6 +24,7 @@ yarn-error.log*
 
 
 org
+data
 live
 test
 
@@ -31,3 +32,4 @@ config.yaml
 buildtemp
 server-bin
 server/server
+server/install
