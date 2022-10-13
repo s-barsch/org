@@ -2,7 +2,7 @@
 
 File organization app
 
-<img src="https://stefba.com/org.jpg" alt="ORG screenshot">
+<img src="https://stefba.com/org.jpg?v=2" alt="ORG screenshot">
 
 ### Installation
 
