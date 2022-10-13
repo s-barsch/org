@@ -21,7 +21,6 @@ function request(path: string, options: reqOptions, err: errObj, setErr: setErrF
             }
             setErr(err);
             reject(err);
-            return;
         }
         err.code = 200;
         setErr(err);

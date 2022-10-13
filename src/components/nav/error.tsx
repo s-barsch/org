@@ -9,6 +9,8 @@ export function ErrComponent({err}: {err: errObj}) {
     const [status, setStatus] = useState(err.code);
 
     useEffect(() => {
+        setStatus(err.code)
+
         let timer: NodeJS.Timeout = setTimeout(() => { });
 
         if (err.code === 200) {
@@ -22,9 +24,10 @@ export function ErrComponent({err}: {err: errObj}) {
         }
     }, [err]);
 
+
     switch (status) {
         case 0:
-            return null
+            return null;
         case 200:
             return <span className="success"><StatusBox /></span>
         default:
