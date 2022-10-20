@@ -4,14 +4,15 @@ import { basename, dirname, join } from 'path-browserify';
 import { isText, fileType } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
 import { dirContents } from 'app';
-import File, { newFileDir, merge, insertNewDir, renameText, insertDuplicateFile,
-    insertNewFile, createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
+import File, { merge, insertNewDir, renameText, insertDuplicateFile,
+    createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
     deleteRequest } from '../../funcs/requests';
 import TextView from 'components/view/views/text';
 import DirView from 'components/view/views/dir';
 import { ErrContext } from 'context/err';
 import MediaView from './views/media';
+import { newTimestamp } from 'funcs/paths';
 
 export type modFuncsObj = {
     createFile: () => void;
@@ -139,11 +140,8 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
     // text, dir view
     function createFile() {
         const dirPath = isText(path) ? dirname(path) : path;
-        const newFile = newFileDir(dirPath);
-        const newFiles = insertNewFile(files.slice(), newFile, sorted);
-
-        update(newFiles, sorted);
-        navigate(newFile.path);
+        const filePath = join(dirPath, newTimestamp() + ".txt")
+        navigate(filePath);
     }
 
     // list view

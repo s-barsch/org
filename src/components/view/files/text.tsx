@@ -29,11 +29,11 @@ export default function TextField({file, writeText, createFile, isSingle}: TextF
     }
 
     function checkSubmit(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-        if (e.ctrlKey && e.key === "Enter" && createFile !== undefined) {
+        if (e.ctrlKey && e.key === "Enter") {
             submit(e);
-            //const newFile = createFile === undefined ? () => {} : createFile;
-            createFile();
+            if (createFile) createFile();
         }
+
     }
 
     function submit(e: React.FormEvent<HTMLTextAreaElement>) {
