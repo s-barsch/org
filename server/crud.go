@@ -372,6 +372,12 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 	body = removeMultipleNewLines(body)
 	body = addNewLine(body)
 
+	err = checkTodayPath(path)
+	if err != nil {
+		e.Err = err
+		return e
+	}
+
 	err = ioutil.WriteFile(ROOT+path, body, 0664)
 	if err != nil {
 		e.Err = err
@@ -380,5 +386,18 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 
 	log.Printf("writeFile:\n{%s}\n", body)
 
+	return nil
+}
+
+func checkTodayPath(path string) error {
+	if today := todayPath(); p.Dir(path) == today {
+		_, err := os.Stat(today)
+		if err != nil {
+			_, err = makeToday()
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }

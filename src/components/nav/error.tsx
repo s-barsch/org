@@ -24,7 +24,6 @@ export function ErrComponent({err}: {err: errObj}) {
         }
     }, [err]);
 
-
     switch (status) {
         case 0:
             return null;

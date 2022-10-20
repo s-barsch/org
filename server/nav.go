@@ -29,6 +29,7 @@ func viewNav(w http.ResponseWriter, r *http.Request) *Err {
 	nav, err := getNav(path)
 	if err != nil {
 		e.Err = err
+		e.Code = 404
 		return e
 	}
 

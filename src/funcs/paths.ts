@@ -3,9 +3,14 @@ import { basename, extname, dirname, join } from 'path-browserify';
 /* date */
 
 export function timestampDir(ts: string): string {
-    const year = ts.substr(0, 2),
-    month = ts.substr(2, 2),
-    day = ts.substr(4, 2);
+    const year = ts.substr(0, 2);
+    const month = ts.substr(2, 2);
+    let day = ts.substr(4, 2);
+    const hour = ts.substr(7, 2);
+
+    if (parseInt(hour) < 6) {
+        day = leadingZero(parseInt(day) - 1);
+    }
 
     return join(year, year + "-" + month, day);
 }

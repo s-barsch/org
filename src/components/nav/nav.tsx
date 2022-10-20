@@ -64,7 +64,9 @@ export default function Nav({path}: NavProps) {
     useEffect(() => {
         async function fetchNav() {
             const resp = await fetch('/api/nav' + path);
-            setMeta(await resp.json());
+            if (resp.ok) {
+                setMeta(await resp.json());
+            }
         }
         fetchNav();
     }, [path]);

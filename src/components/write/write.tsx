@@ -3,7 +3,7 @@ import Head from 'components/head/main';
 import TextField from 'components/view/files/text';
 import { newTimestamp, timestampDir } from 'funcs/paths';
 import File, { newFileDir } from 'funcs/files';
-import Nav from 'components/nav/main';
+import Nav from 'components/nav/nav';
 import { join } from 'path-browserify';
 import { writeRequest } from 'funcs/requests';
 import { ErrContext } from 'context/err';
@@ -17,7 +17,7 @@ export default function New() {
 
     function handleErr(err: errObj) {
         if (err.code !== 200) {
-            setErr(err)
+            setErr(err);
             return;
         }
     }
@@ -30,7 +30,7 @@ export default function New() {
     return (
         <>
             <Nav path={text.path} />
-            <Head path={text.path} disabled={true} renameFn={(name: string) => {}} />
+            <Head path={text.path} disabled={true} isNew={true} renameFn={(name: string) => {}} />
             <TextField file={text} writeText={writeFile} isSingle={true} />
         </>
     )

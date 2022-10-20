@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { newView } from "app";
 import { SearchView } from "./view";
-import Nav from "components/nav/main";
+import Nav from "components/nav/nav";
 
 export default function Search() {
     const path = useLocation().pathname;
