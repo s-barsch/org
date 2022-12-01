@@ -1,43 +1,15 @@
-import React, { useContext } from 'react';
-import Head from 'components/head/main';
-import TextField from 'components/view/files/text';
-import { newTimestamp, timestampDir } from 'funcs/paths';
-import File, { newFileDir } from 'funcs/files';
-import Nav from 'components/nav/nav';
-import { join } from 'path-browserify';
-import { writeRequest } from 'funcs/requests';
-import { ErrContext } from 'context/err';
-import { useNavigate } from 'react-router';
-import { errObj } from 'context/err';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { newTimestamp, timestampDir } from "funcs/paths";
+import { join } from "path-browserify";
 
-export default function New() {
-    let { setErr } = useContext(ErrContext);
-    const text = newFileDir(getTodayPath());
+export default function Write(){
     const navigate = useNavigate();
-
-    function handleErr(err: errObj) {
-        if (err.code !== 200) {
-            setErr(err);
-            return;
-        }
-    }
-
-    async function writeFile(f: File) {
-        await writeRequest(f.path, f.body, handleErr);
-        navigate(f.path)
-    }
-
-    return (
-        <>
-            <Nav path={text.path} />
-            <Head path={text.path} disabled={true} isNew={true} renameFn={(name: string) => {}} />
-            <TextField file={text} writeText={writeFile} isSingle={true} />
-        </>
-    )
-}
-
-function getTodayPath(): string {
-    const ts = newTimestamp();
-    const tsDir = timestampDir(ts);
-    return join("/private/graph", tsDir);
+    useEffect(() => {
+        fetch("/api/today");
+        const ts = newTimestamp();
+        const path = join("/private/graph", timestampDir(ts), ts + ".txt");
+        navigate(path)
+    }, [navigate])
+    return <></>;
 }

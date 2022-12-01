@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate } from "react-router";
 import { newTimestamp, timestampDir } from "funcs/paths";
 import { join } from 'path-browserify';
 
 export default function Today(){
-    const path = useLocation().pathname;
     const navigate = useNavigate();
     useEffect(() => {
         async function todayRedirect() {
@@ -13,6 +12,6 @@ export default function Today(){
             navigate(path);
         }
         todayRedirect();
-    }, [navigate, path])
+    }, [navigate])
     return <></>;
 }
