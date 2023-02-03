@@ -11,6 +11,7 @@ div[tabindex="-1"]:focus {
     --color-bg: white;
     --color-a: blue;
     --color-textarea: #eee;
+    --font-monospace: 'DejaVu Sans Mono', monospace;
 }
 
 [data-theme="dark"] {
@@ -35,6 +36,7 @@ input,
 textarea {
     font-size:1.5rem;
     line-height:1.4;
+    font-family: var(--font-monospace);
 }
 
 a {
@@ -53,7 +55,7 @@ a {
 .name,
 .crumbs,
 .filename {
-    font-family:monospace;
+    font-family:var(--font-monospace);
 }
 
 h1 {
@@ -65,7 +67,7 @@ h1 {
 h1 input {
     line-height:1.15;
     font-size:4.5rem;
-    font-family:monospace;
+    font-family:var(--font-monospace);
     background:transparent;
     color:var(--color-fg);
     vertical-align:bottom;
@@ -92,7 +94,7 @@ h1 input {
     border:none;
     outline:none;
     //font-weight:bold;
-    font-family:monospace;
+    font-family:var(--font-monospace);
     font-size:1.5rem;
     background:#ffff00;
     color:black;
@@ -100,7 +102,7 @@ h1 input {
 
 .add-text {
     font-size:1.5rem;
-    font-family:monospace;
+    font-family:var(--font-monospace);
     //border-radius:5px;
     //border-color:black;
     padding:.375rem .5rem;
@@ -111,7 +113,7 @@ h1 input {
 
 .add-info {
     font-size:1.25rem;
-    font-family:monospace;
+    font-family:var(--font-monospace);
     padding:.375rem .5rem;
     margin:.25rem 0 1rem;
     background:#6e00b5;
@@ -197,7 +199,7 @@ img {
 #siblings a,
 #links a {
     margin-right:.75rem;
-    font-family:monospace;
+    font-family:var(--font-monospace);
 }
 
 #targets a {
@@ -321,7 +323,7 @@ button {
 .info input,
 .info {
     font-size:1.25rem;
-    font-family:monospace;
+    font-family:var(--font-monospace);
 }
 
 .info__edit svg {
