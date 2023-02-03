@@ -8,6 +8,7 @@ File organization app
 
 Create production built:
 
+`yarn install`
 `yarn build`
 
 Create directory for your files:
