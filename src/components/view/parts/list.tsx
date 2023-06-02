@@ -10,6 +10,8 @@ import { TargetsContext } from 'context/targets';
 import { separate } from 'funcs/sort';
 import { FileSwitch } from 'components/view/parts/switch'
 import { Meta } from '../meta/main';
+import Sortable from 'sortablejs';
+import { flushSync } from 'react-dom';
 
 type FileListProps = {
     files: File[];
@@ -18,7 +20,7 @@ type FileListProps = {
 }
 
 export function FileList({files, saveSort, modFuncs}: FileListProps) {
-    const [state, setState] = useState(files);
+    const [state, setState] = useState<File[]>(files);
 
     useEffect(() => {
         setState(files);
@@ -29,23 +31,33 @@ export function FileList({files, saveSort, modFuncs}: FileListProps) {
         saveSort(reverse, "files");
     }
 
-    const callOnEnd = () => {
-        saveSort(state, "files");
-    };
+    const setFn = (newState: File[], sortable: Sortable | null) => {
+        if (sortable) {
+            flushSync(() => setState(newState))
+        } else {
+            setState(newState)
+        }
+    }
+
+    const endFn = () => {
+        console.log(state);
+        saveSort(state, "files")
+    }
 
     if (!files || files.length === 0) {
         return null
     }
+
     // filter=".no-sort"
     return (
         <>
             <span className="right">
                 <button onClick={reverseFiles}><ReverseIcon /></button>
             </span>
-            <ReactSortable 
+            <ReactSortable
                 handle=".info__drag" 
-                onEnd={callOnEnd}
-                animation={200} list={state} setList={setState}>
+                onEnd={endFn}
+                animation={200} list={state} setList={setFn}>
 
                     { state.map((file, i) => (
                         <div key={file.id}>

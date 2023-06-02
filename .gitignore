@@ -34,3 +34,4 @@ buildtemp
 server-bin
 server/server
 server/install
+err.log
