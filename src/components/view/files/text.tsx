@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 import File from 'funcs/files';
 
 type TextFieldProps = {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import ThemeIcon from '@material-ui/icons/WbSunnySharp';
-import TargetIcon from '@material-ui/icons/VerticalAlignBottom';
+import ThemeIcon from '@mui/icons-material/WbSunnySharp';
+import TargetIcon from '@mui/icons-material/VerticalAlignBottom';
 import { basename, dirname } from 'path-browserify';
 import CrumbNav from 'components/nav/crumbs';
 import { Del } from 'components/view/meta/main';

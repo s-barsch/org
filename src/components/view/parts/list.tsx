@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import ReverseIcon from '@material-ui/icons/SwapVert';
+import ReverseIcon from '@mui/icons-material/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
 import { basename } from 'path-browserify';
 import File from 'funcs/files';
