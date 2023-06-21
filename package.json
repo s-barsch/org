@@ -23,7 +23,6 @@
     "react-dom": "^18.2.0",
     "react-hotkeys": "^2.0.0",
     "react-router-dom": "^6.4.2",
-    "react-scripts": "^5.0.1",
     "react-sortablejs": "^6.1.4",
     "react-textarea-autosize": "^8.2.0",
     "sortablejs": "^1.15.0",
@@ -56,6 +55,7 @@
     "@types/path-browserify": "^1.0.0",
     "@types/sortablejs": "^1.15.1",
     "@types/testing-library__jest-dom": "^5.14.6",
+    "react-scripts": "^5.0.1",
     "sass": "^1.54.9"
   }
 }
