@@ -50,7 +50,7 @@ export function orgSort(unsort: File[]): File[] {
     let d = divide(unsort)
 
     d.dirs.sort(sortFn);
-    d.files.sort(sortFn).reverse();
+    d.files.sort(sortFn);
 
     return joinDivided(d);
 }

@@ -144,7 +144,7 @@ func antoSort(all []*File) []*File {
 	dirs, files := divide(all)
 
 	sort.Sort(Asc(dirs))
-	sort.Sort(sort.Reverse(Asc(files)))
+	sort.Sort(Asc(files))
 
 	return append(dirs, files...)
 }
