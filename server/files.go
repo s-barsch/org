@@ -119,8 +119,7 @@ func printFiles(files []*File) {
 	}
 }
 
-func divide(all []*File) (dirs, files []*File) {
-	info := []*File{}
+func divide(all []*File) (dirs, info, files []*File) {
 	sort := []*File{}
 	for _, f := range all {
 		if f.Type == "dir" {
@@ -137,21 +136,21 @@ func divide(all []*File) (dirs, files []*File) {
 		}
 		files = append(files, f)
 	}
-	return dirs, append(info, append(files, sort...)...)
+	return dirs, info, append(files, sort...)
 }
 
 func antoSort(all []*File) []*File {
-	dirs, files := divide(all)
+	dirs, info, files := divide(all)
 
 	sort.Sort(Asc(dirs))
 	sort.Sort(Asc(files))
 
-	return append(dirs, files...)
+	return append(dirs, append(info, files...)...)
 }
 
 func separate(all []*File) []*File {
-	dirs, files := divide(all)
-	return append(dirs, files...)
+	dirs, info, files := divide(all)
+	return append(dirs, append(info, files...)...)
 }
 
 func hasFile(files []*File, path string) bool {
