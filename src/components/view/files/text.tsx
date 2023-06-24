@@ -33,7 +33,10 @@ export default function TextField({file, writeText, createFile, isSingle}: TextF
             submit(e);
             if (createFile) createFile();
         }
-
+        if (e.ctrlKey && e.key === "s") {
+            e.preventDefault();
+            submit(e);
+        }
     }
 
     function submit(e: React.FormEvent<HTMLTextAreaElement>) {
@@ -50,7 +53,7 @@ export default function TextField({file, writeText, createFile, isSingle}: TextF
                 className="text-field"
                 ref={ref}
                 minRows={!isSingle ? 1 : fullScreenRows()}
-                onKeyPress={checkSubmit}
+                onKeyDown={checkSubmit}
                 onChange={handleTyping}
                 onBlur={submit} />
         </div>
