@@ -45,7 +45,7 @@ func viewNav(w http.ResponseWriter, r *http.Request) *Err {
 func getNav(path string) (*Nav, error) {
 	siblings := []*File{}
 
-	if strings.Count(path, "/") >= 4 {
+	if strings.Count(path, "/") >= 2 {
 		s, err := getSiblings(path)
 		if err != nil {
 			return nil, err
