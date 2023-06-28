@@ -100,10 +100,14 @@ func readFiles(path string) ([]*File, error) {
 func preSort(files []*File) []*File {
 	nu := []*File{}
 	for _, f := range files {
+		base := p.Base(f.Path)
 		if p.Ext(f.Path) == ".info" && hasFile(files, stripExt(f.Path)) {
 			continue
 		}
-		if p.Base(f.Path) == "info" {
+		if base == ".DS_Store" {
+			continue
+		}
+		if base == "info" {
 			nu = append([]*File{f}, nu...)
 			continue
 		}
