@@ -1,4 +1,4 @@
-import { isTimestamp, dateToTimestamp, newTimestamp, splitTimestamp, timestampToDate } from './paths';
+import { isTimestamp, dateToTimestamp, newTimestamp, timestampToDate } from './paths';
 import { basename, extname, dirname, join } from 'path-browserify';
 import { orgSort } from 'funcs/sort';
 
