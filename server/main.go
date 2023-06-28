@@ -10,10 +10,7 @@ import (
 )
 
 func main() {
-	err := loadIndex(ROOT)
-	if err != nil {
-		log.Fatal(err)
-	}
+	go loadIndex(ROOT)
 
 	http.Handle("/", routes())
 	http.ListenAndServe(":8334", nil)
@@ -37,6 +34,8 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
 	r.PathPrefix("/api/search").HandlerFunc(h(search))
 
+	r.PathPrefix("/rl/").HandlerFunc(reloadIndex)
+
 	r.PathPrefix("/").HandlerFunc(serveBuild)
 
 	return r
@@ -54,6 +53,13 @@ func serveBuild(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	http.ServeFile(w, r, BUILD+"/index.html")
+}
+
+func reloadIndex(w http.ResponseWriter, r *http.Request) {
+	err := loadIndex(ROOT)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+	}
 }
 
 func h(fn func(http.ResponseWriter, *http.Request) *Err) http.HandlerFunc {
