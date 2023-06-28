@@ -28,13 +28,17 @@ export function FileSwitch({file}: {file: File}) {
 }
 
 export function Meta({file}: {file: File}) {
-    return <Link className="info__name" to={file.path}>{file.name}</Link>
+    return  (
+        <div className="info">
+            <Link className="info__name" to={file.path}>{file.name}</Link>
+        </div>
+    )
 }
 
 export default function Text({file}: {file: File}) {
     return (
-        <div className={"text"}>
-            <code className="text-field">{file.body}</code>
+        <div className={"text text-field"}>
+            {file.body}
         </div>
     )
 }
