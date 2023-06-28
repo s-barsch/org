@@ -40,7 +40,6 @@ export function FileList({files, saveSort, modFuncs}: FileListProps) {
     }
 
     const endFn = () => {
-        console.log(state);
         saveSort(state, "files")
     }
 
@@ -55,10 +54,8 @@ export function FileList({files, saveSort, modFuncs}: FileListProps) {
                 <button onClick={reverseFiles}><ReverseIcon /></button>
             </span>
             <ReactSortable
-                handle=".info__drag" 
-                onEnd={endFn}
+                handle=".info__drag" onEnd={endFn}
                 animation={200} list={state} setList={setFn}>
-
                     { state.map((file, i) => (
                         <div key={file.id}>
                         <Meta file={file} modFuncs={modFuncs} />
@@ -97,13 +94,21 @@ export function DirList({dirs, saveSort}: DirListProps) {
         setState(dirs);
     }, [dirs])
 
-    const callOnEnd = () => {
+    const endFn = () => {
         saveSort(state, "dirs");
     };
 
+    const setFn = (newState: File[], sortable: Sortable | null) => {
+        if (sortable) {
+            flushSync(() => setState(newState))
+        } else {
+            setState(newState)
+        }
+    }
+
     return (
-        <ReactSortable className="dirs__list" onEnd={callOnEnd}
-        animation={200} list={state} setList={setState}>
+        <ReactSortable className="dirs__list" onEnd={endFn}
+        animation={200} list={state} setList={setFn}>
         {state.map((dir) => (
             <Dir key={dir.id} dir={dir} />
         ))}
