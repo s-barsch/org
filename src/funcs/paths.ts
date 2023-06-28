@@ -2,17 +2,52 @@ import { basename, extname, dirname, join } from 'path-browserify';
 
 /* date */
 
+type Timestamp = {
+    year: string;
+    month: string;
+    day: string;
+    hour: string;
+    minutes: string;
+    seconds: string;
+}
+
 export function timestampDir(ts: string): string {
-    const year = ts.substr(0, 2);
-    const month = ts.substr(2, 2);
-    let day = ts.substr(4, 2);
-    const hour = ts.substr(7, 2);
+    const t = splitTimestamp(ts)
+    let hour = t.hour;
+    let day = t.day;
 
     if (parseInt(hour) < 6) {
         day = leadingZero(parseInt(day) - 1);
     }
 
-    return join(year, year + "-" + month, day);
+    return join(t.year, t.year + "-" + t.month, day);
+}
+
+export function splitTimestamp(ts: string): Timestamp {
+    return {
+        year: ts.substr(0, 2),
+        month: ts.substr(2, 2),
+        day: ts.substr(4, 2),
+        hour: ts.substr(7, 2),
+        minutes: ts.substr(9, 2),
+        seconds: ts.substr(11, 2) 
+    }
+}
+
+export function timestampToDate(ts: string): Date {
+    const t = splitTimestamp(ts);
+    return new Date(
+        Number(t.year),
+        Number(t.month) - 1,
+        Number(t.day),
+        Number(t.hour),
+        Number(t.minutes),
+        Number(t.seconds),
+        );
+}
+
+export function isTimestamp(name: string): boolean {
+    return name.match("[0-9]{6}_[0-9]{6}.txt") !== null;
 }
 
 export function newTimestamp(): string {

@@ -1,4 +1,4 @@
-import { newTimestamp } from './paths';
+import { isTimestamp, dateToTimestamp, newTimestamp, splitTimestamp, timestampToDate } from './paths';
 import { basename, extname, dirname, join } from 'path-browserify';
 import { orgSort } from 'funcs/sort';
 
@@ -154,6 +154,17 @@ export function createDuplicate(file: File, files: File[]): File {
     let f = Object.assign({}, file);
 
     let name = splitName(f.name);
+    if (isTimestamp(f.name)) {
+        const d = timestampToDate(f.name);
+        d.setSeconds(d.getSeconds() + 10);
+        const newName = dateToTimestamp(d) + name.ext;
+        if (!isPresent(files, newName)) {
+            f.id = d.getTime();
+            f.name = newName;
+            f.path = dirname(f.path )+ '/' + newName;
+            return f;
+        }
+    }
     for (let i = 1; i < 10; i++) {
         const newName = name.trunk + "+" + i + name.ext;
         if (!isPresent(files, newName)) {
