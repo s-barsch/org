@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { basename } from 'path-browserify';
+import { base } from 'funcs/paths'
 import { TargetsContext } from 'context/targets';
 import { isText } from 'funcs/paths';
 import File from 'funcs/files';
@@ -37,7 +37,7 @@ function CrumbNav({path, siblings, switcher}: CrumbNavProps) {
         { text &&
                 <>
                 <Spacer />
-                <CrumbLink href={path} name={basename(path)} className="" isActive={false} />
+                <CrumbLink href={path} name={base(path)} className="" isActive={false} />
                 </>
         }
         </nav>
@@ -77,7 +77,7 @@ function CrumbList({path, switcher, trim}: CrumbListProps) {
             return (
                 <span key={i}>
                 <Spacer />
-                <CrumbLink href={cHref} name={name} className={className} isActive={false} />
+                <CrumbLink href={cHref} name={decodeURI(name)} className={className} isActive={false} />
                 </span>
             )
         })}</>

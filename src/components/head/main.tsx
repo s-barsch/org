@@ -65,7 +65,7 @@ function Rename({path, renameFn, disabled}: HeadProps) {
     return (
         <input type="text" value={name} size={name.length}
             ref={ref} disabled={name === "org" || disabled}
-            onChange={handleTyping} onKeyPress={detectEnter} onBlur={submit} />
+            onChange={handleTyping} onKeyDown={detectEnter} onBlur={submit} />
     )
 }
 

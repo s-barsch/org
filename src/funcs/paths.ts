@@ -46,15 +46,19 @@ export function orgBase(path: string): string {
     if (path === "/") {
         return "org"
     }
-    return basename(path);
+    return base(path);
+}
+
+export function base(path: string): string {
+    return decodeURI(basename(path))
 }
 
 export function extendedBase(path: string): string {
-    const base = orgBase(path);
-    if (base.length > 2 && base !== "bot" && base !== "/") {
-        return base
+    const b = orgBase(path);
+    if (b.length > 2 && b !== "bot" && b !== "/") {
+        return b 
     }
-    return basename(dirname(path)) + "/" + base
+    return base(dirname(path)) + "/" + b
 }
 
 /* section */
