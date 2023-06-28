@@ -26,12 +26,12 @@ export function FileList({files, saveSort, modFuncs}: FileListProps) {
         setState(files);
     }, [files])
 
-    const reverseFiles = () => {
+    function reverseFiles() {
         const reverse = separate(state.slice().reverse());
         saveSort(reverse, "files");
     }
 
-    const setFn = (newState: File[], sortable: Sortable | null) => {
+    function setFn(newState: File[], sortable: Sortable | null) {
         if (sortable) {
             flushSync(() => setState(newState))
         } else {
@@ -39,7 +39,7 @@ export function FileList({files, saveSort, modFuncs}: FileListProps) {
         }
     }
 
-    const endFn = () => {
+    function endFn() {
         saveSort(state, "files")
     }
 
@@ -94,11 +94,11 @@ export function DirList({dirs, saveSort}: DirListProps) {
         setState(dirs);
     }, [dirs])
 
-    const endFn = () => {
+    function endFn() {
         saveSort(state, "dirs");
     };
 
-    const setFn = (newState: File[], sortable: Sortable | null) => {
+    function setFn(newState: File[], sortable: Sortable | null) {
         if (sortable) {
             flushSync(() => setState(newState))
         } else {

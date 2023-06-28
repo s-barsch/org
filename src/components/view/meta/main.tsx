@@ -101,7 +101,7 @@ export function PubButton({file, copyFile}: PubButtonProps) {
     };
 
 
-    const move = () => {
+    function move() {
         const publicPath = file.path.replace("/private", "/public/");
         copyFile(file, publicPath);
         return;
@@ -116,7 +116,7 @@ type DelProps = {
 }
 
 export function Del({file, deleteFile}: DelProps) {
-    const del = () => {
+    function del() {
         if (window.confirm("Delete this " + file.name + "?")) {
             deleteFile(file);
         }
