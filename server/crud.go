@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	p "path/filepath"
@@ -31,7 +30,6 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	fmt.Println(list)
 	/*
 
 		sorted, err := makeFiles(path, list)
@@ -139,9 +137,6 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 		e.Err = err
 		return e
 	}
-
-	println(path)
-	println(newPath)
 
 	// dont like that.
 	err = createBot(newPath)
@@ -384,8 +379,7 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	log.Printf("writeFile:\n{%s}\n", body)
-
+	// log.Printf("writeFile:\n{%s}\n", body)
 	return nil
 }
 
