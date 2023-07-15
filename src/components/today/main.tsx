@@ -7,9 +7,9 @@ export default function Today(){
     const navigate = useNavigate();
     useEffect(() => {
         async function todayRedirect() {
-            fetch("/api/today");
-            const path = join("/private/graph", timestampDir(newTimestamp()));
-            navigate(path);
+            const resp = await fetch("/api/today");
+            const today = await resp.text();
+            navigate(today);
         }
         todayRedirect();
     }, [navigate])

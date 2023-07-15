@@ -6,10 +6,15 @@ import { join } from "path-browserify";
 export default function Write(){
     const navigate = useNavigate();
     useEffect(() => {
-        fetch("/api/today");
-        const ts = newTimestamp();
-        const path = join("/private/graph", timestampDir(ts), ts + ".txt");
-        navigate(path)
+        async function getDate() {
+            const resp = await fetch("/api/today");
+            const today = await resp.text()
+            const ts = newTimestamp();
+            const path = join(today, ts + ".txt");
+            //const path = join("/private/graph", timestampDir(ts), ts + ".txt");
+            navigate(path)
+        }
+        getDate();
     }, [navigate])
     return <></>;
 }
