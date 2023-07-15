@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { newTimestamp, timestampDir } from "funcs/paths";
+import { newTimestamp } from "funcs/paths";
 import { join } from "path-browserify";
 
 export default function Write(){
@@ -11,7 +11,6 @@ export default function Write(){
             const today = await resp.text()
             const ts = newTimestamp();
             const path = join(today, ts + ".txt");
-            //const path = join("/private/graph", timestampDir(ts), ts + ".txt");
             navigate(path)
         }
         getDate();
