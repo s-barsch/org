@@ -58,5 +58,8 @@
     "@types/testing-library__jest-dom": "^5.14.6",
     "react-scripts": "^5.0.1",
     "sass": "^1.54.9"
+  },
+  "resolutions": {
+	
   }
 }
