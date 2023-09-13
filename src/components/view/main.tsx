@@ -12,7 +12,7 @@ import TextView from 'components/view/views/text';
 import DirView from 'components/view/views/dir';
 import { ErrContext } from 'context/err';
 import MediaView from './views/media';
-import { newTimestamp } from 'funcs/paths';
+import { newTimestamp, isDir } from 'funcs/paths';
 
 export type modFuncsObj = {
     createFile: () => void;
@@ -61,7 +61,7 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
             files:  newFiles
         });
 
-        if (isSorted) {
+        if (isSorted && isDir(path)) {
             saveSortRequest(path, newFiles, setErr)
         }
     }

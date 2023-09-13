@@ -14,10 +14,10 @@ import (
 )
 
 func writeSort(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/info"):]
+	path := r.URL.Path[len("/api/sort"):]
 
 	e := &Err{
-		Func: "writeInfo",
+		Func: "writeSort",
 		Path: path,
 		Code: 500,
 	}
