@@ -47,23 +47,16 @@ export default function FileName({file, modFuncs}: {file: File, modFuncs: modFun
 
     return (
         <span className="info__file">
-        <FileLink file={file} isEdit={edit}>
-            <input
-                disabled={edit ? false : true} size={name.length}
-                value={name} className="info__rename"
-                onChange={handleTyping} ref={ref} onBlur={rename}
-            />
-        </FileLink>
+            {!edit ? (
+                <Link className='info__name' to={file.path}>{name}</Link>
+            ) : (
+                <input
+                    disabled={edit ? false : true} size={name.length}
+                    value={name} className="info__rename"
+                    onChange={handleTyping} ref={ref} onBlur={rename}
+                />
+            )}
         <button onClick={toggleEdit} className="info__edit"><EditIcon /></button>
-        <span className="info__type">{file.type}</span>
         </span>
-    )
-}
-
-function FileLink({file, isEdit, children}: {file: File, isEdit: boolean, children: React.ReactNode}) {
-    return (
-        <>
-        { isEdit ? children : <Link className="info__name" to={file.path}>{children}</Link> }
-        </>
     )
 }
