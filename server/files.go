@@ -26,7 +26,7 @@ func NewFile(path string) *File {
 }
 
 func (f *File) Read() error {
-	b, err := ioutil.ReadFile(ROOT + f.Path)
+	b, err := os.ReadFile(ROOT + f.Path)
 	if err != nil {
 		return err
 	}

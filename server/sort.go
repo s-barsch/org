@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	p "path/filepath"
 	"strings"
@@ -43,7 +42,7 @@ func makeFiles(path string, list []string) ([]*File, error) {
 }
 
 func readSort(path string) ([]string, error) {
-	b, err := ioutil.ReadFile(ROOT + path)
+	b, err := os.ReadFile(ROOT + path)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +96,7 @@ func writeSortFile(path string, list []string) error {
 		buf.WriteString("\n")
 	}
 
-	return ioutil.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
+	return os.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
 }
 
 /*
@@ -110,7 +109,7 @@ func writeSortFile(path string, files []*File) error {
 		buf.WriteString("\n")
 	}
 
-	return ioutil.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
+	return os.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
 }
 */
 

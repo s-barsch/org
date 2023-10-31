@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	p "path/filepath"
@@ -95,7 +94,7 @@ func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
 		}
 
 		if fileType(path) == "text" {
-			b, err := ioutil.ReadFile(ROOT + path)
+			b, err := os.ReadFile(ROOT + path)
 			if err != nil {
 				if p.Ext(path) == ".info" {
 					// dummy requests arrive, because of attached info field
@@ -176,5 +175,5 @@ func getNow(w http.ResponseWriter, r *http.Request) *Err {
 func makeNow(today string) (string, error) {
 	t := time.Now()
 	path := p.Join(today, t.Format("060102_150405.txt"))
-	return path, ioutil.WriteFile(ROOT+path, []byte(""), 0644)
+	return path, os.WriteFile(ROOT+path, []byte(""), 0644)
 }

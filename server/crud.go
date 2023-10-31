@@ -115,12 +115,12 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func copyFileFunc(oldpath, newpath string) error {
-	b, err := ioutil.ReadFile(ROOT + oldpath)
+	b, err := os.ReadFile(ROOT + oldpath)
 	if err != nil {
 		return err
 	}
 
-	return ioutil.WriteFile(ROOT+newpath, b, 0644)
+	return os.WriteFile(ROOT+newpath, b, 0644)
 }
 
 func renameFile(w http.ResponseWriter, r *http.Request) *Err {
@@ -287,7 +287,7 @@ func createInfo(path string) error {
 		return nil
 	}
 
-	return ioutil.WriteFile(ROOT+path+"/info", []byte(getInfoText(path)), 0755)
+	return os.WriteFile(ROOT+path+"/info", []byte(getInfoText(path)), 0755)
 }
 
 func getInfoText(path string) string {
@@ -373,7 +373,7 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	err = ioutil.WriteFile(ROOT+path, body, 0664)
+	err = os.WriteFile(ROOT+path, body, 0664)
 	if err != nil {
 		e.Err = err
 		return e
