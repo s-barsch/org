@@ -21,27 +21,43 @@ type Dir struct {
 	Sorted bool    `json:"sorted"`
 }
 
+type Path struct {
+	Rel string
+}
+
+func (p *Path) IsFile() bool {
+	return strings.Contains(p.Rel, ".")
+}
+
+func (p *Path) Abs() string {
+	return ROOT + p.Rel
+}
+
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/view"):]
+	path := &Path{Rel: r.URL.Path[len("/api/view"):]}
 
 	e := &Err{
 		Func: "viewFile",
-		Path: path,
+		Path: path.Rel,
 		Code: 500,
 	}
 
-	if strings.Contains(path, ".") {
-		path = p.Dir(path)
+	dirPath := ""
+
+	if path.IsFile() {
+		dirPath = p.Dir(path.Abs())
+	} else {
+		dirPath = path.Abs()
 	}
 
-	_, err := os.Stat(ROOT + path)
+	_, err := os.Stat(dirPath)
 	if err != nil {
-		e.Err = fmt.Errorf("Not found %v", path)
+		e.Err = fmt.Errorf("Not found %v", dirPath)
 		e.Code = 404
 		return e
 	}
 
-	files, sorted, err := getFiles(path)
+	files, sorted, err := getFiles(dirPath)
 	if err != nil {
 		e.Err = err
 		return e
@@ -52,7 +68,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	v := &DirView{
-		Path: path,
+		Path: dirPath,
 		Dir: &Dir{
 			Files:  files,
 			Sorted: sorted,

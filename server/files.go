@@ -86,6 +86,9 @@ func readFiles(path string) ([]*File, error) {
 	}
 	files := []*File{}
 	for i, fi := range l {
+		if fi.Name() == ".DS_Store" {
+			continue
+		}
 		fpath := p.Join(path, fi.Name())
 		files = append(files, &File{
 			Num:  i,
