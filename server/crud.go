@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	p "path/filepath"
@@ -174,7 +173,7 @@ func deleteBot(path string) error {
 		return nil
 	}
 
-	l, err := ioutil.ReadDir(dir)
+	l, err := os.ReadDir(dir)
 	if err != nil {
 		return err
 	}
@@ -201,7 +200,7 @@ func createBot(path string) error {
 }
 
 func getBodyPath(r *http.Request) (string, error) {
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		return "", err
 	}
@@ -343,7 +342,7 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 		Code: 500,
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		e.Err = err
 		return e

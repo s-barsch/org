@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	p "path/filepath"
 	"sort"
@@ -80,7 +79,7 @@ func renumerate(files []*File) []*File {
 }
 
 func readFiles(path string) ([]*File, error) {
-	l, err := ioutil.ReadDir(p.Join(ROOT, path))
+	l, err := os.ReadDir(p.Join(ROOT, path))
 	if err != nil {
 		return nil, err
 	}
