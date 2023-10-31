@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
+	fp "path/filepath"
 	"strings"
 	"time"
 )
@@ -29,7 +29,7 @@ func (p *Path) IsFile() bool {
 }
 
 func (p *Path) Dir() string {
-	return filepath.Dir(p.Rel)
+	return fp.Dir(p.Rel)
 }
 
 func (p *Path) Abs() string {
@@ -46,7 +46,7 @@ func exists(path string) bool {
 }
 
 func isAll(path string) bool {
-	return filepath.Base(path) == "all"
+	return fp.Base(path) == "all"
 }
 
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
@@ -190,6 +190,6 @@ func getNow(w http.ResponseWriter, r *http.Request) *Err {
 
 func makeNow(today string) (string, error) {
 	t := time.Now()
-	path := filepath.Join(today, t.Format("060102_150405.txt"))
+	path := fp.Join(today, t.Format("060102_150405.txt"))
 	return path, os.WriteFile(ROOT+path, []byte(""), 0644)
 }
