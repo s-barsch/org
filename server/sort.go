@@ -3,12 +3,12 @@ package main
 import (
 	"bytes"
 	"os"
-	p "path/filepath"
+	fp "path/filepath"
 	"strings"
 )
 
-func parseSort(path string) ([]*File, error) {
-	list, err := readSort(p.Join(path, ".sort"))
+func parseSort(path *Path) ([]*File, error) {
+	list, err := readSort(sortFilePath(path.Abs()))
 	if err != nil {
 		return nil, err
 	}
@@ -16,10 +16,10 @@ func parseSort(path string) ([]*File, error) {
 	return makeFiles(path, list)
 }
 
-func makeFiles(path string, list []string) ([]*File, error) {
+func makeFiles(path *Path, list []string) ([]*File, error) {
 	files := []*File{}
 	for i, name := range list {
-		filepath := p.Join(path, name)
+		filepath := fp.Join(path.Rel, name)
 		fi, err := os.Stat(ROOT + filepath)
 		if err != nil {
 			continue
@@ -41,8 +41,8 @@ func makeFiles(path string, list []string) ([]*File, error) {
 	return files, nil
 }
 
-func readSort(path string) ([]string, error) {
-	b, err := os.ReadFile(ROOT + path)
+func readSort(sortFile string) ([]string, error) {
+	b, err := os.ReadFile(sortFile)
 	if err != nil {
 		return nil, err
 	}
@@ -55,20 +55,19 @@ func readSort(path string) ([]string, error) {
 		}
 		list = append(list, name)
 		dupli[name] = true
-		if p.Ext(name) == ".info" {
+		if fp.Ext(name) == ".info" {
 			dupli[stripExt(name)] = true
 		}
 	}
 	return list, nil
 }
 
-func hasSort(path string) bool {
-	return exists(p.Join(ROOT, path, ".sort"))
+func sortFilePath(path string) string {
+	return fp.Join(path, ".sort")
 }
 
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil
+func hasSort(path string) bool {
+	return exists(sortFilePath(path))
 }
 
 func merge(sorted, files []*File) []*File {
@@ -96,7 +95,7 @@ func writeSortFile(path string, list []string) error {
 		buf.WriteString("\n")
 	}
 
-	return os.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
+	return os.WriteFile(fp.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
 }
 
 /*
@@ -109,32 +108,32 @@ func writeSortFile(path string, files []*File) error {
 		buf.WriteString("\n")
 	}
 
-	return os.WriteFile(p.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
+	return os.WriteFile(fp.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
 }
 */
 
 // makes sure file keeps its sorting position
 func renameSortEntry(oldPath, newPath string) error {
-	oldDir := p.Dir(oldPath)
+	oldDir := fp.Dir(oldPath)
 	if !hasSort(oldDir) {
 		return nil
 	}
 
 	// has no sorting position in new directory
-	if newDir := p.Dir(newPath); oldDir != newDir {
+	if newDir := fp.Dir(newPath); oldDir != newDir {
 		return nil
 	}
 
-	list, err := readSort(p.Join(oldDir, ".sort"))
+	list, err := readSort(fp.Join(oldDir, ".sort"))
 	if err != nil {
 		return err
 	}
 
-	oldName := p.Base(oldPath)
+	oldName := fp.Base(oldPath)
 
 	for i, name := range list {
 		if name == oldName {
-			list[i] = p.Base(newPath)
+			list[i] = fp.Base(newPath)
 		}
 	}
 

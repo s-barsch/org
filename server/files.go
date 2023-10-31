@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	p "path/filepath"
+	fp "path/filepath"
 	"sort"
 	"strings"
 )
@@ -18,7 +18,7 @@ type File struct {
 
 func NewFile(path string) *File {
 	return &File{
-		Name: p.Base(path),
+		Name: fp.Base(path),
 		Path: path,
 		Type: fileType(ROOT + path),
 	}
@@ -33,7 +33,7 @@ func (f *File) Read() error {
 	return nil
 }
 
-func getFiles(path string) ([]*File, bool, error) {
+func getFiles(path *Path) ([]*File, bool, error) {
 	files, err := readFiles(path)
 	if err != nil {
 		return nil, false, err
@@ -47,7 +47,7 @@ func getFiles(path string) ([]*File, bool, error) {
 			}
 		}
 	}
-	if !hasSort(path) {
+	if !hasSort(path.Abs()) {
 		return antoSort(files), false, err
 	}
 
@@ -78,8 +78,8 @@ func renumerate(files []*File) []*File {
 	return files
 }
 
-func readFiles(path string) ([]*File, error) {
-	l, err := os.ReadDir(p.Join(ROOT, path))
+func readFiles(path *Path) ([]*File, error) {
+	l, err := os.ReadDir(path.Abs())
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func readFiles(path string) ([]*File, error) {
 		if fi.Name() == ".DS_Store" {
 			continue
 		}
-		fpath := p.Join(path, fi.Name())
+		fpath := fp.Join(path.Rel, fi.Name())
 		files = append(files, &File{
 			Num:  i,
 			Name: fi.Name(),
@@ -102,8 +102,8 @@ func readFiles(path string) ([]*File, error) {
 func preSort(files []*File) []*File {
 	nu := []*File{}
 	for _, f := range files {
-		base := p.Base(f.Path)
-		if p.Ext(f.Path) == ".info" && hasFile(files, stripExt(f.Path)) {
+		base := fp.Base(f.Path)
+		if fp.Ext(f.Path) == ".info" && hasFile(files, stripExt(f.Path)) {
 			continue
 		}
 		if base == ".DS_Store" {
@@ -169,7 +169,7 @@ func hasFile(files []*File, path string) bool {
 }
 
 func stripExt(path string) string {
-	return path[:len(path)-len(p.Ext(path))]
+	return path[:len(path)-len(fp.Ext(path))]
 }
 
 func getFileType(path string, isDir bool) string {
@@ -180,7 +180,7 @@ func getFileType(path string, isDir bool) string {
 }
 
 func fileType(path string) string {
-	switch p.Ext(strings.ToLower(path)) {
+	switch fp.Ext(strings.ToLower(path)) {
 	case ".jpg", ".png", ".gif":
 		return "image"
 	case ".mp4":
@@ -190,7 +190,7 @@ func fileType(path string) string {
 	case ".txt", ".info":
 		return "text"
 	}
-	switch p.Base(path) {
+	switch fp.Base(path) {
 	case "info", ".sort":
 		return "text"
 	}

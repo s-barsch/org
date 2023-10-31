@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
-	p "path/filepath"
+	fp "path/filepath"
 	"strings"
 )
 
@@ -18,11 +18,11 @@ type Nav struct {
 }
 
 func viewNav(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/nav"):]
+	path := &Path{Rel: r.URL.Path[len("/api/nav"):]}
 
 	e := &Err{
 		Func: "viewNav",
-		Path: path,
+		Path: path.Rel,
 		Code: 500,
 	}
 
@@ -42,10 +42,10 @@ func viewNav(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func getNav(path string) (*Nav, error) {
+func getNav(path *Path) (*Nav, error) {
 	siblings := []*File{}
 
-	if strings.Count(path, "/") >= 2 {
+	if strings.Count(path.Rel, "/") >= 2 {
 		s, err := getSiblings(path)
 		if err != nil {
 			return nil, err
@@ -55,12 +55,13 @@ func getNav(path string) (*Nav, error) {
 
 	return &Nav{
 		Siblings: siblings,
-		Switcher: switchPath(path),
+		Switcher: switchPath(path.Rel),
 	}, nil
 }
 
-func getSiblings(path string) ([]*File, error) {
-	files, _, err := getFiles(p.Dir(path))
+func getSiblings(path *Path) ([]*File, error) {
+	parent := &Path{Rel: path.Dir()}
+	files, _, err := getFiles(parent)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +70,7 @@ func getSiblings(path string) ([]*File, error) {
 
 	c := 0
 	for i, f := range files {
-		if f.Path == path {
+		if f.Path == path.Rel {
 			c = i
 			break
 		}
@@ -133,7 +134,7 @@ func findExistent(path string) string {
 	if err == nil {
 		return path
 	}
-	return findExistent(p.Dir(path))
+	return findExistent(fp.Dir(path))
 }
 
 func dirsOnly(files []*File) []*File {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	p "path/filepath"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -28,12 +28,33 @@ func (p *Path) IsFile() bool {
 	return strings.Contains(p.Rel, ".")
 }
 
+func (p *Path) Dir() string {
+	return filepath.Dir(p.Rel)
+}
+
 func (p *Path) Abs() string {
 	return ROOT + p.Rel
 }
 
+func (p *Path) Exists() bool {
+	return exists(p.Abs())
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
+}
+
+func isAll(path string) bool {
+	return filepath.Base(path) == "all"
+}
+
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := &Path{Rel: r.URL.Path[len("/api/view"):]}
+
+	if isAll(path.Rel) {
+		path.Rel = path.Dir()
+	}
 
 	e := &Err{
 		Func: "viewFile",
@@ -41,22 +62,17 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		Code: 500,
 	}
 
-	dirPath := ""
-
 	if path.IsFile() {
-		dirPath = p.Dir(path.Abs())
-	} else {
-		dirPath = path.Abs()
+		path.Rel = path.Dir()
 	}
 
-	_, err := os.Stat(dirPath)
-	if err != nil {
-		e.Err = fmt.Errorf("Not found %v", dirPath)
+	if !path.Exists() {
+		e.Err = fmt.Errorf("Not found %v", path.Rel)
 		e.Code = 404
 		return e
 	}
 
-	files, sorted, err := getFiles(dirPath)
+	files, sorted, err := getFiles(path)
 	if err != nil {
 		e.Err = err
 		return e
@@ -67,7 +83,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	v := &DirView{
-		Path: dirPath,
+		Path: path.Rel,
 		Dir: &Dir{
 			Files:  files,
 			Sorted: sorted,
@@ -174,6 +190,6 @@ func getNow(w http.ResponseWriter, r *http.Request) *Err {
 
 func makeNow(today string) (string, error) {
 	t := time.Now()
-	path := p.Join(today, t.Format("060102_150405.txt"))
+	path := filepath.Join(today, t.Format("060102_150405.txt"))
 	return path, os.WriteFile(ROOT+path, []byte(""), 0644)
 }
