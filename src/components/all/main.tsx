@@ -9,9 +9,8 @@ type AllViewProps = {
 
 export default function All({path, files}: AllViewProps){
     return (
-        <>
-        <br />
+        <section id="files">
         <FileList files={filesOnly(files)} />
-        </>
+        </section>
     );
 }
