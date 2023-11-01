@@ -2,26 +2,14 @@ package fts
 
 import (
 	"io/fs"
+	"org/server/search"
 	"os"
 	"path/filepath"
 )
 
-type File struct {
-	Path string
-	Byte []byte
-}
-
-func (f *File) Name() string {
-	return filepath.Base(f.Path)
-}
-
-func (f *File) String() string {
-	return string(f.Byte)
-}
-
 // root is path of the project. folder is a specified subfolder of that project.
-func ReadFiles(root, folder string) ([]*File, error) {
-	files := []*File{}
+func ReadFiles(root, folder string) ([]*search.File, error) {
+	files := []*search.File{}
 
 	wfn := func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -47,12 +35,12 @@ func ReadFiles(root, folder string) ([]*File, error) {
 	return files, nil
 }
 
-func readFile(root, path string) (*File, error) {
+func readFile(root, path string) (*search.File, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	return &File{
+	return &search.File{
 		Path: path[len(root):],
 		Byte: b,
 	}, nil

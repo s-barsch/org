@@ -42,5 +42,3 @@ func main() {
 	log.Printf("Search found %d documents in %v", len(matchedPaths), time.Since(start))
 }
 */
-
-
