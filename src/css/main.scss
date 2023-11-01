@@ -60,14 +60,21 @@ a {
 
 h1 {
     margin:0 0 1rem;
-    font-weight:normal;
     line-height:5rem;
 }
 
-h1 input {
-    line-height:1.15;
-    font-size:4.5rem;
+h1, h1 input {
+    font-weight:normal;
     font-family:var(--font-monospace);
+}
+
+h1.title,
+h1 input {
+    font-size:4.5rem;
+    line-height:1.15;
+}
+
+h1 input {
     background:transparent;
     color:var(--color-fg);
     vertical-align:bottom;
@@ -350,7 +357,7 @@ a.info__name,
 }
 
 div.text-field {
-    white-space: pre;
+    white-space: pre-wrap;
 }
 
 .text-field {
@@ -419,8 +426,4 @@ div.text-field {
 
 #topics {
     margin:1rem 0 0;
-}
-
-#topics a {
-    color:red;
 }

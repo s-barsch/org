@@ -17,10 +17,10 @@ export default function Topics() {
         }
         loadTopics();
     }, [])
-    console.log(topics)
     return (
         <>
             <Nav path={path} />
+            <h1 className="title">topics</h1>
             <TopicsList topics={topics} />
         </>
     )
@@ -53,6 +53,7 @@ export function Topic() {
     return (
         <>
             <Nav path={path} />
+            <h1 className="title">{topic.path}</h1>
             <section id="files">
             <FileList files={topic.dir.files} />
             </section>
