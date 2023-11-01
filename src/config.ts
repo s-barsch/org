@@ -6,8 +6,8 @@ let Config: config = {
     links: [
     "/topics",
     "/search",
-    "/write",
     "/today",
+    "/write",
     //"/public/graph",
     "/public/kine",
     "/public/about"
