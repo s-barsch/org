@@ -131,6 +131,7 @@ input {
     background:lightyellow;
 }
 
+#topics a,
 #dirs a {
     margin-right:1rem;
     display: inline-block;
@@ -414,4 +415,12 @@ div.text-field {
     height:1rem;
     vertical-align:baseline;
 
+}
+
+#topics {
+    margin:1rem 0 0;
+}
+
+#topics a {
+    color:red;
 }

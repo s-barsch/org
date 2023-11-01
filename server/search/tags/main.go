@@ -29,7 +29,7 @@ func extractTags(text string) []string {
 	for scanner.Scan() {
 		lc := rune(scanner.Text()[len(scanner.Text())-1])
 		if scanner.Text()[0] == '>' && (unicode.IsLetter(lc) || unicode.IsNumber(lc)) {
-			tags = append(tags, scanner.Text())
+			tags = append(tags, scanner.Text()[1:])
 		}
 	}
 	return tags
