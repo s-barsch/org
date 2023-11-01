@@ -10,6 +10,7 @@ import { isDir, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import Write from 'components/write/write';
 import Nav from 'components/nav/nav';
+import All from 'components/all/main'
 import Search from 'components/search/main';
 import File from 'funcs/files';
 import { dirPath } from 'funcs/paths';

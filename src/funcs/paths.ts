@@ -110,6 +110,9 @@ export function isPublic(path: string): boolean {
 }
 
 export function fileType(path: string): string {
+    if (base(path) === "all") {
+        return "all"
+    }
     if (isText(path)) {
         return "text";
     }

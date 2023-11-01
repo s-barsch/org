@@ -33,6 +33,28 @@ func (f *File) Read() error {
 	return nil
 }
 
+func getFilesRecursive(path *Path) ([]*File, error) {
+	l, _, err := getFiles(path)
+	if err != nil {
+		return nil, err
+	}
+	files := []*File{}
+	for _, f := range l {
+		if f.Type == "dir" {
+			dirFiles, err := getFilesRecursive(&Path{Rel: f.Path})
+			if err != nil {
+				return nil, err
+			}
+			files = append(files, dirFiles...)
+		}
+		if isInfoSort(f.Path) {
+			continue
+		}
+		files = append(files, f)
+	}
+	return files, nil
+}
+
 func getFiles(path *Path) ([]*File, bool, error) {
 	files, err := readFiles(path)
 	if err != nil {
@@ -59,16 +81,6 @@ func getFiles(path *Path) ([]*File, bool, error) {
 	fresh := merge(sorted, files)
 
 	return renumerate(fresh), true, nil
-	/*
-		err = writeSortFile(path, freshSort)
-		if err != nil {
-			return nil, err
-		}
-	*/
-
-	/*
-
-	 */
 }
 
 func renumerate(files []*File) []*File {
@@ -190,8 +202,7 @@ func fileType(path string) string {
 	case ".txt", ".info":
 		return "text"
 	}
-	switch fp.Base(path) {
-	case "info", ".sort":
+	if isInfoSort(path) {
 		return "text"
 	}
 	fi, err := os.Stat(ROOT + path)
@@ -202,4 +213,12 @@ func fileType(path string) string {
 		return "dir"
 	}
 	return "file"
+}
+
+func isInfoSort(path string) bool {
+	switch fp.Base(path) {
+	case "info", ".sort":
+		return true
+	}
+	return false
 }

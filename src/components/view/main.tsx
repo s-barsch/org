@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import All from 'components/all/main';
 import { useNavigate } from 'react-router-dom';
 import { basename, dirname, join } from 'path-browserify';
 import { isText, fileType } from 'funcs/paths';
@@ -50,6 +51,8 @@ export default function View({path, files, sorted, setDir}: ViewProps) {
             return <TextView path={path} files={files} renameView={renameView} modFuncs={modFuncs} />;
         case "media":
             return <MediaView path={path} files={files} renameView={renameView} modFuncs={modFuncs} />;
+        case "all":
+            return <All path={path} files={files} />;
         default:
             return <DirView path={path} files={files} renameView={renameView}
             addNewDir={addNewDir} saveSort={saveSort} modFuncs={modFuncs} />

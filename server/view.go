@@ -52,8 +52,10 @@ func isAll(path string) bool {
 func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := &Path{Rel: r.URL.Path[len("/api/view"):]}
 
+	all := false
 	if isAll(path.Rel) {
 		path.Rel = path.Dir()
+		all = true
 	}
 
 	e := &Err{
@@ -72,22 +74,16 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	files, sorted, err := getFiles(path)
+	v := &DirView{}
+	var err error
+	if all {
+		v, err = viewDirRecursive(path)
+	} else {
+		v, err = viewDir(path)
+	}
 	if err != nil {
 		e.Err = err
 		return e
-	}
-
-	if files == nil {
-		files = []*File{}
-	}
-
-	v := &DirView{
-		Path: path.Rel,
-		Dir: &Dir{
-			Files:  files,
-			Sorted: sorted,
-		},
 	}
 
 	err = json.NewEncoder(w).Encode(v)
@@ -97,6 +93,44 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	return nil
+}
+
+func viewDirRecursive(path *Path) (*DirView, error) {
+	files, err := getFilesRecursive(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if files == nil {
+		files = []*File{}
+	}
+
+	return &DirView{
+		Path: path.Rel,
+		Dir: &Dir{
+			Files:  files,
+			Sorted: false,
+		},
+	}, nil
+}
+
+func viewDir(path *Path) (*DirView, error) {
+	files, sorted, err := getFiles(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if files == nil {
+		files = []*File{}
+	}
+
+	return &DirView{
+		Path: path.Rel,
+		Dir: &Dir{
+			Files:  files,
+			Sorted: sorted,
+		},
+	}, nil
 }
 
 func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
