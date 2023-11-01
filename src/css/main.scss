@@ -348,6 +348,10 @@ a.info__name,
     padding:2px 4px;
 }
 
+div.text-field {
+    white-space: pre;
+}
+
 .text-field {
     background:transparent;
     color:var(--color-fg);
