@@ -4,10 +4,11 @@ type config = {
 
 let Config: config = {
     links: [
+    "/topics",
     "/search",
     "/write",
     "/today",
-    "/public/graph",
+    //"/public/graph",
     "/public/kine",
     "/public/about"
 ]}
