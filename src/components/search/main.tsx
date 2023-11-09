@@ -1,12 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
-import { newView } from "app";
 import { SearchView } from "./view";
 import Nav from "components/nav/nav";
+import File from "funcs/files";
+
+type resultView = {
+   name: string;
+   months: monthObj[];
+   files: File[]; 
+}
+
+export type monthObj = {
+    key: string;
+    year: string;
+    name: string;
+    count: number;
+}
+
+
+export function newResults(): resultView {
+    return {
+        name: "",
+        months: [],
+        files: [],
+    };
+}
 
 export default function Search() {
     const path = useLocation().pathname;
-    const [view, setView] = useState(newView());
+    const [view, setView] = useState(newResults());
 
     useEffect(() => {
         async function loadSearchResults() {
@@ -19,7 +41,7 @@ export default function Search() {
     return (
         <>
             <Nav path={path} />
-            <SearchView path={path} files={view.dir.files} />
+            <SearchView path={path} months={view.months} files={view.files} />
         </>
     )
 }
