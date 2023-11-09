@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/gorilla/mux"
 )
@@ -14,6 +15,12 @@ var ROOT = "data"
 const BUILD = "build"
 
 func main() {
+	path, err := filepath.EvalSymlinks(ROOT)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ROOT = path
+
 	go loadIndex()
 
 	http.Handle("/", routes())

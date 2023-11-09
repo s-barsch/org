@@ -19,7 +19,7 @@ func ReadFiles(root, folder string) ([]*search.File, error) {
 		if x := filepath.Ext(path); x != ".txt" && x != ".info" {
 			return nil
 		}
-		f, err := readFile(root, path)
+		f, err := ReadFile(root, path)
 		if err != nil {
 			return err
 		}
@@ -35,7 +35,7 @@ func ReadFiles(root, folder string) ([]*search.File, error) {
 	return files, nil
 }
 
-func readFile(root, path string) (*search.File, error) {
+func ReadFile(root, path string) (*search.File, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err

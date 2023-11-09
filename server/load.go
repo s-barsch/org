@@ -5,7 +5,6 @@ import (
 	"org/server/search"
 	fts "org/server/search/full-text"
 	"org/server/search/tags"
-	"path/filepath"
 	"time"
 )
 
@@ -15,35 +14,66 @@ type Index struct {
 	Tags  tags.Tags
 }
 
-var IX Index
+var IX = &Index{}
 
-func (ix Index) Read(path string) error {
+func (ix *Index) Read(path string) error {
 	files, err := fts.ReadFiles(path, "/private/graph")
 	if err != nil {
 		return err
 	}
+	println(len(files))
 	ix.Files = files
 	return nil
 }
 
-func (ix Index) Tokenize() {
-	IX.Words = make(fts.Words)
-	IX.Words.Add(ix.Files)
+func (ix *Index) Tokenize() {
+	ix.Words = make(fts.Words)
+	ix.Words.Add(ix.Files)
 }
 
-func (ix Index) ParseTags() {
-	IX.Tags = make(tags.Tags)
-	IX.Tags.Add(IX.Files)
+func (ix *Index) ParseTags() {
+	ix.Tags = make(tags.Tags)
+	ix.Tags.Add(ix.Files)
+}
+
+func (ix *Index) AddFile(path string) {
+	f, err := fts.ReadFile(ROOT, path)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	ix.Files = append(ix.Files, f)
+}
+
+func (ix *Index) UpdateFile(path string) {
+	nf, err := fts.ReadFile(ROOT, path)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	for i, f := range ix.Files {
+		if f.Path == path {
+			ix.Files[i] = nf
+			return
+		}
+	}
+	log.Printf("Couldnt update file %v", path)
+}
+
+func (ix *Index) RemoveFile(path string) {
+	for i, f := range ix.Files {
+		if f.Path == path {
+			ix.Files[i] = ix.Files[len(ix.Files)-1]
+			ix.Files = ix.Files[:len(ix.Files)-1]
+			return
+		}
+	}
+	log.Printf("Couldnt remove file %v", path)
 }
 
 func loadIndex() error {
-	path, err := filepath.EvalSymlinks(ROOT)
-	if err != nil {
-		return err
-	}
-
 	start := time.Now()
-	err = IX.Read(path)
+	err := IX.Read(ROOT)
 	if err != nil {
 		return err
 	}
