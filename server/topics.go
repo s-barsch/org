@@ -5,18 +5,27 @@ import (
 	"net/http"
 )
 
+type Topic struct {
+	Name     string `json:"name"`
+	Len      int    `json:"len"`
+	LastDate int64  `json:"lastDate"`
+}
+
 func topics(w http.ResponseWriter, r *http.Request) *Err {
 	e := &Err{
 		Func: "topics",
 		Code: 500,
 	}
 
-	tags := []string{}
+	topics := []*Topic{}
 	for t := range TAGS {
-		tags = append(tags, t)
+		topics = append(topics, &Topic{
+			Name: t,
+			Len:  len(TAGS[t]),
+		})
 	}
 
-	err := json.NewEncoder(w).Encode(tags)
+	err := json.NewEncoder(w).Encode(topics)
 	if err != nil {
 		e.Err = err
 		return e

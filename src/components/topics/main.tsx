@@ -5,14 +5,26 @@ import Nav from "components/nav/nav";
 import { FileList } from 'components/search/list';
 import { newView } from "app";
 
+export type topic = {
+    name: string;
+    len: number;
+    lastDate: number;
+}
+
+export function newTopics(): topic[] {
+    return []
+}
+
+
 export default function Topics() {
     const path = useLocation().pathname;
-    const [topics, setTopics] = useState([]);
+    const [topics, setTopics] = useState(newTopics());
 
     useEffect(() => {
         async function loadTopics() {
             const resp = await fetch("/api/topics");
             const results = await resp.json();
+            console.log(results)
             setTopics(results);
         }
         loadTopics();
@@ -26,12 +38,12 @@ export default function Topics() {
     )
 }
 
-function TopicsList({topics}: {topics: string[]}) {
+function TopicsList({topics}: {topics: topic[]}) {
     return (
         <>
             <section id="topics">
             {topics.map((topic, i) => (
-                <Link key={i} to={topic}>{topic}</Link>
+                <span key={i} className="topic"><Link to={topic.name}>{topic.name}</Link>({topic.len})</span>
             ))}
             </section>
         </>

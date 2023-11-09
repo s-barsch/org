@@ -138,11 +138,16 @@ input {
     background:lightyellow;
 }
 
-#topics a,
+#topics .topic,
 #dirs a {
     margin-right:1rem;
     display: inline-block;
 }
+
+.topic a {
+    margin-right:.5rem;
+}
+
 
 .right {
     float:right;
