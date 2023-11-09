@@ -32,7 +32,7 @@ func searchFiles(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	files := []*File{}
-	matches := IDX.Search(query)
+	matches := IX.Words.Search(query)
 
 	months := map[string]int{}
 

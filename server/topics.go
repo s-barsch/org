@@ -47,14 +47,14 @@ func topics(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	topics := []*Topic{}
-	for t := range TAGS {
-		date, err := lastDate(TAGS[t])
+	for t := range IX.Tags {
+		date, err := lastDate(IX.Tags[t])
 		if err != nil {
 			log.Println(err)
 		}
 		topics = append(topics, &Topic{
 			Name:     t,
-			Len:      len(TAGS[t]),
+			Len:      len(IX.Tags[t]),
 			LastDate: date.Unix(),
 		})
 	}
@@ -72,7 +72,7 @@ func topics(w http.ResponseWriter, r *http.Request) *Err {
 
 func topic(w http.ResponseWriter, r *http.Request) *Err {
 	topic := r.URL.Path[len("/api/topics/"):]
-	indexed := TAGS[topic]
+	indexed := IX.Tags[topic]
 
 	e := &Err{
 		Func: "topic",

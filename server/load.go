@@ -8,8 +8,12 @@ import (
 	"time"
 )
 
-var IDX fts.Index
-var TAGS tags.Tags
+type Index struct {
+	Words fts.Words
+	Tags  tags.Tags
+}
+
+var IX Index
 
 func loadIndex(root string) error {
 	path, err := filepath.EvalSymlinks(root)
@@ -22,20 +26,17 @@ func loadIndex(root string) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("Loaded %d documents in %v", len(files), time.Since(start))
+	log.Printf("Read %d documents in %v", len(files), time.Since(start))
 
 	start = time.Now()
-	IDX = make(fts.Index)
-	IDX.Add(files)
-	log.Printf("Indexed %d documents in %v", len(files), time.Since(start))
+	IX.Words = make(fts.Words)
+	IX.Words.Add(files)
+	log.Printf("Tokenized %d documents in %v", len(files), time.Since(start))
 
 	start = time.Now()
-	TAGS = make(tags.Tags)
-	TAGS.Add(files)
+	IX.Tags = make(tags.Tags)
+	IX.Tags.Add(files)
 	log.Printf("Extracted tags in %v", time.Since(start))
 
-	for k := range TAGS {
-		log.Println(k)
-	}
 	return nil
 }
