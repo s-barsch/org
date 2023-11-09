@@ -9,8 +9,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var ROOT = "data"
+
+const BUILD = "build"
+
 func main() {
-	go loadIndex(ROOT)
+	go loadIndex()
 
 	http.Handle("/", routes())
 	http.ListenAndServe(":8334", nil)
@@ -43,8 +47,6 @@ func routes() *mux.Router {
 	return r
 }
 
-const BUILD = "build"
-
 func serveBuild(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		file := BUILD + r.URL.Path
@@ -58,7 +60,7 @@ func serveBuild(w http.ResponseWriter, r *http.Request) {
 }
 
 func reloadIndex(w http.ResponseWriter, r *http.Request) {
-	err := loadIndex(ROOT)
+	err := loadIndex()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 	}
@@ -84,5 +86,3 @@ type Err struct {
 func (e *Err) Error() string {
 	return fmt.Sprintf("%v: %v (%d)\npath: %v", e.Func, e.Err.Error(), e.Code, e.Path)
 }
-
-var ROOT = "data"
