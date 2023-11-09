@@ -3,6 +3,7 @@ package tags
 import (
 	"bufio"
 	"org/server/search"
+	"sort"
 	"strings"
 	"unicode"
 )
@@ -19,6 +20,11 @@ func (t Tags) Add(files []*search.File) {
 			}
 			t[tag] = append(indexedFiles, f)
 		}
+	}
+	for tag := range t {
+		files := t[tag]
+		sort.Sort(search.ByDate(files))
+		t[tag] = files
 	}
 }
 

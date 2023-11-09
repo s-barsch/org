@@ -22,7 +22,7 @@ type ResultView struct {
 	Files  []*File  `json:"files"`
 }
 
-func search(w http.ResponseWriter, r *http.Request) *Err {
+func searchFiles(w http.ResponseWriter, r *http.Request) *Err {
 	query := r.URL.Path[len("/api/search"):]
 
 	e := &Err{

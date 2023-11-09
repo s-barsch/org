@@ -32,7 +32,7 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/delete").HandlerFunc(h(deleteFile))
 	r.PathPrefix("/api/write").HandlerFunc(h(writeSwitch))
 	r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
-	r.PathPrefix("/api/search").HandlerFunc(h(search))
+	r.PathPrefix("/api/search").HandlerFunc(h(searchFiles))
 	r.PathPrefix("/api/topics/").HandlerFunc(h(topic))
 	r.PathPrefix("/api/topics").HandlerFunc(h(topics))
 
