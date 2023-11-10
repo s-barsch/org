@@ -60,7 +60,7 @@ func getNav(path *Path) (*Nav, error) {
 }
 
 func getSiblings(path *Path) ([]*File, error) {
-	parent := &Path{Rel: path.Dir()}
+	parent := path.Parent()
 	files, _, err := getFiles(parent)
 	if err != nil {
 		return nil, err

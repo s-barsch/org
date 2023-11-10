@@ -28,8 +28,12 @@ func (p *Path) IsFile() bool {
 	return strings.Contains(p.Rel, ".")
 }
 
-func (p *Path) Dir() string {
-	return fp.Dir(p.Rel)
+func (p *Path) Parent() *Path {
+	return &Path{Rel: fp.Dir(p.Rel)}
+}
+
+func (p *Path) Base() string {
+	return fp.Base(p.Rel)
 }
 
 func (p *Path) Abs() string {
@@ -54,7 +58,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 
 	all := false
 	if isAll(path.Rel) {
-		path.Rel = path.Dir()
+		path.Rel = fp.Dir(path.Rel)
 		all = true
 	}
 
@@ -65,7 +69,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	if path.IsFile() {
-		path.Rel = path.Dir()
+		path.Rel = fp.Dir(path.Rel)
 	}
 
 	if !path.Exists() {

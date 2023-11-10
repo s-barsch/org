@@ -86,7 +86,7 @@ func subtract(base, other []*File) []*File {
 	return base
 }
 
-func writeSortFile(path string, list []string) error {
+func writeSortFile(path *Path, list []string) error {
 
 	buf := bytes.Buffer{}
 
@@ -95,45 +95,31 @@ func writeSortFile(path string, list []string) error {
 		buf.WriteString("\n")
 	}
 
-	return os.WriteFile(fp.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
+	return os.WriteFile(fp.Join(path.Abs(), ".sort"), buf.Bytes(), 0755)
 }
-
-/*
-func writeSortFile(path string, files []*File) error {
-
-	buf := bytes.Buffer{}
-
-	for _, f := range files {
-		buf.WriteString(f.Name)
-		buf.WriteString("\n")
-	}
-
-	return os.WriteFile(fp.Join(ROOT, path, ".sort"), buf.Bytes(), 0755)
-}
-*/
 
 // makes sure file keeps its sorting position
-func renameSortEntry(oldPath, newPath string) error {
-	oldDir := fp.Dir(oldPath)
-	if !hasSort(oldDir) {
+func renameSortEntry(oldPath, newPath *Path) error {
+	oldDir := oldPath.Parent()
+	if !hasSort(oldDir.Abs()) {
 		return nil
 	}
 
 	// has no sorting position in new directory
-	if newDir := fp.Dir(newPath); oldDir != newDir {
+	if newDir := newPath.Parent(); oldDir != newDir {
 		return nil
 	}
 
-	list, err := readSort(fp.Join(oldDir, ".sort"))
+	list, err := readSort(fp.Join(oldDir.Abs(), ".sort"))
 	if err != nil {
 		return err
 	}
 
-	oldName := fp.Base(oldPath)
+	oldName := oldPath.Base()
 
 	for i, name := range list {
 		if name == oldName {
-			list[i] = fp.Base(newPath)
+			list[i] = newPath.Base()
 		}
 	}
 

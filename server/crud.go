@@ -13,11 +13,11 @@ import (
 )
 
 func writeSort(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/sort"):]
+	path := &Path{Rel: r.URL.Path[len("/api/sort"):]}
 
 	e := &Err{
 		Func: "writeSort",
-		Path: path,
+		Path: path.Rel,
 		Code: 500,
 	}
 
@@ -29,19 +29,6 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	/*
-
-		sorted, err := makeFiles(path, list)
-
-		files, err := readFiles(path)
-		if err != nil {
-			e.Err = err
-			return e
-		}
-
-		all := separate(merge(sorted, files))
-	*/
-
 	err = writeSortFile(path, list)
 	if err != nil {
 		e.Err = err
@@ -52,11 +39,11 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func copyFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/copy"):]
+	path := &Path{Rel: r.URL.Path[len("/api/copy"):]}
 
 	e := &Err{
 		Func: "copyFile",
-		Path: path,
+		Path: path.Rel,
 		Code: 500,
 	}
 
@@ -66,9 +53,9 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	if strings.Contains(newPath, "/public/") {
-		dir := filepath.Dir(newPath)
-		err := os.MkdirAll(ROOT+dir, 0755)
+	if strings.Contains(newPath.Rel, "/public/") {
+		dir := &Path{Rel: filepath.Dir(newPath.Abs())}
+		err := os.MkdirAll(dir.Abs(), 0755)
 		if err != nil {
 			e.Err = err
 			return e
@@ -88,21 +75,21 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func copyFileFunc(oldpath, newpath string) error {
-	b, err := os.ReadFile(ROOT + oldpath)
+func copyFileFunc(oldpath, newpath *Path) error {
+	b, err := os.ReadFile(oldpath.Abs())
 	if err != nil {
 		return err
 	}
 
-	return os.WriteFile(ROOT+newpath, b, 0644)
+	return os.WriteFile(newpath.Abs(), b, 0644)
 }
 
 func renameFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/move"):]
+	path := &Path{Rel: r.URL.Path[len("/api/move"):]}
 
 	e := &Err{
 		Func: "renameFile",
-		Path: path,
+		Path: path.Rel,
 		Code: 500,
 	}
 
@@ -125,19 +112,11 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	err = os.Rename(ROOT+path, ROOT+newPath)
+	err = os.Rename(path.Abs(), newPath.Abs())
 	if err != nil {
 		e.Err = err
 		return e
 	}
-
-	/*
-		err = deleteBot(oldPath)
-		if err != nil {
-			e.Err = err
-			return e
-		}
-	*/
 
 	return nil
 }
@@ -160,31 +139,30 @@ func deleteBot(path string) error {
 	return nil
 }
 
-func createBot(path string) error {
-	dir := ROOT + filepath.Dir(path)
-	if filepath.Base(dir) != "bot" {
+func createBot(path *Path) error {
+	dir := path.Parent()
+	if dir.Base() != "bot" {
 		return nil
 	}
 
-	_, err := os.Stat(dir)
+	_, err := os.Stat(dir.Abs())
 	if err == nil {
 		return nil
 	}
 
-	return os.Mkdir(dir, 0755)
+	return os.Mkdir(dir.Abs(), 0755)
 }
 
-func getBodyPath(r *http.Request) (string, error) {
+func getBodyPath(r *http.Request) (*Path, error) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// TODO: make sure it’s a valid path
-
 	path := string(body)
 
-	return path, nil
+	return &Path{Rel: string(path)}, nil
 }
 
 func deleteFile(w http.ResponseWriter, r *http.Request) *Err {
@@ -223,15 +201,16 @@ func writeSwitch(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func createDir(w http.ResponseWriter, r *http.Request) *Err {
-	path := r.URL.Path[len("/api/write"):]
+	path := &Path{Rel: r.URL.Path[len("/api/write"):]}
 
 	e := &Err{
 		Func: "createDir",
-		Path: path,
+		Path: path.Rel,
 		Code: 500,
 	}
 
-	fi, err := os.Stat(ROOT + filepath.Dir(path))
+	dir := path.Parent()
+	fi, err := os.Stat(dir.Abs())
 	if err != nil {
 		e.Err = err
 		return e
@@ -240,7 +219,7 @@ func createDir(w http.ResponseWriter, r *http.Request) *Err {
 		e.Err = fmt.Errorf("Can’t create dir in non-dir.")
 		return e
 	}
-	err = os.Mkdir(ROOT+path, 0755)
+	err = os.Mkdir(path.Abs(), 0755)
 	if err != nil {
 		e.Err = err
 		return e
@@ -255,13 +234,12 @@ func createDir(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func createInfo(path string) error {
-	name := filepath.Base(path)
-	if name == "bot" || !strings.Contains(path, "/public") {
+func createInfo(path *Path) error {
+	if path.Base() == "bot" || !strings.Contains(path.Rel, "/public") {
 		return nil
 	}
 
-	return os.WriteFile(ROOT+path+"/info", []byte(getInfoText(path)), 0755)
+	return os.WriteFile(path.Abs()+"/info", []byte(getInfoText(path.Rel)), 0755)
 }
 
 func getInfoText(path string) string {
