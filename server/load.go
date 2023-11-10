@@ -28,12 +28,12 @@ func (ix *Index) Read(path string) error {
 
 func (ix *Index) Tokenize() {
 	ix.Words = make(fts.Words)
-	ix.Words.Add(ix.Files)
+	ix.Words.AddFiles(ix.Files)
 }
 
 func (ix *Index) ParseTags() {
 	ix.Tags = make(tags.Tags)
-	ix.Tags.Add(ix.Files)
+	ix.Tags.AddFiles(ix.Files)
 }
 
 func (ix *Index) AddFile(path string) {

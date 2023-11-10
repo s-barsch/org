@@ -7,17 +7,20 @@ import "org/server/search"
 // index is an inverted index. It maps tokens to document IDs.
 type Words map[string][]*search.File
 
-// add adds documents to the index.
-func (w Words) Add(files []*search.File) {
+func (w Words) AddFiles(files []*search.File) {
 	for _, f := range files {
-		for _, token := range analyze(f.String()) {
-			indexedFiles := w[token]
-			if indexedFiles != nil && indexedFiles[len(indexedFiles)-1].Path == f.Path {
-				// Don't add same ID twice.
-				continue
-			}
-			w[token] = append(indexedFiles, f)
+		w.AddFile(f)
+	}
+}
+
+func (w Words) AddFile(f *search.File) {
+	for _, token := range analyze(f.String()) {
+		indexedFiles := w[token]
+		if indexedFiles != nil && indexedFiles[len(indexedFiles)-1].Path == f.Path {
+			// Don't add same ID twice.
+			continue
 		}
+		w[token] = append(indexedFiles, f)
 	}
 }
 
