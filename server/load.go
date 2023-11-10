@@ -42,7 +42,13 @@ func (ix *Index) AddFile(path string) {
 		log.Println(err)
 		return
 	}
+	ix.TokenizeFile(f)
 	ix.Files = append(ix.Files, f)
+}
+
+func (ix *Index) TokenizeFile(f *search.File) {
+	ix.Words.AddFile(f)
+	ix.Tags.AddFile(f)
 }
 
 func (ix *Index) UpdateFile(path string) {
@@ -51,12 +57,14 @@ func (ix *Index) UpdateFile(path string) {
 		log.Println(err)
 		return
 	}
+	ix.TokenizeFile(nf)
 	for i, f := range ix.Files {
 		if f.Path == path {
 			ix.Files[i] = nf
 			return
 		}
 	}
+	ix.Files = append(ix.Files, nf)
 	log.Printf("Couldnt update file %v", path)
 }
 
@@ -68,6 +76,7 @@ func (ix *Index) RemoveFile(path string) {
 			return
 		}
 	}
+	//TODO: file is not used from tokenized structures
 	log.Printf("Couldnt remove file %v", path)
 }
 

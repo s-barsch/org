@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
-	p "path/filepath"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -51,31 +51,6 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-/*
-	func viewListing(w http.ResponseWriter, r *http.Request) *Err {
-		path := r.URL.Path[len("/api/list"):]
-
-		e := &Err{
-			Func: "dirListing",
-			Path: path,
-			Code: 500,
-		}
-
-		files, err := getFiles(path)
-		if err != nil {
-			e.Err = err
-			return e
-		}
-
-		err = json.NewEncoder(w).Encode(files)
-		if err != nil {
-			e.Err = err
-			return e
-		}
-
-		return nil
-	}
-*/
 func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api/copy"):]
 
@@ -92,7 +67,7 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	if strings.Contains(newPath, "/public/") {
-		dir := p.Dir(newPath)
+		dir := filepath.Dir(newPath)
 		err := os.MkdirAll(ROOT+dir, 0755)
 		if err != nil {
 			e.Err = err
@@ -168,8 +143,8 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func deleteBot(path string) error {
-	dir := p.Dir(path)
-	if p.Base(dir) != "bot" {
+	dir := filepath.Dir(path)
+	if filepath.Base(dir) != "bot" {
 		return nil
 	}
 
@@ -186,8 +161,8 @@ func deleteBot(path string) error {
 }
 
 func createBot(path string) error {
-	dir := ROOT + p.Dir(path)
-	if p.Base(dir) != "bot" {
+	dir := ROOT + filepath.Dir(path)
+	if filepath.Base(dir) != "bot" {
 		return nil
 	}
 
@@ -241,7 +216,7 @@ func rmFile(path string) error {
 func writeSwitch(w http.ResponseWriter, r *http.Request) *Err {
 	path := r.URL.Path[len("/api/write"):]
 
-	if strings.Contains(path, ".") || p.Base(path) == "info" {
+	if strings.Contains(path, ".") || filepath.Base(path) == "info" {
 		return writeFile(w, r)
 	}
 	return createDir(w, r)
@@ -256,7 +231,7 @@ func createDir(w http.ResponseWriter, r *http.Request) *Err {
 		Code: 500,
 	}
 
-	fi, err := os.Stat(ROOT + p.Dir(path))
+	fi, err := os.Stat(ROOT + filepath.Dir(path))
 	if err != nil {
 		e.Err = err
 		return e
@@ -281,7 +256,7 @@ func createDir(w http.ResponseWriter, r *http.Request) *Err {
 }
 
 func createInfo(path string) error {
-	name := p.Base(path)
+	name := filepath.Base(path)
 	if name == "bot" || !strings.Contains(path, "/public") {
 		return nil
 	}
@@ -296,7 +271,7 @@ func getInfoText(path string) string {
 	t, err := parsePathDate(path)
 	if err != nil {
 		date = time.Now()
-		title = strings.Title(p.Base(path))
+		title = strings.Title(filepath.Base(path))
 	} else {
 		date = t
 	}
@@ -349,7 +324,7 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	// delete empty info files
-	if p.Ext(path) == ".info" && len(body) == 0 {
+	if filepath.Ext(path) == ".info" && len(body) == 0 {
 		err := rmFile(ROOT + path)
 		if err != nil {
 			e.Err = err
@@ -372,18 +347,20 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	err = os.WriteFile(ROOT+path, body, 0664)
+	fpath := ROOT + path
+	err = os.WriteFile(fpath, body, 0664)
 	if err != nil {
 		e.Err = err
 		return e
 	}
+	IX.UpdateFile(fpath)
 
 	// log.Printf("writeFile:\n{%s}\n", body)
 	return nil
 }
 
 func checkTodayPath(path string) error {
-	if today := todayPath(); p.Dir(path) == today {
+	if today := todayPath(); filepath.Dir(path) == today {
 		_, err := os.Stat(today)
 		if err != nil {
 			_, err = makeToday()
