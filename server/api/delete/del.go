@@ -8,7 +8,7 @@ import (
 	fp "path/filepath"
 )
 
-func DeleteFile(ix index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func DeleteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	path := r.URL.Path[len("/api/delete"):]
 
 	e := &helper.Err{

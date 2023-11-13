@@ -1,4 +1,4 @@
-package main
+package view
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ func isAll(path string) bool {
 	return fp.Base(path) == "all"
 }
 
-func ViewFile(w http.ResponseWriter, r *http.Request) *helper.Err {
+func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	path := &path.Path{Rel: r.URL.Path[len("/api/view"):]}
 
 	all := false
@@ -99,7 +99,7 @@ func viewDir(path *path.Path) (*helper.DirView, error) {
 	}, nil
 }
 
-func serveStatic(ix index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func ServeStatic(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	path := r.URL.Path[len("/file"):]
 
 	http.ServeFile(w, r, fp.Join(ix.Root, path))

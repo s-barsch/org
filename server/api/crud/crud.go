@@ -1,4 +1,4 @@
-package main
+package crud
 
 import (
 	"bytes"
@@ -15,8 +15,8 @@ import (
 	"time"
 )
 
-func copyFile(w http.ResponseWriter, r *http.Request) *helper.Err {
-	p := &path.Path{Rel: r.URL.Path[len("/api/copy"):]}
+func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+	p := ix.NewPath(r.URL.Path[len("/api/copy"):])
 
 	e := &helper.Err{
 		Func: "copyFile",
@@ -61,12 +61,12 @@ func copyFileFunc(oldpath, newpath *path.Path) error {
 	return os.WriteFile(newpath.Abs(), b, 0644)
 }
 
-func renameFile(w http.ResponseWriter, r *http.Request) *helper.Err {
-	path := &path.Path{Rel: r.URL.Path[len("/api/move"):]}
+func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+	p := ix.NewPath(r.URL.Path[len("/api/move"):])
 
 	e := &helper.Err{
 		Func: "renameFile",
-		Path: path.Rel,
+		Path: p.Rel,
 		Code: 500,
 	}
 
@@ -83,13 +83,13 @@ func renameFile(w http.ResponseWriter, r *http.Request) *helper.Err {
 		return e
 	}
 
-	err = file.RenameSortEntry(path, newPath)
+	err = file.RenameSortEntry(p, newPath)
 	if err != nil {
 		e.Err = err
 		return e
 	}
 
-	err = os.Rename(path.Abs(), newPath.Abs())
+	err = os.Rename(p.Abs(), newPath.Abs())
 	if err != nil {
 		e.Err = err
 		return e

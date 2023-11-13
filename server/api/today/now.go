@@ -26,7 +26,7 @@ func GetToday(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 	return nil
 }
 
-func GetNow(ix index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func GetNow(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	e := &helper.Err{
 		Func: "getNow",
 		Code: 500,

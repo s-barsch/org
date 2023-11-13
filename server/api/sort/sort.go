@@ -9,7 +9,7 @@ import (
 	"org/server/index"
 )
 
-func WriteSort(ix index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	path := ix.NewPath(r.URL.Path[len("/api/sort"):])
 
 	e := &helper.Err{

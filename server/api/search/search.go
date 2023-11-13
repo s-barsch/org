@@ -1,4 +1,4 @@
-package main
+package search
 
 import (
 	"encoding/json"
@@ -25,7 +25,7 @@ type ResultView struct {
 	Files  []*file.File `json:"files"`
 }
 
-func searchFiles(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func SearchFiles(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	query := r.URL.Path[len("/api/search"):]
 
 	e := &helper.Err{
