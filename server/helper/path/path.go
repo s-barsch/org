@@ -11,6 +11,13 @@ type Path struct {
 	Rel  string
 }
 
+func (p *Path) New(rel string) *Path {
+	return &Path{
+		Rel:  rel,
+		Root: p.Root,
+	}
+}
+
 func (p *Path) IsFile() bool {
 	return strings.Contains(p.Rel, ".")
 }
@@ -25,6 +32,10 @@ func (p *Path) Base() string {
 
 func (p *Path) Abs() string {
 	return p.Root + p.Rel
+}
+
+func (p *Path) Ext() string {
+	return fp.Ext(p.Rel)
 }
 
 func (p *Path) Exists() bool {

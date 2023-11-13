@@ -3,6 +3,7 @@ package index
 import (
 	"fmt"
 	"log"
+	"org/server/helper/path"
 )
 
 type Index struct {
@@ -10,6 +11,13 @@ type Index struct {
 	Words Words
 	Tags  Tags
 	Root  string
+}
+
+func (ix *Index) NewPath(rel string) *path.Path {
+	return &path.Path{
+		Root: ix.Root,
+		Rel:  rel,
+	}
 }
 
 func (ix *Index) Read() error {

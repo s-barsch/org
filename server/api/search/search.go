@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"org/server/helper"
 	"org/server/helper/file"
+	"org/server/index"
 	"sort"
 	"strconv"
 	"time"
@@ -24,7 +25,7 @@ type ResultView struct {
 	Files  []*file.File `json:"files"`
 }
 
-func searchFiles(w http.ResponseWriter, r *http.Request) *helper.Err {
+func searchFiles(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	query := r.URL.Path[len("/api/search"):]
 
 	e := &helper.Err{
@@ -34,7 +35,7 @@ func searchFiles(w http.ResponseWriter, r *http.Request) *helper.Err {
 	}
 
 	files := []*file.File{}
-	matches := IX.Words.Search(query)
+	matches := ix.Words.Search(query)
 
 	months := map[string]int{}
 

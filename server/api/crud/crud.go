@@ -2,44 +2,18 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"org/server/helper"
 	"org/server/helper/file"
 	"org/server/helper/path"
+	"org/server/index"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
-
-func writeSort(w http.ResponseWriter, r *http.Request) *helper.Err {
-	path := &path.Path{Rel: r.URL.Path[len("/api/sort"):]}
-
-	e := &helper.Err{
-		Func: "writeSort",
-		Path: path.Rel,
-		Code: 500,
-	}
-
-	list := []string{}
-
-	err := json.NewDecoder(io.Reader(r.Body)).Decode(&list)
-	if err != nil {
-		e.Err = err
-		return e
-	}
-
-	err = file.WriteSortFile(path, list)
-	if err != nil {
-		e.Err = err
-		return e
-	}
-
-	return nil
-}
 
 func copyFile(w http.ResponseWriter, r *http.Request) *helper.Err {
 	p := &path.Path{Rel: r.URL.Path[len("/api/copy"):]}
@@ -168,24 +142,6 @@ func getBodyPath(r *http.Request) (*path.Path, error) {
 	return &path.Path{Rel: string(p)}, nil
 }
 
-func deleteFile(w http.ResponseWriter, r *http.Request) *helper.Err {
-	path := r.URL.Path[len("/api/delete"):]
-
-	e := &helper.Err{
-		Func: "deleteFile",
-		Path: path,
-		Code: 500,
-	}
-
-	err := os.Remove(ROOT + path)
-	if err != nil {
-		e.Err = err
-		return e
-	}
-
-	return nil
-}
-
 func rmFile(path string) error {
 	_, err := os.Stat(path)
 	if err != nil {
@@ -193,26 +149,16 @@ func rmFile(path string) error {
 	}
 	return os.Remove(path)
 }
-
-func writeSwitch(w http.ResponseWriter, r *http.Request) *helper.Err {
-	path := r.URL.Path[len("/api/write"):]
-
-	if strings.Contains(path, ".") || filepath.Base(path) == "info" {
-		return writeFile(w, r)
-	}
-	return createDir(w, r)
-}
-
-func createDir(w http.ResponseWriter, r *http.Request) *helper.Err {
-	path := &path.Path{Rel: r.URL.Path[len("/api/write"):]}
+func CreateDir(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+	p := ix.NewPath(r.URL.Path[len("/api/write"):])
 
 	e := &helper.Err{
 		Func: "createDir",
-		Path: path.Rel,
+		Path: p.Rel,
 		Code: 500,
 	}
 
-	dir := path.Parent()
+	dir := p.Parent()
 	fi, err := os.Stat(dir.Abs())
 	if err != nil {
 		e.Err = err
@@ -222,13 +168,13 @@ func createDir(w http.ResponseWriter, r *http.Request) *helper.Err {
 		e.Err = fmt.Errorf("Can’t create dir in non-dir.")
 		return e
 	}
-	err = os.Mkdir(path.Abs(), 0755)
+	err = os.Mkdir(p.Abs(), 0755)
 	if err != nil {
 		e.Err = err
 		return e
 	}
 
-	err = createInfo(path)
+	err = createInfo(p)
 	if err != nil {
 		e.Err = err
 		return e
@@ -289,12 +235,12 @@ func parsePathDate(path string) (time.Time, error) {
 	return time.Time{}, fmt.Errorf("getDirDate: path too short")
 }
 
-func writeFile(w http.ResponseWriter, r *http.Request) *helper.Err {
-	path := r.URL.Path[len("/api/write"):]
+func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+	p := ix.NewPath(r.URL.Path[len("/api/write"):])
 
 	e := &helper.Err{
 		Func: "writeFile",
-		Path: path,
+		Path: p.Rel,
 		Code: 500,
 	}
 
@@ -305,8 +251,8 @@ func writeFile(w http.ResponseWriter, r *http.Request) *helper.Err {
 	}
 
 	// delete empty info files
-	if filepath.Ext(path) == ".info" && len(body) == 0 {
-		err := rmFile(ROOT + path)
+	if p.Ext() == ".info" && len(body) == 0 {
+		err := rmFile(p.Abs())
 		if err != nil {
 			e.Err = err
 			return e
@@ -322,33 +268,42 @@ func writeFile(w http.ResponseWriter, r *http.Request) *helper.Err {
 	body = file.RemoveMultipleNewLines(body)
 	body = file.AddNewLine(body)
 
-	err = checkTodayPath(path)
+	err = isTodayPath(p)
 	if err != nil {
 		e.Err = err
 		return e
 	}
 
-	fpath := ROOT + path
-	err = os.WriteFile(fpath, body, 0664)
+	err = os.WriteFile(p.Abs(), body, 0664)
 	if err != nil {
 		e.Err = err
 		return e
 	}
-	IX.UpdateFile(fpath)
+	ix.UpdateFile(p.Rel)
 
 	// log.Printf("writeFile:\n{%s}\n", body)
 	return nil
 }
 
-func checkTodayPath(path string) error {
-	if today := todayPath(); filepath.Dir(path) == today {
-		_, err := os.Stat(today)
-		if err != nil {
-			_, err = makeToday()
+func isTodayPath(p *path.Path) error {
+	today := helper.TodayPath()
+	dir := p.Parent()
+	if dir.Rel == today {
+		if !dir.Exists() {
+			_, err := helper.MakeToday(p.Root)
 			if err != nil {
 				return err
 			}
 		}
 	}
 	return nil
+}
+
+func WriteSwitch(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+	p := ix.NewPath(r.URL.Path[len("/api/write"):])
+
+	if strings.Contains(p.Rel, ".") || p.Base() == "info" {
+		return WriteFile(ix, w, r)
+	}
+	return CreateDir(ix, w, r)
 }

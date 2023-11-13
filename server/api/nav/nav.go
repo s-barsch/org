@@ -6,8 +6,8 @@ import (
 	"org/server/helper"
 	"org/server/helper/file"
 	"org/server/helper/path"
+	"org/server/index"
 	"os"
-	fp "path/filepath"
 	"strings"
 )
 
@@ -20,8 +20,8 @@ type Nav struct {
 	Siblings []*file.File `json:"siblings"`
 }
 
-func viewNav(w http.ResponseWriter, r *http.Request) *helper.Err {
-	path := &path.Path{Rel: r.URL.Path[len("/api/nav"):]}
+func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+	path := ix.NewPath(r.URL.Path[len("/api/nav"):])
 
 	e := &helper.Err{
 		Func: "viewNav",
@@ -58,7 +58,7 @@ func getNav(path *path.Path) (*Nav, error) {
 
 	return &Nav{
 		Siblings: siblings,
-		Switcher: switchPath(path.Rel),
+		Switcher: switchPath(path),
 	}, nil
 }
 
@@ -101,10 +101,10 @@ func getSiblings(path *path.Path) ([]*file.File, error) {
 //	/public/graph/20/20-10/10/subdir
 //
 // -> /private/graph/20/20-10
-func switchPath(path string) string {
+func switchPath(path *path.Path) string {
 	public := false
-	if l := len("/public"); len(path) > l {
-		public = path[:l] == "/public"
+	if l := len("/public"); len(path.Rel) > l {
+		public = path.Rel[:l] == "/public"
 	}
 
 	var find, replace string
@@ -117,7 +117,7 @@ func switchPath(path string) string {
 		replace = "public"
 	}
 
-	newPath := strings.Replace(path, find, replace, -1)
+	newPath := path.New(strings.Replace(path.Rel, find, replace, -1))
 
 	existent := findExistent(newPath)
 
@@ -129,15 +129,15 @@ func switchPath(path string) string {
 
 // Recursive function going upwards the tree until it finds a existent
 // directory.
-func findExistent(path string) string {
-	if path == "/" || path == "." {
-		return path
+func findExistent(path *path.Path) string {
+	if path.Rel == "/" || path.Rel == "." {
+		return path.Rel
 	}
-	_, err := os.Stat(ROOT + path)
+	_, err := os.Stat(path.Abs())
 	if err == nil {
-		return path
+		return path.Rel
 	}
-	return findExistent(fp.Dir(path))
+	return findExistent(path.Parent())
 }
 
 func dirsOnly(files []*file.File) []*file.File {

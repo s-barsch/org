@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	"org/server/handler/topics"
+	"org/server/api/topics"
 	"org/server/helper"
 	"org/server/index"
 	"os"
@@ -31,20 +31,22 @@ func main() {
 func routes() *mux.Router {
 	r := mux.NewRouter()
 
-	r.PathPrefix("/file/").HandlerFunc(h(serveStatic))
+	/*
+		r.PathPrefix("/file/").HandlerFunc(h(serveStatic))
 
-	r.HandleFunc("/api/today", h(getToday))
-	r.HandleFunc("/api/now", h(getNow))
+		r.HandleFunc("/api/today", h(getToday))
+		r.HandleFunc("/api/now", h(getNow))
 
-	r.PathPrefix("/api/nav").HandlerFunc(h(viewNav))
+		r.PathPrefix("/api/nav").HandlerFunc(h(viewNav))
 
-	r.PathPrefix("/api/sort").HandlerFunc(h(writeSort))
-	r.PathPrefix("/api/copy").HandlerFunc(h(copyFile))
-	r.PathPrefix("/api/move").HandlerFunc(h(renameFile))
-	r.PathPrefix("/api/delete").HandlerFunc(h(deleteFile))
-	r.PathPrefix("/api/write").HandlerFunc(h(writeSwitch))
-	r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
-	r.PathPrefix("/api/search").HandlerFunc(h(searchFiles))
+		r.PathPrefix("/api/sort").HandlerFunc(h(writeSort))
+		r.PathPrefix("/api/copy").HandlerFunc(h(copyFile))
+		r.PathPrefix("/api/move").HandlerFunc(h(renameFile))
+		r.PathPrefix("/api/delete").HandlerFunc(h(deleteFile))
+		r.PathPrefix("/api/write").HandlerFunc(h(writeSwitch))
+		r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
+		r.PathPrefix("/api/search").HandlerFunc(h(searchFiles))
+	*/
 	r.PathPrefix("/api/topics/").HandlerFunc(hIX(IX, topics.ViewTopic))
 	r.PathPrefix("/api/topics").HandlerFunc(hIX(IX, topics.Topics))
 
