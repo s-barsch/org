@@ -1,4 +1,4 @@
-package delete
+package crud
 
 import (
 	"net/http"

@@ -4,10 +4,8 @@ import (
 	"log"
 	"net/http"
 	"org/go/api/crud"
-	"org/go/api/delete"
 	"org/go/api/nav"
 	"org/go/api/search"
-	"org/go/api/sort"
 	"org/go/api/today"
 	"org/go/api/topics"
 	"org/go/api/view"
@@ -32,8 +30,8 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/copy").HandlerFunc(hix(IX, crud.CopyFile))
 	r.PathPrefix("/api/move").HandlerFunc(hix(IX, crud.RenameFile))
 	r.PathPrefix("/api/write").HandlerFunc(hix(IX, crud.WriteSwitch))
-	r.PathPrefix("/api/delete").HandlerFunc(hix(IX, delete.DeleteFile))
-	r.PathPrefix("/api/sort").HandlerFunc(hix(IX, sort.WriteSort))
+	r.PathPrefix("/api/delete").HandlerFunc(hix(IX, crud.DeleteFile))
+	r.PathPrefix("/api/sort").HandlerFunc(hix(IX, crud.WriteSort))
 	r.PathPrefix("/api/search").HandlerFunc(hix(IX, search.SearchFiles))
 	r.PathPrefix("/api/topics/").HandlerFunc(hix(IX, topics.ViewTopic))
 	r.PathPrefix("/api/topics").HandlerFunc(hix(IX, topics.Topics))
