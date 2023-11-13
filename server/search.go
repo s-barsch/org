@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"org/server/helper"
+	"org/server/helper/file"
 	"sort"
 	"strconv"
 	"time"
@@ -17,28 +19,28 @@ type Month struct {
 }
 
 type ResultView struct {
-	Name   string   `json:"name"`
-	Months []*Month `json:"months"`
-	Files  []*File  `json:"files"`
+	Name   string       `json:"name"`
+	Months []*Month     `json:"months"`
+	Files  []*file.File `json:"files"`
 }
 
-func searchFiles(w http.ResponseWriter, r *http.Request) *Err {
+func searchFiles(w http.ResponseWriter, r *http.Request) *helper.Err {
 	query := r.URL.Path[len("/api/search"):]
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "search",
 		Path: query,
 		Code: 500,
 	}
 
-	files := []*File{}
+	files := []*file.File{}
 	matches := IX.Words.Search(query)
 
 	months := map[string]int{}
 
 	for i, f := range matches {
 		months[monthName(f.Name())]++
-		files = append(files, &File{
+		files = append(files, &file.File{
 			Num:  i,
 			Path: f.Path,
 			Name: f.Name(),

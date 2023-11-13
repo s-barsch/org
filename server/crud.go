@@ -6,16 +6,19 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"org/server/helper"
+	"org/server/helper/file"
+	"org/server/helper/path"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
 
-func writeSort(w http.ResponseWriter, r *http.Request) *Err {
-	path := &Path{Rel: r.URL.Path[len("/api/sort"):]}
+func writeSort(w http.ResponseWriter, r *http.Request) *helper.Err {
+	path := &path.Path{Rel: r.URL.Path[len("/api/sort"):]}
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "writeSort",
 		Path: path.Rel,
 		Code: 500,
@@ -29,7 +32,7 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	err = writeSortFile(path, list)
+	err = file.WriteSortFile(path, list)
 	if err != nil {
 		e.Err = err
 		return e
@@ -38,12 +41,12 @@ func writeSort(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func copyFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := &Path{Rel: r.URL.Path[len("/api/copy"):]}
+func copyFile(w http.ResponseWriter, r *http.Request) *helper.Err {
+	p := &path.Path{Rel: r.URL.Path[len("/api/copy"):]}
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "copyFile",
-		Path: path.Rel,
+		Path: p.Rel,
 		Code: 500,
 	}
 
@@ -54,7 +57,7 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 	}
 
 	if strings.Contains(newPath.Rel, "/public/") {
-		dir := &Path{Rel: filepath.Dir(newPath.Abs())}
+		dir := &path.Path{Rel: filepath.Dir(newPath.Abs())}
 		err := os.MkdirAll(dir.Abs(), 0755)
 		if err != nil {
 			e.Err = err
@@ -66,7 +69,7 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 		}
 	}
 
-	err = copyFileFunc(path, newPath)
+	err = copyFileFunc(p, newPath)
 	if err != nil {
 		e.Err = fmt.Errorf("Faulty target path: %v", newPath)
 		return e
@@ -75,7 +78,7 @@ func copyFile(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func copyFileFunc(oldpath, newpath *Path) error {
+func copyFileFunc(oldpath, newpath *path.Path) error {
 	b, err := os.ReadFile(oldpath.Abs())
 	if err != nil {
 		return err
@@ -84,10 +87,10 @@ func copyFileFunc(oldpath, newpath *Path) error {
 	return os.WriteFile(newpath.Abs(), b, 0644)
 }
 
-func renameFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := &Path{Rel: r.URL.Path[len("/api/move"):]}
+func renameFile(w http.ResponseWriter, r *http.Request) *helper.Err {
+	path := &path.Path{Rel: r.URL.Path[len("/api/move"):]}
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "renameFile",
 		Path: path.Rel,
 		Code: 500,
@@ -106,7 +109,7 @@ func renameFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	err = renameSortEntry(path, newPath)
+	err = file.RenameSortEntry(path, newPath)
 	if err != nil {
 		e.Err = err
 		return e
@@ -139,7 +142,7 @@ func deleteBot(path string) error {
 	return nil
 }
 
-func createBot(path *Path) error {
+func createBot(path *path.Path) error {
 	dir := path.Parent()
 	if dir.Base() != "bot" {
 		return nil
@@ -153,22 +156,22 @@ func createBot(path *Path) error {
 	return os.Mkdir(dir.Abs(), 0755)
 }
 
-func getBodyPath(r *http.Request) (*Path, error) {
+func getBodyPath(r *http.Request) (*path.Path, error) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	// TODO: make sure it’s a valid path
-	path := string(body)
+	p := string(body)
 
-	return &Path{Rel: string(path)}, nil
+	return &path.Path{Rel: string(p)}, nil
 }
 
-func deleteFile(w http.ResponseWriter, r *http.Request) *Err {
+func deleteFile(w http.ResponseWriter, r *http.Request) *helper.Err {
 	path := r.URL.Path[len("/api/delete"):]
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "deleteFile",
 		Path: path,
 		Code: 500,
@@ -191,7 +194,7 @@ func rmFile(path string) error {
 	return os.Remove(path)
 }
 
-func writeSwitch(w http.ResponseWriter, r *http.Request) *Err {
+func writeSwitch(w http.ResponseWriter, r *http.Request) *helper.Err {
 	path := r.URL.Path[len("/api/write"):]
 
 	if strings.Contains(path, ".") || filepath.Base(path) == "info" {
@@ -200,10 +203,10 @@ func writeSwitch(w http.ResponseWriter, r *http.Request) *Err {
 	return createDir(w, r)
 }
 
-func createDir(w http.ResponseWriter, r *http.Request) *Err {
-	path := &Path{Rel: r.URL.Path[len("/api/write"):]}
+func createDir(w http.ResponseWriter, r *http.Request) *helper.Err {
+	path := &path.Path{Rel: r.URL.Path[len("/api/write"):]}
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "createDir",
 		Path: path.Rel,
 		Code: 500,
@@ -234,7 +237,7 @@ func createDir(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func createInfo(path *Path) error {
+func createInfo(path *path.Path) error {
 	if path.Base() == "bot" || !strings.Contains(path.Rel, "/public") {
 		return nil
 	}
@@ -286,10 +289,10 @@ func parsePathDate(path string) (time.Time, error) {
 	return time.Time{}, fmt.Errorf("getDirDate: path too short")
 }
 
-func writeFile(w http.ResponseWriter, r *http.Request) *Err {
+func writeFile(w http.ResponseWriter, r *http.Request) *helper.Err {
 	path := r.URL.Path[len("/api/write"):]
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "writeFile",
 		Path: path,
 		Code: 500,
@@ -316,8 +319,8 @@ func writeFile(w http.ResponseWriter, r *http.Request) *Err {
 		body = []byte{}
 	}
 
-	body = removeMultipleNewLines(body)
-	body = addNewLine(body)
+	body = file.RemoveMultipleNewLines(body)
+	body = file.AddNewLine(body)
 
 	err = checkTodayPath(path)
 	if err != nil {

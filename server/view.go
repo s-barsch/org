@@ -4,57 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"org/server/helper"
+	"org/server/helper/file"
+	"org/server/helper/path"
 	"os"
 	fp "path/filepath"
-	"strings"
 	"time"
 )
-
-type DirView struct {
-	Path string `json:"path"`
-	Dir  *Dir   `json:"dir"`
-}
-
-type Dir struct {
-	Files  []*File `json:"files"`
-	Sorted bool    `json:"sorted"`
-}
-
-type Path struct {
-	Rel string
-}
-
-func (p *Path) IsFile() bool {
-	return strings.Contains(p.Rel, ".")
-}
-
-func (p *Path) Parent() *Path {
-	return &Path{Rel: fp.Dir(p.Rel)}
-}
-
-func (p *Path) Base() string {
-	return fp.Base(p.Rel)
-}
-
-func (p *Path) Abs() string {
-	return ROOT + p.Rel
-}
-
-func (p *Path) Exists() bool {
-	return exists(p.Abs())
-}
-
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil
-}
 
 func isAll(path string) bool {
 	return fp.Base(path) == "all"
 }
 
-func viewFile(w http.ResponseWriter, r *http.Request) *Err {
-	path := &Path{Rel: r.URL.Path[len("/api/view"):]}
+func viewFile(w http.ResponseWriter, r *http.Request) *helper.Err {
+	path := &path.Path{Rel: r.URL.Path[len("/api/view"):]}
 
 	all := false
 	if isAll(path.Rel) {
@@ -62,7 +25,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		all = true
 	}
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "viewFile",
 		Path: path.Rel,
 		Code: 500,
@@ -78,7 +41,7 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 		return e
 	}
 
-	v := &DirView{}
+	v := &helper.DirView{}
 	var err error
 	if all {
 		v, err = viewDirRecursive(path)
@@ -99,77 +62,54 @@ func viewFile(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func viewDirRecursive(path *Path) (*DirView, error) {
-	files, err := getFilesRecursive(path)
+func viewDirRecursive(path *path.Path) (*helper.DirView, error) {
+	files, err := file.GetFilesRecursive(path)
 	if err != nil {
 		return nil, err
 	}
 
 	if files == nil {
-		files = []*File{}
+		files = []*file.File{}
 	}
 
-	return &DirView{
+	return &helper.DirView{
 		Path: path.Rel,
-		Dir: &Dir{
+		Dir: &helper.Dir{
 			Files:  files,
 			Sorted: false,
 		},
 	}, nil
 }
 
-func viewDir(path *Path) (*DirView, error) {
-	files, sorted, err := getFiles(path)
+func viewDir(path *path.Path) (*helper.DirView, error) {
+	files, sorted, err := file.GetFiles(path)
 	if err != nil {
 		return nil, err
 	}
 
 	if files == nil {
-		files = []*File{}
+		files = []*file.File{}
 	}
 
-	return &DirView{
+	return &helper.DirView{
 		Path: path.Rel,
-		Dir: &Dir{
+		Dir: &helper.Dir{
 			Files:  files,
 			Sorted: sorted,
 		},
 	}, nil
 }
 
-func serveStatic(w http.ResponseWriter, r *http.Request) *Err {
+func serveStatic(w http.ResponseWriter, r *http.Request) *helper.Err {
 	path := r.URL.Path[len("/file"):]
-
-	/*
-		e := &Err{
-			Func: "serveStatic",
-			Path: path,
-			Code: 500,
-		}
-
-		if fileType(path) == "text" {
-			b, err := os.ReadFile(ROOT + path)
-			if err != nil {
-				if p.Ext(path) == ".info" {
-					// dummy requests arrive, because of attached info field
-					return nil
-				}
-				e.Err = err
-				return e
-			}
-
-			fmt.Fprintf(w, "%s", removeNewLine(b))
-			return nil
-		}
-	*/
 
 	http.ServeFile(w, r, ROOT+path)
 
 	return nil
 }
 
-func getToday(w http.ResponseWriter, r *http.Request) *Err {
-	e := &Err{
+func getToday(w http.ResponseWriter, r *http.Request) *helper.Err {
+	e := &helper.Err{
 		Func: "getToday",
 		Code: 500,
 	}
@@ -204,8 +144,8 @@ func todayPath() string {
 	return fmt.Sprintf("/private/graph/%v", t.Format("06/06-01/02"))
 }
 
-func getNow(w http.ResponseWriter, r *http.Request) *Err {
-	e := &Err{
+func getNow(w http.ResponseWriter, r *http.Request) *helper.Err {
+	e := &helper.Err{
 		Func: "getNow",
 		Code: 500,
 	}

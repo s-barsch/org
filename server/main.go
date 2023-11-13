@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"org/server/handler/topics"
+	"org/server/helper"
+	"org/server/index"
 	"os"
 	"path/filepath"
 
@@ -43,8 +45,8 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/write").HandlerFunc(h(writeSwitch))
 	r.PathPrefix("/api/view").HandlerFunc(h(viewFile))
 	r.PathPrefix("/api/search").HandlerFunc(h(searchFiles))
-	r.PathPrefix("/api/topics/").HandlerFunc(h(topic))
-	r.PathPrefix("/api/topics").HandlerFunc(h(topics))
+	r.PathPrefix("/api/topics/").HandlerFunc(hIX(IX, topics.ViewTopic))
+	r.PathPrefix("/api/topics").HandlerFunc(hIX(IX, topics.Topics))
 
 	r.PathPrefix("/rl/").HandlerFunc(reloadIndex)
 
@@ -72,7 +74,7 @@ func reloadIndex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func h(fn func(http.ResponseWriter, *http.Request) *Err) http.HandlerFunc {
+func h(fn func(http.ResponseWriter, *http.Request) *helper.Err) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := fn(w, r)
 		if err != nil {
@@ -82,13 +84,12 @@ func h(fn func(http.ResponseWriter, *http.Request) *Err) http.HandlerFunc {
 	}
 }
 
-type Err struct {
-	Func string
-	Path string
-	Code int
-	Err  error
-}
-
-func (e *Err) Error() string {
-	return fmt.Sprintf("%v: %v (%d)\npath: %v", e.Func, e.Err.Error(), e.Code, e.Path)
+func hIX(ix *index.Index, fn func(*index.Index, http.ResponseWriter, *http.Request) *helper.Err) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := fn(ix, w, r)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), err.Code)
+		}
+	}
 }

@@ -1,34 +1,36 @@
-package main
+package file
 
 import (
 	"bytes"
+	"org/server/helper/path"
 	"os"
 	fp "path/filepath"
 	"strings"
 )
 
-func parseSort(path *Path) ([]*File, error) {
+func parseSort(path *path.Path) ([]*File, error) {
 	list, err := readSort(sortFilePath(path.Abs()))
 	if err != nil {
 		return nil, err
 	}
 
-	return makeFiles(path, list)
+	return makeSortFiles(path, list)
 }
 
-func makeFiles(path *Path, list []string) ([]*File, error) {
+func makeSortFiles(dir *path.Path, list []string) ([]*File, error) {
 	files := []*File{}
 	for i, name := range list {
-		filepath := fp.Join(path.Rel, name)
-		fi, err := os.Stat(ROOT + filepath)
+		p := &path.Path{Rel: fp.Join(dir.Rel, name)}
+		fi, err := os.Stat(p.Abs())
 		if err != nil {
 			continue
 		}
 		f := &File{
 			Num:  i,
 			Name: name,
-			Path: filepath,
-			Type: getFileType(filepath, fi.IsDir()),
+			Path: p.Rel,
+			Type: GetFileType(p.Rel, fi.IsDir()),
+			root: p.Root,
 		}
 		if f.Type == "text" {
 			err = f.Read()
@@ -66,8 +68,8 @@ func sortFilePath(path string) string {
 	return fp.Join(path, ".sort")
 }
 
-func hasSort(path string) bool {
-	return exists(sortFilePath(path))
+func hasSort(p string) bool {
+	return path.Exists(sortFilePath(p))
 }
 
 func merge(sorted, files []*File) []*File {
@@ -86,7 +88,7 @@ func subtract(base, other []*File) []*File {
 	return base
 }
 
-func writeSortFile(path *Path, list []string) error {
+func WriteSortFile(path *path.Path, list []string) error {
 
 	buf := bytes.Buffer{}
 
@@ -99,7 +101,7 @@ func writeSortFile(path *Path, list []string) error {
 }
 
 // makes sure file keeps its sorting position
-func renameSortEntry(oldPath, newPath *Path) error {
+func RenameSortEntry(oldPath, newPath *path.Path) error {
 	oldDir := oldPath.Parent()
 	if !hasSort(oldDir.Abs()) {
 		return nil
@@ -123,11 +125,5 @@ func renameSortEntry(oldPath, newPath *Path) error {
 		}
 	}
 
-	return writeSortFile(oldDir, list)
+	return WriteSortFile(oldDir, list)
 }
-
-type Asc []*File
-
-func (a Asc) Len() int           { return len(a) }
-func (a Asc) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a Asc) Less(i, j int) bool { return a[i].Name < a[j].Name }

@@ -3,6 +3,9 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"org/server/helper"
+	"org/server/helper/file"
+	"org/server/helper/path"
 	"os"
 	fp "path/filepath"
 	"strings"
@@ -13,14 +16,14 @@ type Nav struct {
 	// React’s renderings are much faster than the server-side response.
 	// Therefore, it has to know with what object it is dealing with.
 	// Path     string  `json:"path"`
-	Switcher string  `json:"switcher"`
-	Siblings []*File `json:"siblings"`
+	Switcher string       `json:"switcher"`
+	Siblings []*file.File `json:"siblings"`
 }
 
-func viewNav(w http.ResponseWriter, r *http.Request) *Err {
-	path := &Path{Rel: r.URL.Path[len("/api/nav"):]}
+func viewNav(w http.ResponseWriter, r *http.Request) *helper.Err {
+	path := &path.Path{Rel: r.URL.Path[len("/api/nav"):]}
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "viewNav",
 		Path: path.Rel,
 		Code: 500,
@@ -42,8 +45,8 @@ func viewNav(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func getNav(path *Path) (*Nav, error) {
-	siblings := []*File{}
+func getNav(path *path.Path) (*Nav, error) {
+	siblings := []*file.File{}
 
 	if strings.Count(path.Rel, "/") >= 2 {
 		s, err := getSiblings(path)
@@ -59,9 +62,9 @@ func getNav(path *Path) (*Nav, error) {
 	}, nil
 }
 
-func getSiblings(path *Path) ([]*File, error) {
+func getSiblings(path *path.Path) ([]*file.File, error) {
 	parent := path.Parent()
-	files, _, err := getFiles(parent)
+	files, _, err := file.GetFiles(parent)
 	if err != nil {
 		return nil, err
 	}
@@ -137,8 +140,8 @@ func findExistent(path string) string {
 	return findExistent(fp.Dir(path))
 }
 
-func dirsOnly(files []*File) []*File {
-	nu := []*File{}
+func dirsOnly(files []*file.File) []*file.File {
+	nu := []*file.File{}
 	for _, f := range files {
 		if f.Type == "dir" {
 			nu = append(nu, f)

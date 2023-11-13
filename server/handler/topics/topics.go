@@ -1,10 +1,12 @@
-package main
+package topics
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"org/server/helper"
+	"org/server/helper/file"
 	"org/server/index"
 	"sort"
 	"time"
@@ -40,21 +42,21 @@ func lastDate(files []*index.File) (time.Time, error) {
 	return time.Time{}, fmt.Errorf("no valid date found")
 }
 
-func topics(w http.ResponseWriter, r *http.Request) *Err {
-	e := &Err{
+func Topics(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+	e := &helper.Err{
 		Func: "topics",
 		Code: 500,
 	}
 
 	topics := []*Topic{}
-	for t := range IX.Tags {
-		date, err := lastDate(IX.Tags[t])
+	for t := range ix.Tags {
+		date, err := lastDate(ix.Tags[t])
 		if err != nil {
 			log.Println(err)
 		}
 		topics = append(topics, &Topic{
 			Name:     t,
-			Len:      len(IX.Tags[t]),
+			Len:      len(ix.Tags[t]),
 			LastDate: date.Unix(),
 		})
 	}
@@ -70,19 +72,19 @@ func topics(w http.ResponseWriter, r *http.Request) *Err {
 	return nil
 }
 
-func topic(w http.ResponseWriter, r *http.Request) *Err {
+func ViewTopic(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	topic := r.URL.Path[len("/api/topics/"):]
-	indexed := IX.Tags[topic]
+	indexed := ix.Tags[topic]
 
-	e := &Err{
+	e := &helper.Err{
 		Func: "topic",
 		Path: topic,
 		Code: 500,
 	}
 
-	files := []*File{}
+	files := []*file.File{}
 	for i, f := range indexed {
-		files = append(files, &File{
+		files = append(files, &file.File{
 			Num:  i,
 			Path: f.Path,
 			Name: f.Name(),
@@ -91,10 +93,10 @@ func topic(w http.ResponseWriter, r *http.Request) *Err {
 		})
 	}
 
-	v := &DirView{
+	v := &helper.DirView{
 		Path: topic,
 		// Nav:  nav,
-		Dir: &Dir{
+		Dir: &helper.Dir{
 			Files:  files,
 			Sorted: false,
 		},

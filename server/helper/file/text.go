@@ -1,4 +1,4 @@
-package main
+package file
 
 import (
 	"bytes"
@@ -6,25 +6,25 @@ import (
 
 const newLine = '\n'
 
-func hasNewLine(b []byte) bool {
+func HasNewLine(b []byte) bool {
 	l := len(b)
 	return l > 0 && b[l-1] == newLine
 }
 
-func removeNewLine(b []byte) []byte {
-	if hasNewLine(b) {
+func RemoveNewLine(b []byte) []byte {
+	if HasNewLine(b) {
 		return b[:len(b)-1]
 	}
 	return b
 }
 
-func addNewLine(b []byte) []byte {
-	if !hasNewLine(b) {
+func AddNewLine(b []byte) []byte {
+	if !HasNewLine(b) {
 		return append(b, newLine)
 	}
 	return b
 }
 
-func removeMultipleNewLines(b []byte) []byte {
+func RemoveMultipleNewLines(b []byte) []byte {
 	return bytes.ReplaceAll(b, []byte("\n\n\n"), []byte("\n\n"))
 }
