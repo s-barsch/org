@@ -20,7 +20,7 @@ func parseSort(path *path.Path) ([]*File, error) {
 func makeSortFiles(dir *path.Path, list []string) ([]*File, error) {
 	files := []*File{}
 	for i, name := range list {
-		p := &path.Path{Rel: fp.Join(dir.Rel, name)}
+		p := dir.New(fp.Join(dir.Rel, name))
 		fi, err := os.Stat(p.Abs())
 		if err != nil {
 			continue

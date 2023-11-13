@@ -21,15 +21,15 @@ type Nav struct {
 }
 
 func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
-	path := ix.NewPath(r.URL.Path[len("/api/nav"):])
+	p := ix.NewPath(r.URL.Path[len("/api/nav"):])
 
 	e := &helper.Err{
 		Func: "viewNav",
-		Path: path.Rel,
+		Path: p.Rel,
 		Code: 500,
 	}
 
-	nav, err := getNav(path)
+	nav, err := getNav(p)
 	if err != nil {
 		e.Err = err
 		e.Code = 404
@@ -45,11 +45,11 @@ func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Er
 	return nil
 }
 
-func getNav(path *path.Path) (*Nav, error) {
+func getNav(p *path.Path) (*Nav, error) {
 	siblings := []*file.File{}
 
-	if strings.Count(path.Rel, "/") >= 2 {
-		s, err := getSiblings(path)
+	if strings.Count(p.Rel, "/") >= 2 {
+		s, err := getSiblings(p)
 		if err != nil {
 			return nil, err
 		}
@@ -58,7 +58,7 @@ func getNav(path *path.Path) (*Nav, error) {
 
 	return &Nav{
 		Siblings: siblings,
-		Switcher: switchPath(path),
+		Switcher: switchPath(p),
 	}, nil
 }
 

@@ -1,6 +1,7 @@
 package path
 
 import (
+	"fmt"
 	"os"
 	fp "path/filepath"
 	"strings"
@@ -23,7 +24,10 @@ func (p *Path) IsFile() bool {
 }
 
 func (p *Path) Parent() *Path {
-	return &Path{Rel: fp.Dir(p.Rel)}
+	return &Path{
+		Root: p.Root,
+		Rel:  fp.Dir(p.Rel),
+	}
 }
 
 func (p *Path) Base() string {
@@ -31,6 +35,9 @@ func (p *Path) Base() string {
 }
 
 func (p *Path) Abs() string {
+	if p.Root == "" {
+		panic(fmt.Sprintf("*path.Path.Root shall never be empty (%v)", p.Rel))
+	}
 	return p.Root + p.Rel
 }
 

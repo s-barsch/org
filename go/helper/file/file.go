@@ -18,6 +18,9 @@ type File struct {
 }
 
 func (f *File) abs() string {
+	if f.root == "" {
+		panic(fmt.Sprintf("*file.File.root shall never be empty. (%v)", f.Path))
+	}
 	return fp.Join(f.root + f.Path)
 }
 
@@ -38,7 +41,7 @@ func GetFilesRecursive(p *path.Path) ([]*File, error) {
 	files := []*File{}
 	for _, f := range l {
 		if f.Type == "dir" {
-			dirFiles, err := GetFilesRecursive(&path.Path{Rel: f.Path})
+			dirFiles, err := GetFilesRecursive(p.New(f.Path))
 			if err != nil {
 				return nil, err
 			}

@@ -30,8 +30,10 @@ func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 		return e
 	}
 
-	if strings.Contains(newPath.Rel, "/public/") {
-		dir := &path.Path{Rel: filepath.Dir(newPath.Abs())}
+	newP := p.New(newPath)
+
+	if strings.Contains(newP.Rel, "/public/") {
+		dir := newP.Parent()
 		err := os.MkdirAll(dir.Abs(), 0755)
 		if err != nil {
 			e.Err = err
@@ -43,7 +45,7 @@ func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 		}
 	}
 
-	err = copyFileFunc(p, newPath)
+	err = copyFileFunc(p, newP)
 	if err != nil {
 		e.Err = fmt.Errorf("Faulty target path: %v", newPath)
 		return e
@@ -76,20 +78,22 @@ func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper
 		return e
 	}
 
+	newP := p.New(newPath)
+
 	// dont like that.
-	err = createBot(newPath)
+	err = createBot(newP)
 	if err != nil {
 		e.Err = err
 		return e
 	}
 
-	err = file.RenameSortEntry(p, newPath)
+	err = file.RenameSortEntry(p, newP)
 	if err != nil {
 		e.Err = err
 		return e
 	}
 
-	err = os.Rename(p.Abs(), newPath.Abs())
+	err = os.Rename(p.Abs(), newP.Abs())
 	if err != nil {
 		e.Err = err
 		return e
@@ -130,16 +134,16 @@ func createBot(path *path.Path) error {
 	return os.Mkdir(dir.Abs(), 0755)
 }
 
-func getBodyPath(r *http.Request) (*path.Path, error) {
+func getBodyPath(r *http.Request) (string, error) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// TODO: make sure it’s a valid path
 	p := string(body)
 
-	return &path.Path{Rel: string(p)}, nil
+	return p, nil
 }
 
 func rmFile(path string) error {

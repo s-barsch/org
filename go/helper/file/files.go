@@ -7,8 +7,8 @@ import (
 	"sort"
 )
 
-func ReadFiles(path *path.Path) ([]*File, error) {
-	l, err := os.ReadDir(path.Abs())
+func ReadFiles(p *path.Path) ([]*File, error) {
+	l, err := os.ReadDir(p.Abs())
 	if err != nil {
 		return nil, err
 	}
@@ -17,19 +17,20 @@ func ReadFiles(path *path.Path) ([]*File, error) {
 		if fi.Name() == ".DS_Store" {
 			continue
 		}
-		fpath := fp.Join(path.Rel, fi.Name())
+		fpath := fp.Join(p.Rel, fi.Name())
 		files = append(files, &File{
 			Num:  i,
 			Name: fi.Name(),
-			Path: fpath,
+			Path: fp.Join(p.Rel, fi.Name()),
 			Type: GetFileType(fpath, fi.IsDir()),
+			root: p.Root,
 		})
 	}
 	return files, nil
 }
 
-func GetFiles(path *path.Path) ([]*File, bool, error) {
-	files, err := ReadFiles(path)
+func GetFiles(p *path.Path) ([]*File, bool, error) {
+	files, err := ReadFiles(p)
 	if err != nil {
 		return nil, false, err
 	}
@@ -42,11 +43,11 @@ func GetFiles(path *path.Path) ([]*File, bool, error) {
 			}
 		}
 	}
-	if !hasSort(path.Abs()) {
+	if !hasSort(p.Abs()) {
 		return antoSort(files), false, err
 	}
 
-	sorted, err := parseSort(path)
+	sorted, err := parseSort(p)
 	if err != nil {
 		return nil, false, err
 	}
