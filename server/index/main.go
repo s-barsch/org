@@ -1,6 +1,7 @@
 package index
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -12,6 +13,9 @@ type Index struct {
 }
 
 func (ix *Index) Read() error {
+	if ix.Root == "" {
+		return fmt.Errorf("Index.Root undefined")
+	}
 	files, err := ReadFiles(ix.Root, "/private/graph")
 	if err != nil {
 		return err
