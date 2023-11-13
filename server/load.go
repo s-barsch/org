@@ -2,14 +2,14 @@ package main
 
 import (
 	"log"
-	"org/server/search"
-	fts "org/server/search/full-text"
-	"org/server/search/tags"
+	"org/server/index"
+	fts "org/server/index/full-text"
+	"org/server/index/tags"
 	"time"
 )
 
 type Index struct {
-	Files []*search.File
+	Files []*index.File
 	Words fts.Words
 	Tags  tags.Tags
 }
@@ -46,7 +46,7 @@ func (ix *Index) AddFile(path string) {
 	ix.Files = append(ix.Files, f)
 }
 
-func (ix *Index) TokenizeFile(f *search.File) {
+func (ix *Index) TokenizeFile(f *index.File) {
 	ix.Words.AddFile(f)
 	ix.Tags.AddFile(f)
 }

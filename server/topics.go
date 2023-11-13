@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"org/server/search"
+	"org/server/index"
 	"sort"
 	"time"
 )
@@ -24,7 +24,7 @@ func (a ByDate) Less(i, j int) bool {
 	return a[i].LastDate > a[j].LastDate
 }
 
-func lastDate(files []*search.File) (time.Time, error) {
+func lastDate(files []*index.File) (time.Time, error) {
 	for _, f := range files {
 		format := "060102_150405"
 		name := f.Name()

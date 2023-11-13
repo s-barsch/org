@@ -2,21 +2,21 @@ package tags
 
 import (
 	"bufio"
-	"org/server/search"
+	"org/server/index"
 	"sort"
 	"strings"
 	"unicode"
 )
 
-type Tags map[string][]*search.File
+type Tags map[string][]*index.File
 
-func (t Tags) AddFiles(files []*search.File) {
+func (t Tags) AddFiles(files []*index.File) {
 	for _, f := range files {
 		t.AddFile(f)
 	}
 }
 
-func (t Tags) AddFile(f *search.File) {
+func (t Tags) AddFile(f *index.File) {
 	for _, tag := range extractTags(f.String()) {
 		indexedFiles := t[tag]
 		if indexedFiles != nil && indexedFiles[len(indexedFiles)-1].Path == f.Path {
@@ -24,7 +24,7 @@ func (t Tags) AddFile(f *search.File) {
 			continue
 		}
 		files := append(indexedFiles, f)
-		sort.Sort(search.ByDate(files))
+		sort.Sort(index.ByDate(files))
 		t[tag] = files
 	}
 }

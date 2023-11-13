@@ -1,19 +1,19 @@
 package fts
 
-import "org/server/search"
+import "org/server/index"
 
 // from https://github.com/akrylysov/simplefts
 
 // index is an inverted index. It maps tokens to document IDs.
-type Words map[string][]*search.File
+type Words map[string][]*index.File
 
-func (w Words) AddFiles(files []*search.File) {
+func (w Words) AddFiles(files []*index.File) {
 	for _, f := range files {
 		w.AddFile(f)
 	}
 }
 
-func (w Words) AddFile(f *search.File) {
+func (w Words) AddFile(f *index.File) {
 	for _, token := range analyze(f.String()) {
 		indexedFiles := w[token]
 		if indexedFiles != nil && indexedFiles[len(indexedFiles)-1].Path == f.Path {
@@ -26,12 +26,12 @@ func (w Words) AddFile(f *search.File) {
 
 // intersection returns the set intersection between a and b.
 // a and b have to be sorted in ascending order and contain no duplicates.
-func intersection(a []*search.File, b []*search.File) []*search.File {
+func intersection(a []*index.File, b []*index.File) []*index.File {
 	maxLen := len(a)
 	if len(b) > maxLen {
 		maxLen = len(b)
 	}
-	r := make([]*search.File, 0, maxLen)
+	r := make([]*index.File, 0, maxLen)
 	var i, j int
 	for i < len(a) && j < len(b) {
 		if a[i].Path < b[j].Path {
@@ -48,8 +48,8 @@ func intersection(a []*search.File, b []*search.File) []*search.File {
 }
 
 // search queries the index for the given text.
-func (w Words) Search(text string) []*search.File {
-	var r []*search.File
+func (w Words) Search(text string) []*index.File {
+	var r []*index.File
 	for _, token := range analyze(text) {
 		if paths, ok := w[token]; ok {
 			if r == nil {

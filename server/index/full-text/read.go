@@ -2,14 +2,14 @@ package fts
 
 import (
 	"io/fs"
-	"org/server/search"
+	"org/server/index"
 	"os"
 	"path/filepath"
 )
 
 // root is path of the project. folder is a specified subfolder of that project.
-func ReadFiles(root, folder string) ([]*search.File, error) {
-	files := []*search.File{}
+func ReadFiles(root, folder string) ([]*index.File, error) {
+	files := []*index.File{}
 
 	wfn := func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -35,12 +35,12 @@ func ReadFiles(root, folder string) ([]*search.File, error) {
 	return files, nil
 }
 
-func ReadFile(root, path string) (*search.File, error) {
+func ReadFile(root, path string) (*index.File, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	return &search.File{
+	return &index.File{
 		Path: path[len(root):],
 		Byte: b,
 	}, nil
