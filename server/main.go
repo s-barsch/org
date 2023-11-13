@@ -11,8 +11,7 @@ import (
 )
 
 var ROOT = "data"
-
-const BUILD = "build"
+var BUILD = "build"
 
 func main() {
 	path, err := filepath.EvalSymlinks(ROOT)

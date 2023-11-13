@@ -1,22 +1,21 @@
-package tags
+package index
 
 import (
 	"bufio"
-	"org/server/index"
 	"sort"
 	"strings"
 	"unicode"
 )
 
-type Tags map[string][]*index.File
+type Tags map[string][]*File
 
-func (t Tags) AddFiles(files []*index.File) {
+func (t Tags) AddFiles(files []*File) {
 	for _, f := range files {
 		t.AddFile(f)
 	}
 }
 
-func (t Tags) AddFile(f *index.File) {
+func (t Tags) AddFile(f *File) {
 	for _, tag := range extractTags(f.String()) {
 		indexedFiles := t[tag]
 		if indexedFiles != nil && indexedFiles[len(indexedFiles)-1].Path == f.Path {
@@ -24,7 +23,7 @@ func (t Tags) AddFile(f *index.File) {
 			continue
 		}
 		files := append(indexedFiles, f)
-		sort.Sort(index.ByDate(files))
+		sort.Sort(ByDate(files))
 		t[tag] = files
 	}
 }

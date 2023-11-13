@@ -1,4 +1,4 @@
-package words
+package index
 
 // from https://github.com/akrylysov/simplefts
 
