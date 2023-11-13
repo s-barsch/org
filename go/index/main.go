@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"org/go/helper/path"
+	fp "path/filepath"
 )
 
 type Index struct {
@@ -42,36 +43,38 @@ func (ix *Index) ParseTags() {
 	ix.Tags.AddFiles(ix.Files)
 }
 
-func (ix *Index) AddFile(path string) {
-	f, err := ReadFile(ix.Root, path)
+/*
+func (ix *Index) AddFile(abs string) {
+	f, err := ReadFile(ix.Root, abs)
 	if err != nil {
-		log.Println(err)
+		log.Println(fmt.Errorf("*index.Index.AddFile: %v", err))
 		return
 	}
 	ix.TokenizeFile(f)
 	ix.Files = append(ix.Files, f)
 }
+*/
 
 func (ix *Index) TokenizeFile(f *File) {
 	ix.Words.AddFile(f)
 	ix.Tags.AddFile(f)
 }
 
-func (ix *Index) UpdateFile(path string) {
-	nf, err := ReadFile(ix.Root, path)
+func (ix *Index) UpdateFile(rel string) {
+	nf, err := ReadFile(ix.Root, fp.Join(ix.Root, rel))
 	if err != nil {
-		log.Println(err)
+		log.Println(fmt.Errorf("*index.Index.UpdateFile: %v", err))
 		return
 	}
 	ix.TokenizeFile(nf)
 	for i, f := range ix.Files {
-		if f.Path == path {
+		if f.Path == rel {
 			ix.Files[i] = nf
 			return
 		}
 	}
 	ix.Files = append(ix.Files, nf)
-	log.Printf("Couldnt update file %v", path)
+	log.Printf("Couldnt update file %v", rel)
 }
 
 func (ix *Index) RemoveFile(path string) {

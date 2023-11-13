@@ -64,16 +64,6 @@ func reloadIndex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func h(fn func(http.ResponseWriter, *http.Request) *helper.Err) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		err := fn(w, r)
-		if err != nil {
-			log.Println(err)
-			http.Error(w, err.Error(), err.Code)
-		}
-	}
-}
-
 func hix(ix *index.Index, fn func(*index.Index, http.ResponseWriter, *http.Request) *helper.Err) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := fn(ix, w, r)

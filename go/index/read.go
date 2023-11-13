@@ -10,15 +10,15 @@ import (
 func ReadFiles(root, folder string) ([]*File, error) {
 	files := []*File{}
 
-	wfn := func(path string, d fs.DirEntry, err error) error {
+	wfn := func(abs string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
-		if x := filepath.Ext(path); x != ".txt" && x != ".info" {
+		if x := filepath.Ext(abs); x != ".txt" && x != ".info" {
 			return nil
 		}
-		f, err := ReadFile(root, path)
+		f, err := ReadFile(root, abs)
 		if err != nil {
 			return err
 		}
@@ -34,13 +34,13 @@ func ReadFiles(root, folder string) ([]*File, error) {
 	return files, nil
 }
 
-func ReadFile(root, path string) (*File, error) {
-	b, err := os.ReadFile(path)
+func ReadFile(root, abs string) (*File, error) {
+	b, err := os.ReadFile(abs)
 	if err != nil {
 		return nil, err
 	}
 	return &File{
-		Path: path[len(root):],
+		Path: abs[len(root):],
 		Byte: b,
 	}, nil
 }
