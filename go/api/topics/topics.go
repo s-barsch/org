@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"org/server/helper"
-	"org/server/helper/file"
-	"org/server/index"
+	"org/go/helper"
+	"org/go/helper/file"
+	"org/go/index"
 	"sort"
 	"time"
 )

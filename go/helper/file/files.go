@@ -1,7 +1,7 @@
 package file
 
 import (
-	"org/server/helper/path"
+	"org/go/helper/path"
 	"os"
 	fp "path/filepath"
 	"sort"

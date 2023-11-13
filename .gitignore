@@ -30,8 +30,5 @@ live
 test
 
 config.yaml
-buildtemp
-server-bin
-server/server
-server/install
+go/go
 err.log

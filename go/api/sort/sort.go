@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"org/server/helper"
-	"org/server/helper/file"
-	"org/server/index"
+	"org/go/helper"
+	"org/go/helper/file"
+	"org/go/index"
 )
 
 func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {

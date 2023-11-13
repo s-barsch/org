@@ -2,7 +2,7 @@ package file
 
 import (
 	"fmt"
-	"org/server/helper/path"
+	"org/go/helper/path"
 	"os"
 	fp "path/filepath"
 	"strings"

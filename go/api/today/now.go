@@ -3,8 +3,8 @@ package today
 import (
 	"fmt"
 	"net/http"
-	"org/server/helper"
-	"org/server/index"
+	"org/go/helper"
+	"org/go/index"
 	"os"
 	fp "path/filepath"
 	"time"

@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"org/server/helper"
-	"org/server/helper/file"
-	"org/server/helper/path"
-	"org/server/index"
+	"org/go/helper"
+	"org/go/helper/file"
+	"org/go/helper/path"
+	"org/go/index"
 	fp "path/filepath"
 )
 

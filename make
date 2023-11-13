@@ -1,2 +1,2 @@
 #!/bin/sh
-cd server && go build -o ../org
+cd go && go build -o ../org

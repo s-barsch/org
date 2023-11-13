@@ -3,7 +3,7 @@ package index
 import (
 	"fmt"
 	"log"
-	"org/server/helper/path"
+	"org/go/helper/path"
 )
 
 type Index struct {

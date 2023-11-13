@@ -2,8 +2,8 @@ package delete
 
 import (
 	"net/http"
-	"org/server/helper"
-	"org/server/index"
+	"org/go/helper"
+	"org/go/index"
 	"os"
 	fp "path/filepath"
 )

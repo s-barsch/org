@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"org/server/index"
+	"org/go/index"
 	"time"
 )
 

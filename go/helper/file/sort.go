@@ -2,7 +2,7 @@ package file
 
 import (
 	"bytes"
-	"org/server/helper/path"
+	"org/go/helper/path"
 	"os"
 	fp "path/filepath"
 	"strings"

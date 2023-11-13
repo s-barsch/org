@@ -3,10 +3,10 @@ package nav
 import (
 	"encoding/json"
 	"net/http"
-	"org/server/helper"
-	"org/server/helper/file"
-	"org/server/helper/path"
-	"org/server/index"
+	"org/go/helper"
+	"org/go/helper/file"
+	"org/go/helper/path"
+	"org/go/index"
 	"os"
 	"strings"
 )

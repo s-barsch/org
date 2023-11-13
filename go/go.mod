@@ -1,4 +1,4 @@
-module org/server
+module org/go
 
 go 1.17
 
