@@ -1,4 +1,4 @@
-package fts
+package words
 
 import "org/server/index"
 

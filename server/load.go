@@ -3,21 +3,21 @@ package main
 import (
 	"log"
 	"org/server/index"
-	fts "org/server/index/full-text"
 	"org/server/index/tags"
+	"org/server/index/words"
 	"time"
 )
 
 type Index struct {
 	Files []*index.File
-	Words fts.Words
+	Words words.Words
 	Tags  tags.Tags
 }
 
 var IX = &Index{}
 
 func (ix *Index) Read(path string) error {
-	files, err := fts.ReadFiles(path, "/private/graph")
+	files, err := words.ReadFiles(path, "/private/graph")
 	if err != nil {
 		return err
 	}
@@ -27,7 +27,7 @@ func (ix *Index) Read(path string) error {
 }
 
 func (ix *Index) Tokenize() {
-	ix.Words = make(fts.Words)
+	ix.Words = make(words.Words)
 	ix.Words.AddFiles(ix.Files)
 }
 
@@ -37,7 +37,7 @@ func (ix *Index) ParseTags() {
 }
 
 func (ix *Index) AddFile(path string) {
-	f, err := fts.ReadFile(ROOT, path)
+	f, err := words.ReadFile(ROOT, path)
 	if err != nil {
 		log.Println(err)
 		return
@@ -52,7 +52,7 @@ func (ix *Index) TokenizeFile(f *index.File) {
 }
 
 func (ix *Index) UpdateFile(path string) {
-	nf, err := fts.ReadFile(ROOT, path)
+	nf, err := words.ReadFile(ROOT, path)
 	if err != nil {
 		log.Println(err)
 		return

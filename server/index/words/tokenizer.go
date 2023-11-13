@@ -1,4 +1,4 @@
-package fts
+package words
 
 // from https://github.com/akrylysov/simplefts
 

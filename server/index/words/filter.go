@@ -1,10 +1,9 @@
-package fts
+package words
 
 // from https://github.com/akrylysov/simplefts
 
 import (
 	"strings"
-
 	//snowballeng "github.com/kljensen/snowball/english"
 	snowballde "github.com/antonbaumann/german-go-stemmer"
 )
