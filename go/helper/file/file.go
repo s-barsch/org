@@ -72,6 +72,14 @@ func GetFileType(path string, isDir bool) string {
 	return fileType(path)
 }
 
+func isDir(de os.DirEntry) bool {
+	return de.IsDir() || isDirMode(de.Type())
+}
+
+func isDirMode(mode os.FileMode) bool {
+	return mode&os.ModeSymlink != 0
+}
+
 func fileTypeStat(path string) string {
 	t := fileType(path)
 	if t != "file" {
@@ -81,7 +89,7 @@ func fileTypeStat(path string) string {
 	if err != nil {
 		return "file"
 	}
-	if fi.IsDir() || fi.Mode()&os.ModeSymlink != 0 {
+	if fi.IsDir() || isDirMode(fi.Mode()) {
 		return "dir"
 	}
 	return t

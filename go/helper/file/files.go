@@ -22,7 +22,7 @@ func ReadFiles(p *path.Path) ([]*File, error) {
 			Num:  i,
 			Name: fi.Name(),
 			Path: fp.Join(p.Rel, fi.Name()),
-			Type: GetFileType(fpath, fi.IsDir()),
+			Type: GetFileType(fpath, isDir(fi)),
 			root: p.Root,
 		})
 	}
