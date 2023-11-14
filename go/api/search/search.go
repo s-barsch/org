@@ -77,11 +77,11 @@ func monthName(str string) string {
 	return month
 }
 
-type MAsc []*Month
+type Asc []*Month
 
-func (a MAsc) Len() int           { return len(a) }
-func (a MAsc) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a MAsc) Less(i, j int) bool { return a[i].Name < a[j].Name }
+func (a Asc) Len() int           { return len(a) }
+func (a Asc) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a Asc) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
 func key(t time.Time) string {
 	return t.Format("0601")
