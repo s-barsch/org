@@ -54,7 +54,7 @@ export function FileList({files, saveSort, modFuncs}: FileListProps) {
                 <button onClick={reverseFiles}><ReverseIcon /></button>
             </span>
             <ReactSortable
-                handle=".info__drag" onEnd={endFn}
+                handle=".info__name" onEnd={endFn}
                 animation={200} list={state} setList={setFn}>
                     { state.map((file, i) => (
                         <div key={file.id}>

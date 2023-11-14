@@ -1,4 +1,6 @@
 import React, {useContext } from 'react';
+import { ReactComponent as BotIcon} from './bot.svg';
+import TopIcon from '@mui/icons-material/DriveFolderUploadSharp';
 import DeleteIcon from '@mui/icons-material/ClearSharp';
 import { basename, dirname, join } from 'path-browserify';
 import File from 'funcs/files';
@@ -7,7 +9,13 @@ import { copyRequest } from '../../../funcs/requests';
 import { ErrContext } from 'context/err';
 import { TargetsContext } from 'context/targets';
 import FileName from './filename';
-
+//import { ReactComponent as PublicIcon } from './public.svg';
+import PublicIcon from '@mui/icons-material/PublicSharp';
+import DuplicateIcon from '@mui/icons-material/DifferenceSharp';
+import { ReactComponent as CopyIcon } from './copy.svg';
+import DriveFileMoveIcon from '@mui/icons-material/DriveFileMoveSharp';
+import { ReactComponent as RarrC } from './rarrc.svg'
+import { ReactComponent as Rarr } from './rarr.svg'
 
 export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
     let { setErr } = useContext(ErrContext);
@@ -28,16 +36,18 @@ export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
     function duplicateFile() {
         modFuncs.duplicateFile(file);
     }
+    // <DragHandle />
 
     return (
         <div className="info">
             <FileName file={file} modFuncs={modFuncs} />
-            <BotToggle file={file} moveFile={modFuncs.moveFile} />
-            <DuplicateButton duplicateFile={duplicateFile} />
-            <CopyButton copyToTarget={copyToTarget} />
-            <MoveButton moveToTarget={moveToTarget} />
+                <BotToggle file={file} moveFile={modFuncs.moveFile} />
+                <DuplicateButton duplicateFile={duplicateFile} />
+            <span className="group">
+                <CopyButton copyToTarget={copyToTarget} />
+                <MoveButton moveToTarget={moveToTarget} />
+            </span>
             <PubButton file={file} copyFile={copyFile} />
-            <DragHandle />
             <span className="info__del">
                 <Del file={file} deleteFile={modFuncs.deleteFile} />
             </span>
@@ -50,15 +60,25 @@ function DragHandle() {
 }
 
 function CopyButton({copyToTarget}: {copyToTarget: () => void;}) {
-    return <button onClick={copyToTarget}><img className="rarr" alt="Copy" src="/rarrc.svg"/></button>
+    /*
+    function RarrC() {
+        return <img className="rarr" alt="Move" src="/rarrC.svg" />;
+    }
+    */
+    return <button onClick={copyToTarget} title="Copy to folder"><RarrC className='rarr'/></button>
 }
 
 function MoveButton({moveToTarget}: {moveToTarget: () => void;}){
-    return <button onClick={moveToTarget}><img className="rarr" alt="Move" src="/rarr.svg" /></button>
+    /*
+    function Rarr() {
+        return <img className="rarr" alt="Move" src="/rarr.svg" />;
+    }
+    */
+    return <button onClick={moveToTarget} title="Move to folder"><Rarr className='rarr' /></button>
 }
 
 function DuplicateButton({duplicateFile}: {duplicateFile: () => void}) {
-    return <button className="info__dupli" onClick={duplicateFile}>⧺</button>
+    return <button className="info__dupli" onClick={duplicateFile} title="Duplicate file"><DuplicateIcon /></button>
 }
 
 
@@ -69,6 +89,7 @@ type BotToggleProps = {
 
 export function BotToggle({file, moveFile}: BotToggleProps) {
     const target = basename(dirname(file.path)) === "bot" ? "top" : "bot";
+    const Icon = target == "bot" ? BotIcon : TopIcon;
 
     const move = () => {
         const i = file.path.lastIndexOf("/")
@@ -107,7 +128,7 @@ export function PubButton({file, copyFile}: PubButtonProps) {
         return;
     }
 
-    return <button className="info__bot" onClick={move}>pub</button>
+    return <button className="info__pub" onClick={move}><PublicIcon /></button>
 }
 
 type DelProps = {

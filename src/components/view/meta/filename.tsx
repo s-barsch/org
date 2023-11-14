@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import EditIcon from '@mui/icons-material/Edit';
+//import EditIcon from '@mui/icons-material/Edit';
+//import EditIcon from '@mui/icons-material/FormatColorText';
+//import EditIcon from '@mui/icons-material/DriveFileRenameOutline';
+import EditIcon from '@mui/icons-material/AutoFixHighSharp';
 import { modFuncsObj } from '../main';
 import File from 'funcs/files';
 import { join, dirname } from 'path-browserify';
