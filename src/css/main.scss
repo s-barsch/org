@@ -457,3 +457,18 @@ div.text-field {
 
     color:#ff0053
 }
+
+.results .info__name {
+    font-size:.9rem;
+}
+
+.result {
+    max-width:50rem;
+    white-space: pre-wrap;
+    //font-family: sans-serif;
+    font-size:1.2rem;
+    background:#222;
+    padding:.3rem .5rem;
+    margin-left:-.5rem;
+    border-radius:.5rem;
+}
