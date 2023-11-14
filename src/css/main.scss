@@ -193,6 +193,7 @@ img {
 
 .info .info__bot {
     vertical-align: baseline;
+    margin-right:.4rem;
 }
 
 .info__del {
@@ -336,7 +337,7 @@ button {
 .info input,
 .info {
     font-size:1rem;
-    font-family:var(--font-monospace);
+    font-family:sans-serif;
 }
 
 .info .info__edit {
