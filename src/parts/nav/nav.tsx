@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ThemeIcon from '@mui/icons-material/WbSunnySharp';
 import TargetIcon from '@mui/icons-material/AddShoppingCartOutlined';
 import { basename, dirname } from 'path-browserify';
@@ -63,6 +63,9 @@ export default function Nav({path}: NavProps) {
 
     useEffect(() => {
         async function fetchNav() {
+            if (path.substring(0, '/search'.length) == '/search') {
+                return
+            }
             const resp = await fetch('/api/nav' + path);
             if (resp.ok) {
                 setMeta(await resp.json());

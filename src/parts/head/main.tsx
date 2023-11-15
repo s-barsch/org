@@ -38,7 +38,6 @@ function Rename({path, renameFn, disabled}: HeadProps) {
 
         if (base === "search") {
             ref.current.focus({ preventScroll: true });
-            ref.current.classList.add("search-active")
             setName('');
         }
     }, [path]);
@@ -62,8 +61,10 @@ function Rename({path, renameFn, disabled}: HeadProps) {
         }
     }
 
+    let len = name.length === 0 ? 10 : name.length;
+
     return (
-        <input type="text" value={name} size={name.length}
+        <input type="text" value={name} size={len} name="head"
             ref={ref} disabled={name === "org" || disabled}
             onChange={handleTyping} onKeyDown={detectEnter} onBlur={submit} />
     )

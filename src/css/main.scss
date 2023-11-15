@@ -70,6 +70,10 @@ h1, h1 input {
     font-family:var(--font-monospace);
 }
 
+h1 input:focus {
+    background:blue;
+}
+
 h1.title,
 h1 input {
     font-size:4.5rem;
