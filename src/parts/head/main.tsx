@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { dirname } from 'path-browserify';
-import { orgBase } from 'funcs/paths';
+import { orgBase, isFile } from 'funcs/paths';
 type HeadProps = {
     path: string;
     disabled?: boolean;
@@ -38,7 +38,10 @@ function Rename({path, renameFn, disabled}: HeadProps) {
 
         if (base === "search") {
             ref.current.focus({ preventScroll: true });
+            ref.current.classList.add("search")
             setName('');
+        }
+        if (isFile(path)) {
         }
     }, [path]);
 

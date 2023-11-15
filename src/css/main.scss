@@ -70,8 +70,12 @@ h1, h1 input {
     font-family:var(--font-monospace);
 }
 
-h1 input:focus {
+h1 input.search:focus {
     background:blue;
+}
+
+h1 input:focus {
+    background: transparent;
 }
 
 h1.title,

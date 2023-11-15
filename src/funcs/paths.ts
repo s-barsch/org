@@ -109,6 +109,17 @@ export function isPublic(path: string): boolean {
     return section(path) === "public"
 }
 
+export function isFile(path: string): boolean {
+    switch (fileType(path)) {
+        case 'dir':
+        case 'all':
+            return false
+            break;
+        default:
+            return true
+    }
+}
+
 export function fileType(path: string): string {
     if (base(path) === "all") {
         return "all"
