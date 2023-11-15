@@ -51,7 +51,7 @@ export default function TextField({file, writeText, createFile, isSingle}: TextF
         <div className={"text" + (isNoSort(file.name) ? " no-sort" : "")}>
             <TextareaAutosize value={body}
                 className="text-field"
-                ref={ref}
+                name={file.id.toString()} ref={ref}
                 minRows={!isSingle ? 1 : fullScreenRows()}
                 onKeyDown={checkSubmit}
                 onChange={handleTyping}
