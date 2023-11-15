@@ -114,7 +114,6 @@ export function isFile(path: string): boolean {
         case 'dir':
         case 'all':
             return false
-            break;
         default:
             return true
     }
