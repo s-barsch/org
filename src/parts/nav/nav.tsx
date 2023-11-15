@@ -3,14 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import ThemeIcon from '@mui/icons-material/WbSunnySharp';
 import TargetIcon from '@mui/icons-material/AddShoppingCartOutlined';
 import { basename, dirname } from 'path-browserify';
-import CrumbNav from 'components/nav/crumbs';
-import { Del } from 'components/view/meta/main';
+import CrumbNav from 'parts/nav/crumbs';
+import { Del } from 'parts/meta/main';
 import { extendedBase, section } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
 //import { ErrContext } from 'context/err';
 import File from 'funcs/files';
 import { setActiveTarget, removeTarget } from 'funcs/targets';
-import { ErrComponent } from 'components/nav/error';
+import { ErrComponent } from 'parts/nav/error';
 import Config from 'config';
 import { ErrContext } from 'context/err';
 

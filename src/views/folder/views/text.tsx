@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Head from 'components/head/main';
-import TextField from 'components/view/files/text';
+import Head from 'parts/head/main';
+import TextField from 'views/folder/files/text';
 import File, { newFile } from 'funcs/files';
 
-import { modFuncsObj } from 'components/view/main';
+import { modFuncsObj } from 'views/folder/main';
 import { basename } from 'path-browserify';
 
 type TextViewProps = {

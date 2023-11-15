@@ -1,9 +1,9 @@
 import React from 'react';
-import { modFuncsObj } from 'components/view/main';
-import Head from 'components/head/main';
+import { modFuncsObj } from 'views/folder/main';
+import Head from 'parts/head/main';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
-import { DirList, FileList } from 'components/view/parts/list';
-import { AddDir, AddText } from 'components/view/parts/add';
+import { DirList, FileList } from 'views/folder/list';
+import { AddDir, AddText } from 'views/folder/add';
 import { HotKeys } from "react-hotkeys";
 
 type DirViewProps = {

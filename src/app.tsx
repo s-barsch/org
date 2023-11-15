@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import 'css/main.scss';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import View from 'components/view/main';
+import View from 'views/folder/main';
 //import Nav from 'components/nav/nav';
 import Targets from 'funcs/targets';
 import TargetsProvider, { TargetsContext } from './context/targets';
 import ErrProvider from './context/err';
 import { isDir, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
-import Write from 'components/write/write';
-import Nav from 'components/nav/nav';
-import Search from 'components/search/main';
+import Write from 'views/write/write';
+import Nav from 'parts/nav/nav';
+import Search from 'views/search/main';
 import File from 'funcs/files';
 import { dirPath } from 'funcs/paths';
-import Today from 'components/today/main';
-import Topics, { Topic } from 'components/topics/main';
+import Today from 'views/today/main';
+import Topics, { Topic } from 'views/topics/main';
 
 export default function App() {
     return (

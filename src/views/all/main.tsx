@@ -1,6 +1,6 @@
 import React from "react";
 import File, { filesOnly } from 'funcs/files';
-import { FileList } from 'components/search/list'
+import { FileList } from 'views/search/list'
 
 type AllViewProps = {
     path: string;

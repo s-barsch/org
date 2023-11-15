@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router";
-import Nav from "components/nav/nav";
-import { FileList } from 'components/search/list';
+import Nav from "parts/nav/nav";
+import { FileList } from 'views/search/list';
 import { newView } from "app";
 
 export type topic = {

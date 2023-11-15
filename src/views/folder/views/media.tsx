@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Head from 'components/head/main';
+import Head from 'parts/head/main';
 import File from 'funcs/files';
 import Image from '../files/image';
 import Video from '../files/video';
 
-import { modFuncsObj } from 'components/view/main';
+import { modFuncsObj } from 'views/folder/main';
 import { basename } from 'path-browserify';
 
 type TextViewProps = {

@@ -1,7 +1,7 @@
 import React from 'react';
 import File from 'funcs/files';
-import { modFuncsObj } from 'components/view/main';
-import AddInfo from 'components/view/parts/add-info'
+import { modFuncsObj } from 'views/folder/main';
+import AddInfo from 'views/folder/files/extra/add-info'
 
 type VideoProps = {
     file: File;

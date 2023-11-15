@@ -4,12 +4,12 @@ import ReverseIcon from '@mui/icons-material/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
 import { basename } from 'path-browserify';
 import File from 'funcs/files';
-import { modFuncsObj } from 'components/view/main';
+import { modFuncsObj } from 'views/folder/main';
 import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
 import { separate } from 'funcs/sort';
-import { FileSwitch } from 'components/view/parts/switch'
-import { Meta } from '../meta/main';
+import { FileSwitch } from 'views/folder/switch'
+import { Meta } from '../../parts/meta/main';
 import Sortable from 'sortablejs';
 import { flushSync } from 'react-dom';
 

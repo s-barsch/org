@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import All from 'components/all/main';
+import All from 'views/all/main';
 import { useNavigate } from 'react-router-dom';
 import { basename, dirname, join } from 'path-browserify';
 import { isText, fileType } from 'funcs/paths';
@@ -9,8 +9,8 @@ import File, { merge, insertNewDir, renameText, insertDuplicateFile,
     createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
     deleteRequest } from '../../funcs/requests';
-import TextView from 'components/view/views/text';
-import DirView from 'components/view/views/dir';
+import TextView from 'views/folder/views/text';
+import DirView from 'views/folder/views/dir';
 import { ErrContext } from 'context/err';
 import MediaView from './views/media';
 import { newTimestamp, isDir } from 'funcs/paths';

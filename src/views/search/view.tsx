@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Head from 'components/head/main';
+import Head from 'parts/head/main';
 import File, { filesOnly } from 'funcs/files';
 import { FileList } from './list';
 import { dirname, join } from 'path-browserify';

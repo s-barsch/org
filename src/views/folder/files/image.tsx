@@ -1,8 +1,8 @@
 import React from 'react';
 import File from 'funcs/files';
-import { modFuncsObj } from 'components/view/main';
+import { modFuncsObj } from 'views/folder/main';
 import Info from './info';
-import AddInfo from '../parts/add-info';
+import AddInfo from './extra/add-info';
 
 type ImageProps = {
     file: File;
