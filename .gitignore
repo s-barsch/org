@@ -31,4 +31,5 @@ test
 
 config.yaml
 go/go
+go/install
 err.log
