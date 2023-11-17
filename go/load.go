@@ -15,6 +15,9 @@ func setup() {
 		panic(err)
 	}
 	ROOT = path
+
+	IX.Words = map[string][]*index.File{}
+	IX.Tags = map[string][]*index.File{}
 }
 
 func loadIndex() error {
@@ -35,11 +38,4 @@ func loadIndex() error {
 	log.Printf("Extracted tags in %v", time.Since(start))
 
 	return nil
-}
-
-func mustRun(fn func() error) {
-	err := fn()
-	if err != nil {
-		panic(err)
-	}
 }

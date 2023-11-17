@@ -9,7 +9,7 @@ var BUILD = "build"
 
 func main() {
 	setup()
-	go mustRun(loadIndex)
+	go loadIndex()
 
 	http.Handle("/", routes())
 	http.ListenAndServe(":8334", nil)
