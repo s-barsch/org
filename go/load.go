@@ -3,10 +3,19 @@ package main
 import (
 	"log"
 	"org/go/index"
+	"path/filepath"
 	"time"
 )
 
 var IX = &index.Index{}
+
+func setup() {
+	path, err := filepath.EvalSymlinks(ROOT)
+	if err != nil {
+		panic(err)
+	}
+	ROOT = path
+}
 
 func loadIndex() error {
 	start := time.Now()
@@ -26,4 +35,11 @@ func loadIndex() error {
 	log.Printf("Extracted tags in %v", time.Since(start))
 
 	return nil
+}
+
+func mustRun(fn func() error) {
+	err := fn()
+	if err != nil {
+		panic(err)
+	}
 }
