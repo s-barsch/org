@@ -2,10 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ThemeIcon from '@mui/icons-material/WbSunnySharp';
 import TargetIcon from '@mui/icons-material/BookmarkBorder';
+import ActiveTargetIcon from '@mui/icons-material/BookmarkOutlined';
 import { basename, dirname } from 'path-browserify';
 import CrumbNav from 'parts/nav/crumbs';
 import { Del } from 'parts/meta/main';
-import { extendedBase, section } from 'funcs/paths';
+import { extendedBase, section, isFile } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
 //import { ErrContext } from 'context/err';
 import File from 'funcs/files';
@@ -13,6 +14,7 @@ import { setActiveTarget, removeTarget } from 'funcs/targets';
 import { ErrComponent } from 'parts/nav/error';
 import Config from 'config';
 import { ErrContext } from 'context/err';
+import { isActiveTarget } from 'app';
 
 type NavProps = {
     path: string;
@@ -52,10 +54,19 @@ export default function Nav({path}: NavProps) {
     }
 
     function TargetButton({clickFn}: {clickFn: () => void}) {
-        return <button onClick={clickFn}><TargetIcon /></button>
+        let isTarget = isActiveTarget(targets, path)
+        return <button onClick={clickFn}>{ isTarget ? <ActiveTargetIcon /> : <TargetIcon />}</button>
+    }
+
+    function ThemeButton({clickFn}: {clickFn: () => void}) {
+        return <button onClick={toggleTheme} ><ThemeIcon /></button>
     }
 
     function setThisActive() {
+        if (isFile(path)) {
+            alert("Cannot make file active dir.")
+            return;
+        }
         saveTargets(setActiveTarget(targets, path));
     }
 
@@ -107,7 +118,7 @@ export default function Nav({path}: NavProps) {
             <span className="right">
                 <ErrComponent err={err} />
                 <TargetButton clickFn={setThisActive} />
-                <button onClick={toggleTheme} ><ThemeIcon /></button>
+                <ThemeButton clickFn={toggleTheme} />
                 <Del file={viewFile} deleteFile={deleteDir} />
             </span>
         </nav>

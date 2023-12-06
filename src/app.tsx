@@ -129,6 +129,6 @@ function ViewLoader() {
     );
 }
 
-function isActiveTarget(targets: Targets, path: string): boolean {
+export function isActiveTarget(targets: Targets, path: string): boolean {
     return targets && path === targets.active;
 }
