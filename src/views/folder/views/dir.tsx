@@ -4,7 +4,7 @@ import Head from 'parts/head/main';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
 import { DirList, FileList } from 'views/folder/list';
 import { AddDir, AddText } from 'views/folder/add';
-import { HotKeys } from "react-hotkeys";
+import { HotKeys } from 'react-hotkeys';
 
 type DirViewProps = {
     path: string;
