@@ -10,7 +10,7 @@ import { extendedBase, section, isFile } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
 //import { ErrContext } from 'context/err';
 import File from 'funcs/files';
-import { setActiveTarget, removeTarget } from 'funcs/targets';
+import { setActiveTarget, removeTarget, unsetActiveTarget } from 'funcs/targets';
 import { ErrComponent } from 'parts/nav/error';
 import Config from 'config';
 import { ErrContext } from 'context/err';
@@ -65,6 +65,10 @@ export default function Nav({path}: NavProps) {
     function setThisActive() {
         if (isFile(path)) {
             alert("Cannot make file active dir.")
+            return;
+        }
+        if (isActiveTarget(targets, path)) {
+            saveTargets(unsetActiveTarget(targets));
             return;
         }
         saveTargets(setActiveTarget(targets, path));
