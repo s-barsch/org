@@ -54,6 +54,9 @@ export default function Nav({path}: NavProps) {
     }
 
     function TargetButton({clickFn}: {clickFn: () => void}) {
+        if (isFile(path)) {
+            return null;
+        }
         let isTarget = isActiveTarget(targets, path)
         return <button onClick={clickFn}>{ isTarget ? <ActiveTargetIcon /> : <TargetIcon />}</button>
     }
