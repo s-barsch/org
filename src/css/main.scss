@@ -381,11 +381,16 @@ div.text-field {
 }
 
 .text-field {
-    background:transparent;
+    //background:transparent;
+    background:#000;
     color:var(--color-fg);
     font-size:2.64rem;
     width:100%;
     overflow:hidden;
+}
+
+.text-field:focus {
+    background:#111;
 }
 
 .text textarea {
