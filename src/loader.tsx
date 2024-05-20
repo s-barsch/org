@@ -4,7 +4,7 @@ import { TargetsContext } from './context/targets';
 import Nav from 'parts/nav/nav';
 import { isDir, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
-import Targets from 'funcs/targets';
+import Targets, { isActiveTarget } from 'funcs/targets';
 import { dirPath } from 'funcs/paths';
 import useView, { viewObject } from 'state';
 import View from 'views/folder/main';
@@ -71,8 +71,4 @@ export default function Loader() {
             <View path={path} files={view.dir.files} sorted={view.dir.sorted} setDir={() => {}} />
         </>
     );
-}
-
-export function isActiveTarget(targets: Targets, path: string): boolean {
-    return targets && path === targets.active;
 }

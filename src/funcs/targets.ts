@@ -7,6 +7,10 @@ type Targets = {
 
 export default Targets; 
 
+export function isActiveTarget(targets: Targets, path: string): boolean {
+    return targets && path === targets.active;
+}
+
 export function readTargets(): Targets {
     const storage = localStorage.getItem('targets');
     let t: Targets;

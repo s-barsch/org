@@ -14,7 +14,7 @@ import { setActiveTarget, removeTarget, unsetActiveTarget } from 'funcs/targets'
 import { ErrComponent } from 'parts/nav/error';
 import Config from 'config';
 import { ErrContext } from 'context/err';
-import { isActiveTarget } from 'loader';
+import { isActiveTarget } from 'funcs/targets';
 
 type NavProps = {
     path: string;
