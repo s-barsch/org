@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { basename, dirname, join } from 'path-browserify';
 import { isText, fileType } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
-import { dirContent } from 'state';
+import useView, { dirContent } from 'state';
 import File, { merge, insertNewDir, renameText, insertDuplicateFile,
     createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
 import { saveSortRequest, newDirRequest, moveRequest, writeRequest,
@@ -28,12 +28,11 @@ type ViewProps = {
     path: string;
     files: File[];
     sorted: boolean;
-    setDir: (dir: dirContent) => void;
 }
 
-export default function View({path, files, sorted, setDir}: ViewProps) {
+export default function View({path, files, sorted}: ViewProps) {
     let { setErr } = useContext(ErrContext);
-
+    const { setDir } = useView();
 
     const navigate = useNavigate();
 

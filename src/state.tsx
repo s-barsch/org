@@ -7,7 +7,7 @@ interface ViewState {
   view: viewObject;
   status: string;
   loadView: (path: string) => void
-  setView: (v: viewObject) => void;
+  setDir: (dir: dirContent) => void;
 }
 
 const useView = create<ViewState>()(
@@ -16,7 +16,11 @@ const useView = create<ViewState>()(
       (set, get) => ({
         view: newView(),
         status: "",
-        setView: () => {},
+        setDir: (dir: dirContent) => {
+            let v = get().view;
+            v.dir = dir;
+            set({ view: v });
+        },
         loadView: async (path: string) => {
             const resp = await fetch("/api/view" + path);
             if (!resp.ok) {
@@ -24,9 +28,7 @@ const useView = create<ViewState>()(
                 return;
             }
             set({ view: await resp.json() })
-        }
-        ,
-        //(by) => set((state) => ({ bears: state.bears + by }))
+        },
         renameView: () => {},
         addNewDir: () => {},
       }),

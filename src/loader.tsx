@@ -68,7 +68,7 @@ export default function Loader() {
     return (
         <>
             <Nav path={path} />
-            <View path={path} files={view.dir.files} sorted={view.dir.sorted} setDir={() => {}} />
+            <View path={path} files={view.dir.files} sorted={view.dir.sorted} />
         </>
     );
 }
