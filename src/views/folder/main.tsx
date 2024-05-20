@@ -51,18 +51,7 @@ export default function View({path, files, sorted}: ViewProps) {
         case "all":
             return <All path={path} files={files} />;
         default:
-            return <DirView path={path} files={files} addNewDir={addNewDir} saveSort={saveSort} modFuncs={modFuncs} />
-    }
-
-    async function addNewDir(name: string) {
-        if (isPresent(files, name)) {
-            alert("Dir with this name already exists.");
-            return;
-        }
-        const dirPath = join(path, name);
-
-        await newDirRequest(dirPath, setErr);
-        update(insertNewDir(files.slice(), dirPath, sorted), sorted);
+            return <DirView path={path} files={files} saveSort={saveSort} modFuncs={modFuncs} />
     }
 
     // meta

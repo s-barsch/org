@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import File, { renameText, updateFile } from 'funcs/files';
+import File, { insertNewDir, isPresent, renameText, updateFile } from 'funcs/files';
 import type {} from '@redux-devtools/extension'
 import { basename, dirname, join } from 'path-browserify';
-import { moveRequest, saveSortRequest, writeRequest } from 'funcs/requests';
+import { moveRequest, newDirRequest, saveSortRequest, writeRequest } from 'funcs/requests';
 import { isDir, isText } from 'funcs/paths';
 import { errObj } from 'context/err';
 
@@ -15,6 +15,7 @@ interface ViewState {
   renameView: (newName: string) => void;
   update: (newFiles: File[], isSorted: boolean) => void;
   writeFile: (f: File) => void;
+  addNewDir: (name: string) => void;
 }
 
 function setErr(err: errObj) {
@@ -64,7 +65,17 @@ const useView = create<ViewState>()(
           get().update(updateFile(d.files.slice(), f, d.sorted), d.sorted)
       },
 
-        addNewDir: () => {},
+        addNewDir: async (name: string) => {
+          const v = get().view;
+          if (isPresent(v.dir.files, name)) {
+              alert("Dir with this name already exists.");
+              return;
+          }
+          const dirPath = join(v.path, name);
+
+          await newDirRequest(dirPath, setErr)
+          get().update(insertNewDir(v.dir.files.slice(), dirPath, v.dir.sorted), v.dir.sorted)
+          },
       }),
       {
         name: 'dir-state',

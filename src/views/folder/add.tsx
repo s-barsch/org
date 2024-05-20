@@ -1,10 +1,11 @@
 import React, {useRef, useCallback, useState} from 'react';
+import useView from 'state';
 
 export function AddText({createFile}: {createFile: () => void}) {
     return <button className="add-text" onClick={createFile}>+ Text</button>
 }
 
-export function AddDir({addNewDir}: {addNewDir: (name: string) => void;}) {
+export function AddDir() {
     const [field, showField] = useState(false);
     const [fieldEl] = useHookWithRefCallback()
 
@@ -13,7 +14,7 @@ export function AddDir({addNewDir}: {addNewDir: (name: string) => void;}) {
     }
 
     if (field) {
-        return <AddField fieldRef={fieldEl} addNewDir={addNewDir} toggleFn={toggleField} />
+        return <AddField fieldRef={fieldEl} toggleFn={toggleField} />
     }
 
     return <AddButton clickFn={toggleField} />
@@ -21,12 +22,12 @@ export function AddDir({addNewDir}: {addNewDir: (name: string) => void;}) {
 
 type AddFieldProps = {
     fieldRef: (node: any) => void;
-    addNewDir: (name: string) => void;
     toggleFn: () => void;
 }
 
-function AddField({fieldRef, addNewDir, toggleFn}: AddFieldProps) {
+function AddField({fieldRef, toggleFn}: AddFieldProps) {
     const [dirName, setDirName] = useState("");
+    const { addNewDir } = useView();
 
     function handleTyping(e: React.FormEvent<HTMLInputElement>) {
         setDirName(e.currentTarget.value);
