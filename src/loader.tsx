@@ -26,7 +26,7 @@ export function newView(): viewObject {
     };
 }
 
-export function ViewLoader() {
+export default function Loader() {
     const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
 
