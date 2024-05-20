@@ -4,7 +4,7 @@ import { TargetsContext } from './context/targets';
 import Nav from 'parts/nav/nav';
 import { isDir, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
-import Targets, { isActiveTarget } from 'funcs/targets';
+import { isActiveTarget } from 'funcs/targets';
 import { dirPath } from 'funcs/paths';
 import useView, { viewObject } from 'state';
 import View from 'views/folder/main';
@@ -13,9 +13,18 @@ export default function Loader() {
     const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
 
-    const { view, loadView } = useView()
+    const { view, setView } = useView()
 
     const [status, setStatus] = useState("");
+
+    async function loadView(path: string) {
+        const resp = await fetch("/api/view" + path);
+        if (!resp.ok) {
+            setStatus(resp.status + " - " + resp.statusText)
+        }
+        const newView = await resp.json();
+        setView(newView);
+    };
 
     // only load when a new *dir* is requested
     useEffect(() => {

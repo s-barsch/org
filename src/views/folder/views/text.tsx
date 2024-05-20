@@ -10,15 +10,14 @@ import { basename } from 'path-browserify';
 type TextViewProps = {
     path: string;
     files: File[];
-    renameView: (name: string) => void;
     modFuncs: modFuncsObj;
 }
 
-export default function TextView({path, files, renameView, modFuncs}: TextViewProps) {
+export default function TextView({path, files, modFuncs}: TextViewProps) {
     let { text, isNew } = findText(files, path);
     return (
         <>
-            <Head path={path} isNew={isNew} disabled={isNew} renameFn={renameView} />
+            <Head path={path} isNew={isNew} disabled={isNew} />
             <TextField file={text} createFile={modFuncs.createFile}
                 writeText={modFuncs.writeFile} isSingle={true} />
         </>

@@ -10,13 +10,12 @@ type DirViewProps = {
     path: string;
     files: File[];
     addNewDir: (name: string) => void;
-    renameView: (name: string) => void;
     saveSort: (part: File[], type: string) => void;
     modFuncs: modFuncsObj;
 }
 
 
-export default function DirView({path, files, addNewDir, renameView, saveSort, modFuncs}: DirViewProps) {
+export default function DirView({path, files, addNewDir, saveSort, modFuncs}: DirViewProps) {
 const keyMap = {
     NEW_TEXT: "ctrl+enter"
 };
@@ -27,7 +26,7 @@ const handlers = {
 
     return (
         <HotKeys keyMap={keyMap} handlers={handlers}>
-            <Head path={path} renameFn={renameView} />
+            <Head path={path} />
             <nav id="dirs">
                 <DirList  dirs={dirsOnly(files)} saveSort={saveSort} />
                 <AddDir addNewDir={addNewDir} />

@@ -1,20 +1,21 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { dirname } from 'path-browserify';
+import { Link, useNavigate } from 'react-router-dom';
+import { dirname, join } from 'path-browserify';
 import { orgBase } from 'funcs/paths';
+import useView from 'state';
 type HeadProps = {
     path: string;
     disabled?: boolean;
     isNew?: boolean;
-    renameFn: (name: string) => void;
+    
 }
 
-export default function Head({path, renameFn, isNew, disabled}: HeadProps) {
+export default function Head({path, isNew, disabled}: HeadProps) {
     return (
         <h1 className="name">
         <Link className="parent" to={dirname(path)}>^</Link>
         <IsNew isNew={isNew}>
-            <Rename path={path} disabled={disabled} renameFn={renameFn} />
+            <Rename path={path} disabled={disabled} />
         </IsNew>
         </h1>
     )
@@ -27,8 +28,10 @@ function IsNew({ children, isNew }: {children: React.ReactNode, isNew?: boolean}
     return <>{children}</>;
 }
 
-function Rename({path, renameFn, disabled}: HeadProps) {
+function Rename({ path, disabled }: HeadProps) {
+    const { renameView } = useView();
     const [name, setName] = useState(orgBase(path));
+    const navigate = useNavigate();
 
     const ref = useRef<HTMLInputElement>(null!)
 
@@ -53,7 +56,9 @@ function Rename({path, renameFn, disabled}: HeadProps) {
         if (old === name || name === '') {
             return;
         }
-        renameFn(name);
+        renameView(name);
+        const newPath = join(dirname(path), name);
+        navigate(newPath);
     }
 
     function detectEnter(e: React.KeyboardEvent<HTMLInputElement>) {

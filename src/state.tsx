@@ -1,13 +1,25 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import File from 'funcs/files';
+import File, { renameText } from 'funcs/files';
 import type {} from '@redux-devtools/extension'
+import { basename, dirname, join } from 'path-browserify';
+import { moveRequest, saveSortRequest } from 'funcs/requests';
+import { isDir, isText } from 'funcs/paths';
+import { errObj } from 'context/err';
 
 interface ViewState {
   view: viewObject;
   status: string;
-  loadView: (path: string) => void
+  setView: (v: viewObject) => void
   setDir: (dir: dirContent) => void;
+  renameView: (newName: string) => void;
+  update: (newFiles: File[], isSorted: boolean) => void;
+}
+
+function setErr(err: errObj) {
+    if (err.code !== 200) {
+        alert(JSON.stringify(err));
+    }
 }
 
 const useView = create<ViewState>()(
@@ -21,15 +33,30 @@ const useView = create<ViewState>()(
             v.dir = dir;
             set({ view: v });
         },
-        loadView: async (path: string) => {
-            const resp = await fetch("/api/view" + path);
-            if (!resp.ok) {
-                set({ status: resp.status + " - " + resp.statusText });
-                return;
+        update: (newFiles, isSorted) => {
+            get().setDir({
+                sorted: isSorted,
+                files:  newFiles
+            })
+            const path = get().view.path
+            if (isSorted && isDir(path)) {
+                saveSortRequest(path, newFiles, setErr)
             }
-            set({ view: await resp.json() })
         },
-        renameView: () => {},
+        setView: (v: viewObject) => {set( {view: v})},
+        renameView: async (newName) => {
+            const path = get().view.path;
+            let oldName = basename(path);
+            let newPath = join(dirname(path), newName);
+    
+            await moveRequest(path, newPath, setErr);
+    
+            const d = get().view.dir;
+            if (isText(path)) {
+                const newFiles = renameText(d.files.slice(), oldName, newName)
+                get().update(newFiles, d.sorted);
+            }
+        },
         addNewDir: () => {},
       }),
       {

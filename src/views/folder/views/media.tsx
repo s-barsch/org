@@ -11,11 +11,10 @@ import { basename } from 'path-browserify';
 type TextViewProps = {
     path: string;
     files: File[];
-    renameView: (name: string) => void;
     modFuncs: modFuncsObj;
 }
 
-export default function MediaView({path, files, renameView, modFuncs}: TextViewProps) {
+export default function MediaView({path, files, modFuncs}: TextViewProps) {
     if (!files || files.length === 0) {
         return <>No files. (MediaView)</>
     }
@@ -28,7 +27,7 @@ export default function MediaView({path, files, renameView, modFuncs}: TextViewP
     }
     return (
         <>
-            <Head path={path} renameFn={renameView} />
+            <Head path={path} />
             <Media file={media} modFuncs={modFuncs} isSingle={true} />
         </>
     )

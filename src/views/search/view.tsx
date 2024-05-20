@@ -21,7 +21,7 @@ export function SearchView({path, months, files}: {path: string, months: monthOb
 
     return (
         <>
-            <Head path={path} renameFn={renameSearch} />
+            <code>Head navigation doesn’t work currently.</code>
             <TimeChart months={months} />
             <section id="files">
                 <FileList files={filesOnly(files)} />
