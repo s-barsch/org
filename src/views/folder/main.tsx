@@ -6,7 +6,7 @@ import { isText, fileType } from 'funcs/paths';
 import { orgSort } from 'funcs/sort';
 import useView from 'state';
 import File, { merge, insertNewDir, insertDuplicateFile,
-    createDuplicate, isPresent, removeFromArr, updateFile } from 'funcs/files';
+    createDuplicate, isPresent, removeFromArr } from 'funcs/files';
 import { newDirRequest, moveRequest, writeRequest,
     deleteRequest } from '../../funcs/requests';
 import TextView from 'views/folder/views/text';
@@ -17,7 +17,6 @@ import { newTimestamp } from 'funcs/paths';
 
 export type modFuncsObj = {
     createFile: () => void;
-    writeFile: (f: File) => void;
     duplicateFile: (f: File) => void;
     deleteFile: (f: File) => void;
     moveFile: (f: File, newPath: string) => void;
@@ -38,7 +37,6 @@ export default function View({path, files, sorted}: ViewProps) {
 
     const modFuncs: modFuncsObj = {
         createFile:  createFile,
-        writeFile:      writeFile,
         deleteFile:     deleteFile,
         moveFile:       moveFile,
         renameFile:     renameFile,
@@ -65,11 +63,6 @@ export default function View({path, files, sorted}: ViewProps) {
 
         await newDirRequest(dirPath, setErr);
         update(insertNewDir(files.slice(), dirPath, sorted), sorted);
-    }
-
-    async function writeFile(f: File) {
-        await writeRequest(f.path, f.body, setErr);
-        update(updateFile(files.slice(), f, sorted), sorted)
     }
 
     // meta

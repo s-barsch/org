@@ -18,8 +18,7 @@ export default function TextView({path, files, modFuncs}: TextViewProps) {
     return (
         <>
             <Head path={path} isNew={isNew} disabled={isNew} />
-            <TextField file={text} createFile={modFuncs.createFile}
-                writeText={modFuncs.writeFile} isSingle={true} />
+            <TextField file={text} createFile={modFuncs.createFile} isSingle={true} />
         </>
     )
 }

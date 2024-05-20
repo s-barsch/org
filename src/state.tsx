@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import File, { renameText } from 'funcs/files';
+import File, { renameText, updateFile } from 'funcs/files';
 import type {} from '@redux-devtools/extension'
 import { basename, dirname, join } from 'path-browserify';
-import { moveRequest, saveSortRequest } from 'funcs/requests';
+import { moveRequest, saveSortRequest, writeRequest } from 'funcs/requests';
 import { isDir, isText } from 'funcs/paths';
 import { errObj } from 'context/err';
 
@@ -14,6 +14,7 @@ interface ViewState {
   setDir: (dir: dirContent) => void;
   renameView: (newName: string) => void;
   update: (newFiles: File[], isSorted: boolean) => void;
+  writeFile: (f: File) => void;
 }
 
 function setErr(err: errObj) {
@@ -57,6 +58,12 @@ const useView = create<ViewState>()(
                 get().update(newFiles, d.sorted);
             }
         },
+        writeFile: async (f: File) => {
+          const d = get().view.dir;
+          await writeRequest(f.path, f.body, setErr);
+          get().update(updateFile(d.files.slice(), f, d.sorted), d.sorted)
+      },
+
         addNewDir: () => {},
       }),
       {

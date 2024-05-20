@@ -21,7 +21,7 @@ export function FileSwitch({file, modFuncs, isSingle}: FileSwitchProps) {
     switch (file.type) {
         case "text":
             return <>
-                <Text file={file} createFile={modFuncs.createFile} writeText={modFuncs.writeFile} isSingle={isSingle} />
+                <Text file={file} createFile={modFuncs.createFile} isSingle={isSingle} />
             </>
         case "image":
             return <Image file={file} modFuncs={modFuncs} />

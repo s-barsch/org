@@ -13,6 +13,6 @@ type InfoFileProps = {
 export default function Info({ mainFilePath, modFuncs }: InfoFileProps) {
     const info = newInfoFile(mainFilePath);
     return (
-        <TextField file={info} writeText={modFuncs.writeFile} isSingle={false} />
+        <TextField file={info} isSingle={false} />
     )
 }

@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import File from 'funcs/files';
+import useView from 'state';
 
 type TextFieldProps = {
     file: File;
     createFile?: () => void;
-    writeText: (f: File) => void;
     isSingle: boolean;
 }
 
-export default function TextField({file, writeText, createFile, isSingle}: TextFieldProps) {
+export default function TextField({file, createFile, isSingle}: TextFieldProps) {
+    const { writeFile } = useView();
     const [body, setBody] = useState(file.body);
 
     const ref = useRef<HTMLTextAreaElement>(null!)
@@ -44,7 +45,7 @@ export default function TextField({file, writeText, createFile, isSingle}: TextF
             return;
         }
         file.body = body;
-        writeText(file);
+        writeFile(file);
     }
 
     return (
