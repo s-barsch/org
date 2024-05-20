@@ -4,39 +4,18 @@ import { TargetsContext } from './context/targets';
 import Nav from 'parts/nav/nav';
 import { isDir, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
-import View from 'views/folder/main';
 import Targets from 'funcs/targets';
-import File from 'funcs/files';
 import { dirPath } from 'funcs/paths';
-
-export type viewObject = {
-    path: string;
-    dir: dirContents;
-}
-
-export type dirContents = {
-    files:  File[];
-    sorted: boolean;
-}
-
-export function newView(): viewObject {
-    return {
-        path: "",
-        dir: { files: [], sorted: false },
-    };
-}
+import useView, { viewObject } from 'state';
+import View from 'views/folder/main';
 
 export default function Loader() {
     const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
 
-    const [status, setStatus] = useState("");
-    const [view, setView] = useState(newView());
+    const { view, loadView } = useView()
 
-    function setDir(dir: dirContents) {
-        view.dir = dir;
-        setView({ ...view });
-    }
+    const [status, setStatus] = useState("");
 
     // only load when a new *dir* is requested
     useEffect(() => {
@@ -47,15 +26,6 @@ export default function Loader() {
             loadView(path);
         }
     }, [path, view]);
-
-    async function loadView(path: string) {
-        const resp = await fetch("/api/view" + path);
-        if (!resp.ok) {
-            setStatus(resp.status + " - " + resp.statusText)
-        }
-        const newView = await resp.json();
-        setView(newView);
-    };
 
     function shouldLoad(path: string, view: viewObject): boolean {
         // load if is new dir
@@ -98,7 +68,7 @@ export default function Loader() {
     return (
         <>
             <Nav path={path} />
-            <View path={path} files={view.dir.files} sorted={view.dir.sorted} setDir={setDir} />
+            <View path={path} files={view.dir.files} sorted={view.dir.sorted} setDir={() => {}} />
         </>
     );
 }

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import Nav from 'parts/nav/nav';
 import { FileList } from 'views/search/list';
-import { newView } from 'loader';
+import { newView } from 'state';
 
 export type topic = {
     name: string;
