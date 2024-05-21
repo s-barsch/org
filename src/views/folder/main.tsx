@@ -3,11 +3,9 @@ import All from 'views/all/main';
 import { useNavigate } from 'react-router-dom';
 import { dirname, join } from 'path-browserify';
 import { isText, fileType } from 'funcs/paths';
-import { orgSort } from 'funcs/sort';
 import useView from 'state';
-import File, { merge, insertNewDir, insertDuplicateFile,
-    createDuplicate, isPresent, removeFromArr } from 'funcs/files';
-import { newDirRequest, moveRequest, writeRequest,
+import File, { merge, insertDuplicateFile, createDuplicate, removeFromArr } from 'funcs/files';
+import { moveRequest, writeRequest,
     deleteRequest } from '../../funcs/requests';
 import TextView from 'views/folder/views/text';
 import DirView from 'views/folder/views/dir';
@@ -20,7 +18,6 @@ export type modFuncsObj = {
     duplicateFile: (f: File) => void;
     deleteFile: (f: File) => void;
     moveFile: (f: File, newPath: string) => void;
-    renameFile: (oldPath: string, f: File) => void;
 }
 
 type ViewProps = {
@@ -39,7 +36,6 @@ export default function View({path, files, sorted}: ViewProps) {
         createFile:  createFile,
         deleteFile:     deleteFile,
         moveFile:       moveFile,
-        renameFile:     renameFile,
         duplicateFile:  duplicateFile,
     }
 
@@ -52,16 +48,6 @@ export default function View({path, files, sorted}: ViewProps) {
             return <All path={path} files={files} />;
         default:
             return <DirView path={path} files={files} saveSort={saveSort} modFuncs={modFuncs} />
-    }
-
-    // meta
-    async function renameFile(oldPath: string, f: File) {
-        let newFiles = files.slice()
-        if (!sorted) {
-            newFiles = orgSort(newFiles)
-        }
-        await moveRequest(oldPath, f.path, setErr);
-        update(newFiles, sorted);
     }
 
     // meta

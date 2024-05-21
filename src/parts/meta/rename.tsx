@@ -7,8 +7,10 @@ import EditIcon from '@mui/icons-material/AutoFixHighSharp';
 import { modFuncsObj } from '../../views/folder/main';
 import File from 'funcs/files';
 import { join, dirname } from 'path-browserify';
+import useView from 'state';
 
 export default function FileName({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
+    const { renameFile } = useView();
     const [edit, setEdit] = useState(false);
 
     const [name, setName] = useState("");
@@ -45,7 +47,7 @@ export default function FileName({file, modFuncs}: {file: File, modFuncs: modFun
         const oldPath = file.path;
         file.path = join(dirname(file.path), name);
         file.name = name;
-        modFuncs.renameFile(oldPath, file);
+        renameFile(oldPath, file);
     }
 
     return (

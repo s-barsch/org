@@ -6,6 +6,7 @@ import { basename, dirname, join } from 'path-browserify';
 import { moveRequest, newDirRequest, saveSortRequest, writeRequest } from 'funcs/requests';
 import { isDir, isText } from 'funcs/paths';
 import { errObj } from 'context/err';
+import { orgSort } from 'funcs/sort';
 
 interface ViewState {
   view: viewObject;
@@ -16,6 +17,7 @@ interface ViewState {
   update: (newFiles: File[], isSorted: boolean) => void;
   writeFile: (f: File) => void;
   addNewDir: (name: string) => void;
+  renameFile: (oldPath: string, f: File) => void;
 }
 
 function setErr(err: errObj) {
@@ -31,51 +33,59 @@ const useView = create<ViewState>()(
         view: newView(),
         status: "",
         setDir: (dir: dirContent) => {
-            let v = get().view;
-            v.dir = dir;
-            set({ view: v });
+          let v = get().view;
+          v.dir = dir;
+          set({ view: v });
         },
         update: (newFiles, isSorted) => {
-            get().setDir({
-                sorted: isSorted,
-                files:  newFiles
-            })
-            const path = get().view.path
-            if (isSorted && isDir(path)) {
-                saveSortRequest(path, newFiles, setErr)
-            }
+          get().setDir({
+            sorted: isSorted,
+            files: newFiles
+          })
+          const path = get().view.path
+          if (isSorted && isDir(path)) {
+            saveSortRequest(path, newFiles, setErr)
+          }
         },
-        setView: (v: viewObject) => {set( {view: v})},
+        setView: (v: viewObject) => { set({ view: v }) },
         renameView: async (newName) => {
-            const path = get().view.path;
-            let oldName = basename(path);
-            let newPath = join(dirname(path), newName);
-    
-            await moveRequest(path, newPath, setErr);
-    
-            const d = get().view.dir;
-            if (isText(path)) {
-                const newFiles = renameText(d.files.slice(), oldName, newName)
-                get().update(newFiles, d.sorted);
-            }
+          const path = get().view.path;
+          let oldName = basename(path);
+          let newPath = join(dirname(path), newName);
+
+          await moveRequest(path, newPath, setErr);
+
+          const d = get().view.dir;
+          if (isText(path)) {
+            const newFiles = renameText(d.files.slice(), oldName, newName)
+            get().update(newFiles, d.sorted);
+          }
         },
         writeFile: async (f: File) => {
           const d = get().view.dir;
           await writeRequest(f.path, f.body, setErr);
           get().update(updateFile(d.files.slice(), f, d.sorted), d.sorted)
-      },
-
+        },
         addNewDir: async (name: string) => {
           const v = get().view;
           if (isPresent(v.dir.files, name)) {
-              alert("Dir with this name already exists.");
-              return;
+            alert("Dir with this name already exists.");
+            return;
           }
           const dirPath = join(v.path, name);
 
           await newDirRequest(dirPath, setErr)
           get().update(insertNewDir(v.dir.files.slice(), dirPath, v.dir.sorted), v.dir.sorted)
-          },
+        },
+        renameFile: async (oldPath: string, f: File) => {
+          const v = get().view
+          let newFiles = v.dir.files.slice()
+          if (!v.dir.sorted) {
+            newFiles = orgSort(newFiles)
+          }
+          await moveRequest(oldPath, f.path, setErr);
+          get().update(newFiles, v.dir.sorted);
+        }
       }),
       {
         name: 'dir-state',
