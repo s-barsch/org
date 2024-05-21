@@ -6,7 +6,7 @@ import { isDir, pageTitle } from 'funcs/paths';
 import { setFavicon, blinkFavicon } from 'funcs/favicon';
 import { isActiveTarget } from 'funcs/targets';
 import { dirPath } from 'funcs/paths';
-import useView, { viewObject } from 'state';
+import useView from 'state';
 import View from 'views/View';
 
 export default function Loader() {
@@ -14,44 +14,45 @@ export default function Loader() {
     const path = useLocation().pathname;
 
     const { view, setView } = useView()
-
     const [status, setStatus] = useState("");
 
-    async function loadView(path: string) {
-        const resp = await fetch("/api/view" + path);
-        if (!resp.ok) {
-            setStatus(resp.status + " - " + resp.statusText)
-        }
-        const newView = await resp.json();
-        setView(newView);
-    };
+    const viewPath = view.path;
 
-    // only load when a new *dir* is requested
     useEffect(() => {
+        async function loadView(path: string) {
+            const resp = await fetch("/api/view" + path);
+            if (!resp.ok) {
+                setStatus(resp.status + " - " + resp.statusText)
+            }
+            const newView = await resp.json();
+            setView(newView);
+        };
+    
+        // only load when a new *dir* is requested
+        function shouldLoad(path: string, viewPath: string): boolean {
+            // load if is new dir
+            if (isDir(path) && dirPath(path) !== viewPath) {
+                return true
+            }
+            // load if is file but no dir loaded
+            if (!isDir(path) && viewPath === "") {
+                return true
+            }
+            return false
+        }
+
         document.title = pageTitle(path);
         setFavicon(path);
 
-        if (shouldLoad(path, view)) {
+        if (shouldLoad(path, viewPath)) {
             loadView(path);
         }
-    }, [path, view]);
-
-    function shouldLoad(path: string, view: viewObject): boolean {
-        // load if is new dir
-        if (isDir(path) && dirPath(path) !== view.path) {
-            return true
-        }
-        // load if is file but no dir loaded
-        if (!isDir(path) && view.path === "") {
-            return true
-        }
-        return false
-    }
+    }, [path, viewPath, setView]);
 
     // listen if another tab sends files to this tab.
     const listenForWrite = useCallback(() => {
         if (isActiveTarget(targets, path)) {
-            loadView(path);
+            // loadView(path);
             blinkFavicon(path);
         }
     }, [targets, path]);
