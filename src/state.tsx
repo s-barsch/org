@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, removeFromArr, renameText, updateFile } from 'funcs/files';
+import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, merge, removeFromArr, renameText, updateFile } from 'funcs/files';
 import type {} from '@redux-devtools/extension'
 import { basename, dirname, join } from 'path-browserify';
 import { deleteRequest, moveRequest, newDirRequest, saveSortRequest, writeRequest } from 'funcs/requests';
@@ -20,6 +20,7 @@ interface ViewState {
   renameFile: (oldPath: string, f: File) => void;
   duplicateFile: (f: File) => void;
   deleteFile: (f: File) => void;
+  saveSort: (part: File[], type: string) => void;
 }
 
 function setErr(err: errObj) {
@@ -114,6 +115,12 @@ const useView = create<ViewState>()(
           }
           await moveRequest(oldPath, f.path, setErr);
           get().update(newFiles, v.dir.sorted);
+        },
+        // list view
+        saveSort: async (part: File[], type: string) => {
+          const v = get().view;
+          const newFiles = merge(v.dir.files.slice(), part, type);
+          get().update(newFiles, true);
         }
       }),
       {

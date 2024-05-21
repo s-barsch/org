@@ -12,14 +12,15 @@ import { FileSwitch } from 'views/folder/switch'
 import { Meta } from '../../parts/meta/main';
 import Sortable from 'sortablejs';
 import { flushSync } from 'react-dom';
+import useView from 'state';
 
 type FileListProps = {
     files: File[];
-    saveSort: (part: File[], type: string) => void;
     modFuncs: modFuncsObj;
 }
 
-export function FileList({files, saveSort, modFuncs}: FileListProps) {
+export function FileList({files, modFuncs}: FileListProps) {
+    const { saveSort } = useView();
     const [state, setState] = useState<File[]>(files);
 
     useEffect(() => {
@@ -82,12 +83,8 @@ function Dir({dir}: {dir: File;}) {
     )
 }
 
-type DirListProps = {
-    dirs: File[];
-    saveSort: (part: File[], type: string) => void;
-}
-
-export function DirList({dirs, saveSort}: DirListProps) {
+export function DirList({dirs}: { dirs: File[] }) {
+    const { saveSort } = useView();
     const [state, setState] = useState(dirs);
 
     useEffect(() => {

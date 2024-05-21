@@ -42,7 +42,7 @@ export default function View({path, files, sorted}: ViewProps) {
         case "all":
             return <All path={path} files={files} />;
         default:
-            return <DirView path={path} files={files} saveSort={saveSort} modFuncs={modFuncs} />
+            return <DirView path={path} files={files} modFuncs={modFuncs} />
     }
 
   
@@ -60,11 +60,5 @@ export default function View({path, files, sorted}: ViewProps) {
         const dirPath = isText(path) ? dirname(path) : path;
         const filePath = join(dirPath, newTimestamp() + ".txt")
         navigate(filePath);
-    }
-
-    // list view
-    async function saveSort(part: File[], type: string) {
-        const newFiles = merge(files.slice(), part, type);
-        update(newFiles, true);
     }
 }
