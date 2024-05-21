@@ -5,7 +5,7 @@ import { dirname, join } from 'path-browserify';
 import { isText, fileType } from 'funcs/paths';
 import useView from 'state';
 import File, { merge, removeFromArr } from 'funcs/files';
-import { moveRequest, deleteRequest } from '../../funcs/requests';
+import { moveRequest } from '../../funcs/requests';
 import TextView from 'views/folder/views/text';
 import DirView from 'views/folder/views/dir';
 import { ErrContext } from 'context/err';
@@ -14,7 +14,6 @@ import { newTimestamp } from 'funcs/paths';
 
 export type modFuncsObj = {
     createFile: () => void;
-    deleteFile: (f: File) => void;
     moveFile: (f: File, newPath: string) => void;
 }
 
@@ -32,7 +31,6 @@ export default function View({path, files, sorted}: ViewProps) {
 
     const modFuncs: modFuncsObj = {
         createFile:  createFile,
-        deleteFile:     deleteFile,
         moveFile:       moveFile,
     }
 
@@ -55,15 +53,7 @@ export default function View({path, files, sorted}: ViewProps) {
         update(removeFromArr(files.slice(), f.name), sorted);
     }
 
-    // meta, nav
-    async function deleteFile(f: File) {
-        let isSorted = sorted;
-        if (f.name === ".sort") {
-            isSorted = false;
-        }
-        await deleteRequest(f.path, setErr);
-        update(removeFromArr(files.slice(), f.name), isSorted);
-    }
+
 
     // text, dir view
     function createFile() {

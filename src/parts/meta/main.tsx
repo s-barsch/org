@@ -11,8 +11,10 @@ import DuplicateIcon from '@mui/icons-material/DifferenceSharp';
 import DeleteIcon from '@mui/icons-material/ClearSharp';
 import { ReactComponent as RarrC } from './svg/rarrc.svg'
 import { ReactComponent as Rarr } from './svg/rarr.svg'
+import useView from 'state';
 
 export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
+    const { deleteFile, duplicateFile } = useView();
     let { setErr } = useContext(ErrContext);
     let { targets } = useContext(TargetsContext);
 
@@ -28,29 +30,29 @@ export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
         copyFile(file, join(targets.active, file.name));
     }
 
-    function duplicateFile() {
-        modFuncs.duplicateFile(file);
+    function duplicateFn() {
+        duplicateFile(file);
     }
 
     return (
         <div className="info">
             <FileName file={file} modFuncs={modFuncs} />
             <BotToggle file={file} moveFile={modFuncs.moveFile} />
-            <DuplicateButton duplicateFile={duplicateFile} />
+            <DuplicateButton duplicateFn={duplicateFn} />
             <span className="group">
                 <CopyButton copyToTarget={copyToTarget} />
                 <MoveButton moveToTarget={moveToTarget} />
             </span>
             <PubButton file={file} copyFile={copyFile} />
             <span className="info__del">
-                <Del file={file} deleteFile={modFuncs.deleteFile} />
+                <Del file={file} deleteFile={deleteFile} />
             </span>
         </div>
     )
 }
 
-function DuplicateButton({duplicateFile}: {duplicateFile: () => void}) {
-    return <button className="info__dupli" onClick={duplicateFile} title="Duplicate file"><DuplicateIcon /></button>
+function DuplicateButton({duplicateFn}: {duplicateFn: () => void}) {
+    return <button className="info__dupli" onClick={duplicateFn} title="Duplicate file"><DuplicateIcon /></button>
 }
 
 function CopyButton({copyToTarget}: {copyToTarget: () => void;}) {
