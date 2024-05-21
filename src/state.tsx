@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import File, { insertNewDir, isPresent, renameText, updateFile } from 'funcs/files';
+import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, renameText, updateFile } from 'funcs/files';
 import type {} from '@redux-devtools/extension'
 import { basename, dirname, join } from 'path-browserify';
 import { moveRequest, newDirRequest, saveSortRequest, writeRequest } from 'funcs/requests';
@@ -15,9 +15,10 @@ interface ViewState {
   setDir: (dir: dirContent) => void;
   renameView: (newName: string) => void;
   update: (newFiles: File[], isSorted: boolean) => void;
-  writeFile: (f: File) => void;
   addNewDir: (name: string) => void;
+  writeFile: (f: File) => void;
   renameFile: (oldPath: string, f: File) => void;
+  duplicateFile: (f: File) => void;
 }
 
 function setErr(err: errObj) {
@@ -65,6 +66,20 @@ const useView = create<ViewState>()(
           const d = get().view.dir;
           await writeRequest(f.path, f.body, setErr);
           get().update(updateFile(d.files.slice(), f, d.sorted), d.sorted)
+        },
+        duplicateFile: async (f: File) => {
+          const v = get().view;
+          let newF: File;
+          try {
+            newF = createDuplicate(f, v.dir.files);
+          } catch (err) {
+            alert(err);
+            return;
+          }
+          await writeRequest(newF.path, newF.body, setErr);
+
+          const newFiles = insertDuplicateFile(v.dir.files.slice(), f, newF, v.dir.sorted)
+          get().update(newFiles, v.dir.sorted);
         },
         addNewDir: async (name: string) => {
           const v = get().view;
