@@ -14,7 +14,6 @@ import { newTimestamp } from 'funcs/paths';
 
 export type modFuncsObj = {
     createFile: () => void;
-    moveFile: (f: File, newPath: string) => void;
 }
 
 type ViewProps = {
@@ -31,7 +30,6 @@ export default function View({path, files, sorted}: ViewProps) {
 
     const modFuncs: modFuncsObj = {
         createFile:  createFile,
-        moveFile:       moveFile,
     }
 
     switch (fileType(path)) {
@@ -46,13 +44,6 @@ export default function View({path, files, sorted}: ViewProps) {
     }
 
   
-
-    // meta
-    async function moveFile(f: File, newPath: string) {
-        await moveRequest(f.path, newPath, setErr);
-        update(removeFromArr(files.slice(), f.name), sorted);
-    }
-
 
 
     // text, dir view

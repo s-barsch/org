@@ -21,6 +21,7 @@ interface ViewState {
   duplicateFile: (f: File) => void;
   deleteFile: (f: File) => void;
   saveSort: (part: File[], type: string) => void;
+  moveFile: (f: File, newPath: string) => void;
 }
 
 function setErr(err: errObj) {
@@ -121,6 +122,12 @@ const useView = create<ViewState>()(
           const v = get().view;
           const newFiles = merge(v.dir.files.slice(), part, type);
           get().update(newFiles, true);
+        },
+        // meta
+        moveFile: async (f: File, newPath: string) => {
+          const v = get().view;
+          await moveRequest(f.path, newPath, setErr);
+          get().update(removeFromArr(v.dir.files.slice(), f.name), v.dir.sorted);
         }
       }),
       {

@@ -14,7 +14,7 @@ import { ReactComponent as Rarr } from './svg/rarr.svg'
 import useView from 'state';
 
 export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
-    const { deleteFile, duplicateFile } = useView();
+    const { deleteFile, duplicateFile, moveFile } = useView();
     let { setErr } = useContext(ErrContext);
     let { targets } = useContext(TargetsContext);
 
@@ -23,7 +23,7 @@ export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
     }
 
     function moveToTarget() {
-        modFuncs.moveFile(file, join(targets.active, file.name));
+        moveFile(file, join(targets.active, file.name));
     }
 
     function copyToTarget() {
@@ -37,7 +37,7 @@ export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
     return (
         <div className="info">
             <FileName file={file} modFuncs={modFuncs} />
-            <BotToggle file={file} moveFile={modFuncs.moveFile} />
+            <BotToggle file={file} moveFile={moveFile} />
             <DuplicateButton duplicateFn={duplicateFn} />
             <span className="group">
                 <CopyButton copyToTarget={copyToTarget} />
