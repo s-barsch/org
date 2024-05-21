@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
-import Nav from 'parts/nav/nav';
+import Nav from 'parts/Nav';
 import { FileList } from 'views/search/list';
 import { newView } from 'state';
 

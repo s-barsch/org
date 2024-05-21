@@ -1,10 +1,10 @@
 import React from 'react';
-import All from 'views/all/main';
+import All from 'views/All';
 import { fileType } from 'funcs/paths';
 import File from 'funcs/files';
-import TextView from 'views/folder/views/text';
-import DirView from 'views/folder/views/dir';
-import MediaView from './views/media';
+import TextView from 'views/folder/TextView';
+import DirView from 'views/folder/DirView';
+import MediaView from './folder/MediaView';
 
 type ViewProps = {
     path: string;
@@ -20,7 +20,7 @@ export default function View({path, files }: ViewProps) {
         case "media":
             return <MediaView path={path} files={files} />;
         case "all":
-            return <All path={path} files={files} />;
+            return <All files={files} />;
         default:
             return <DirView path={path} files={files} />
     }

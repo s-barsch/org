@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
-import { SearchView } from './view';
-import Nav from 'parts/nav/nav';
+import { SearchView } from './search/view';
+import Nav from 'parts/Nav';
 import File from 'funcs/files';
 
 type resultView = {

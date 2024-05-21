@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Head from 'parts/head/main';
-import TextField from 'views/folder/files/text';
+import Head from 'parts/Head';
+import TextField from 'views/folder/files/TextView';
 import File, { newFile } from 'funcs/files';
 
 import { basename } from 'path-browserify';

@@ -2,12 +2,7 @@ import React from 'react';
 import File, { filesOnly } from 'funcs/files';
 import { FileList } from 'views/search/list'
 
-type AllViewProps = {
-    path: string;
-    files: File[];
-}
-
-export default function All({path, files}: AllViewProps){
+export default function All({files}: { files: File[] }){
     return (
         <section id="files">
         <FileList files={filesOnly(files)} />

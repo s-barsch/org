@@ -4,7 +4,7 @@ import React from 'react';
 import File, { filesOnly } from 'funcs/files';
 import { FileList } from './list';
 //import { dirname, join } from 'path-browserify';
-import { monthObj } from './main';
+import { monthObj } from '../Search';
 import TimeChart from './chart';
 
 export function SearchView({path, months, files}: {path: string, months: monthObj[], files: File[]}) {

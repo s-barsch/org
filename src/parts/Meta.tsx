@@ -1,15 +1,15 @@
 import React, {useContext } from 'react';
 import { basename, dirname, join } from 'path-browserify';
 import File from 'funcs/files';
-import { copyRequest } from '../../funcs/requests';
+import { copyRequest } from '../funcs/requests';
 import { ErrContext } from 'context/err';
 import { TargetsContext } from 'context/targets';
-import FileName from './rename';
+import FileName from './meta/FileName';
 import PublicIcon from '@mui/icons-material/PublicSharp';
 import DuplicateIcon from '@mui/icons-material/DifferenceSharp';
 import DeleteIcon from '@mui/icons-material/ClearSharp';
-import { ReactComponent as RarrC } from './svg/rarrc.svg'
-import { ReactComponent as Rarr } from './svg/rarr.svg'
+import { ReactComponent as RarrC } from './meta/svg/rarrc.svg'
+import { ReactComponent as Rarr } from './meta/svg/rarr.svg'
 import useView from 'state';
 
 export function Meta({file}: { file: File }) {

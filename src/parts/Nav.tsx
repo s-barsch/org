@@ -5,7 +5,7 @@ import TargetIcon from '@mui/icons-material/BookmarkBorder';
 import ActiveTargetIcon from '@mui/icons-material/BookmarkOutlined';
 import { basename, dirname } from 'path-browserify';
 import CrumbNav from 'parts/nav/crumbs';
-import { Del } from 'parts/meta/main';
+import { Del } from 'parts/Meta';
 import { extendedBase, section, isFile } from 'funcs/paths';
 import { TargetsContext, TargetsProps } from 'context/targets';
 //import { ErrContext } from 'context/err';

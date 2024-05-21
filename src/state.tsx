@@ -137,7 +137,7 @@ const useView = create<ViewState>()(
           const filePath = join(dirPath, newTimestamp() + ".txt")
           return filePath;
         }
-          }),
+      }),
       {
         name: 'dir-state',
       },

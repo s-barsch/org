@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Head from 'parts/head/main';
+import Head from 'parts/Head';
 import File from 'funcs/files';
-import Image from '../files/image';
-import Video from '../files/video';
+import Image from './files/Image';
+import Video from './files/Video';
 
 import { basename } from 'path-browserify';
 
