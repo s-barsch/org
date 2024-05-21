@@ -1,26 +1,32 @@
 import React from 'react';
-import { modFuncsObj } from 'views/folder/main';
 import Head from 'parts/head/main';
 import File, { dirsOnly, filesOnly } from 'funcs/files';
 import { DirList, FileList } from 'views/folder/list';
 import { AddDir, AddText } from 'views/folder/add';
 import { HotKeys } from 'react-hotkeys';
 import useView from 'state';
+import { useNavigate } from 'react-router';
 
 type DirViewProps = {
     path: string;
     files: File[];
-    modFuncs: modFuncsObj;
 }
 
 
-export default function DirView({path, files, modFuncs}: DirViewProps) {
+export default function DirView({path, files}: DirViewProps) {
+    const navigate = useNavigate();
+    const { createFilePath } = useView();
+
+    function createFile() {
+        navigate(createFilePath());
+    }
+
     const keyMap = {
         NEW_TEXT: "ctrl+enter"
     };
 
     const handlers = {
-        NEW_TEXT: modFuncs.createFile
+        NEW_TEXT: createFile
     };
 
     return (
@@ -31,8 +37,8 @@ export default function DirView({path, files, modFuncs}: DirViewProps) {
                 <AddDir />
             </nav>
             <section id="files">
-                <AddText createFile={modFuncs.createFile} />
-                <FileList files={filesOnly(files)} modFuncs={modFuncs} />
+                <AddText createFile={createFile} />
+                <FileList files={filesOnly(files)} />
             </section>
         </HotKeys>
     )

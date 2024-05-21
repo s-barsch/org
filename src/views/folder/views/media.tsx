@@ -5,16 +5,14 @@ import File from 'funcs/files';
 import Image from '../files/image';
 import Video from '../files/video';
 
-import { modFuncsObj } from 'views/folder/main';
 import { basename } from 'path-browserify';
 
 type TextViewProps = {
     path: string;
     files: File[];
-    modFuncs: modFuncsObj;
 }
 
-export default function MediaView({path, files, modFuncs}: TextViewProps) {
+export default function MediaView({path, files}: TextViewProps) {
     if (!files || files.length === 0) {
         return <>No files. (MediaView)</>
     }
@@ -28,23 +26,22 @@ export default function MediaView({path, files, modFuncs}: TextViewProps) {
     return (
         <>
             <Head path={path} />
-            <Media file={media} modFuncs={modFuncs} isSingle={true} />
+            <Media file={media} isSingle={true} />
         </>
     )
 }
 
 type MediaProps = {
     file: File;
-    modFuncs: modFuncsObj;
     isSingle: boolean;
 }
 
-export function Media({file, modFuncs, isSingle}: MediaProps) {
+export function Media({file, isSingle}: MediaProps) {
     switch (file.type) {
         case "image":
-            return <Image file={file} modFuncs={modFuncs} isSingle={isSingle} />
+            return <Image file={file} isSingle={isSingle} />
         case "video":
-            return <Video file={file} modFuncs={modFuncs} isSingle={isSingle} />
+            return <Video file={file} isSingle={isSingle} />
         default:
             return <>"Not implemented. (Media)."</>;
     }

@@ -2,16 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import File from 'funcs/files';
 import useView from 'state';
+import { useNavigate } from 'react-router';
 
 type TextFieldProps = {
     file: File;
-    createFile?: () => void;
     isSingle: boolean;
 }
 
-export default function TextField({file, createFile, isSingle}: TextFieldProps) {
-    const { writeFile } = useView();
+export default function TextField({file, isSingle}: TextFieldProps) {
+    const { writeFile, createFilePath } = useView();
     const [body, setBody] = useState(file.body);
+    const navigate = useNavigate();
 
     const ref = useRef<HTMLTextAreaElement>(null!)
 
@@ -32,7 +33,7 @@ export default function TextField({file, createFile, isSingle}: TextFieldProps) 
     function checkSubmit(e: React.KeyboardEvent<HTMLTextAreaElement>) {
         if (e.ctrlKey && e.key === "Enter") {
             submit(e);
-            if (createFile) createFile();
+            navigate(createFilePath());
         }
         if (e.ctrlKey && e.key === "s") {
             e.preventDefault();

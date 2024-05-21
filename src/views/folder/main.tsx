@@ -1,20 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import All from 'views/all/main';
-import { useNavigate } from 'react-router-dom';
-import { dirname, join } from 'path-browserify';
-import { isText, fileType } from 'funcs/paths';
-import useView from 'state';
-import File, { merge, removeFromArr } from 'funcs/files';
-import { moveRequest } from '../../funcs/requests';
+import { fileType } from 'funcs/paths';
+import File from 'funcs/files';
 import TextView from 'views/folder/views/text';
 import DirView from 'views/folder/views/dir';
-import { ErrContext } from 'context/err';
 import MediaView from './views/media';
-import { newTimestamp } from 'funcs/paths';
-
-export type modFuncsObj = {
-    createFile: () => void;
-}
 
 type ViewProps = {
     path: string;
@@ -22,34 +12,16 @@ type ViewProps = {
     sorted: boolean;
 }
 
-export default function View({path, files, sorted}: ViewProps) {
-    let { setErr } = useContext(ErrContext);
-    const { update } = useView();
-
-    const navigate = useNavigate();
-
-    const modFuncs: modFuncsObj = {
-        createFile:  createFile,
-    }
-
+export default function View({path, files }: ViewProps) {
+    // let { setErr } = useContext(ErrContext);
     switch (fileType(path)) {
         case "text":
-            return <TextView path={path} files={files} modFuncs={modFuncs} />;
+            return <TextView path={path} files={files} />;
         case "media":
-            return <MediaView path={path} files={files} modFuncs={modFuncs} />;
+            return <MediaView path={path} files={files} />;
         case "all":
             return <All path={path} files={files} />;
         default:
-            return <DirView path={path} files={files} modFuncs={modFuncs} />
-    }
-
-  
-
-
-    // text, dir view
-    function createFile() {
-        const dirPath = isText(path) ? dirname(path) : path;
-        const filePath = join(dirPath, newTimestamp() + ".txt")
-        navigate(filePath);
+            return <DirView path={path} files={files} />
     }
 }

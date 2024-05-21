@@ -1,7 +1,6 @@
 import React, {useContext } from 'react';
 import { basename, dirname, join } from 'path-browserify';
 import File from 'funcs/files';
-import { modFuncsObj } from 'views/folder/main';
 import { copyRequest } from '../../funcs/requests';
 import { ErrContext } from 'context/err';
 import { TargetsContext } from 'context/targets';
@@ -13,7 +12,7 @@ import { ReactComponent as RarrC } from './svg/rarrc.svg'
 import { ReactComponent as Rarr } from './svg/rarr.svg'
 import useView from 'state';
 
-export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
+export function Meta({file}: { file: File }) {
     const { deleteFile, duplicateFile, moveFile } = useView();
     let { setErr } = useContext(ErrContext);
     let { targets } = useContext(TargetsContext);
@@ -36,7 +35,7 @@ export function Meta({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
 
     return (
         <div className="info">
-            <FileName file={file} modFuncs={modFuncs} />
+            <FileName file={file} />
             <BotToggle file={file} moveFile={moveFile} />
             <DuplicateButton duplicateFn={duplicateFn} />
             <span className="group">

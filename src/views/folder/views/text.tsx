@@ -4,21 +4,19 @@ import Head from 'parts/head/main';
 import TextField from 'views/folder/files/text';
 import File, { newFile } from 'funcs/files';
 
-import { modFuncsObj } from 'views/folder/main';
 import { basename } from 'path-browserify';
 
 type TextViewProps = {
     path: string;
     files: File[];
-    modFuncs: modFuncsObj;
 }
 
-export default function TextView({path, files, modFuncs}: TextViewProps) {
+export default function TextView({path, files}: TextViewProps) {
     let { text, isNew } = findText(files, path);
     return (
         <>
             <Head path={path} isNew={isNew} disabled={isNew} />
-            <TextField file={text} createFile={modFuncs.createFile} isSingle={true} />
+            <TextField file={text} isSingle={true} />
         </>
     )
 }

@@ -4,7 +4,7 @@ import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, me
 import type {} from '@redux-devtools/extension'
 import { basename, dirname, join } from 'path-browserify';
 import { deleteRequest, moveRequest, newDirRequest, saveSortRequest, writeRequest } from 'funcs/requests';
-import { isDir, isText } from 'funcs/paths';
+import { isDir, isText, newTimestamp } from 'funcs/paths';
 import { errObj } from 'context/err';
 import { orgSort } from 'funcs/sort';
 
@@ -22,6 +22,7 @@ interface ViewState {
   deleteFile: (f: File) => void;
   saveSort: (part: File[], type: string) => void;
   moveFile: (f: File, newPath: string) => void;
+  createFilePath: () => string;
 }
 
 function setErr(err: errObj) {
@@ -128,8 +129,15 @@ const useView = create<ViewState>()(
           const v = get().view;
           await moveRequest(f.path, newPath, setErr);
           get().update(removeFromArr(v.dir.files.slice(), f.name), v.dir.sorted);
+        },
+        // text, dir view
+        createFilePath: () => {
+          const v = get().view;
+          const dirPath = isText(v.path) ? dirname(v.path) : v.path;
+          const filePath = join(dirPath, newTimestamp() + ".txt")
+          return filePath;
         }
-      }),
+          }),
       {
         name: 'dir-state',
       },

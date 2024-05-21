@@ -4,7 +4,6 @@ import ReverseIcon from '@mui/icons-material/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
 import { basename } from 'path-browserify';
 import File from 'funcs/files';
-import { modFuncsObj } from 'views/folder/main';
 import { setActiveTarget } from 'funcs/targets';
 import { TargetsContext } from 'context/targets';
 import { separate } from 'funcs/sort';
@@ -14,12 +13,7 @@ import Sortable from 'sortablejs';
 import { flushSync } from 'react-dom';
 import useView from 'state';
 
-type FileListProps = {
-    files: File[];
-    modFuncs: modFuncsObj;
-}
-
-export function FileList({files, modFuncs}: FileListProps) {
+export function FileList({files}: { files: File[] }) {
     const { saveSort } = useView();
     const [state, setState] = useState<File[]>(files);
 
@@ -59,8 +53,8 @@ export function FileList({files, modFuncs}: FileListProps) {
                 animation={200} list={state} setList={setFn}>
                     { state.map((file, i) => (
                         <div key={file.id}>
-                        <Meta file={file} modFuncs={modFuncs} />
-                        <FileSwitch file={file} modFuncs={modFuncs} isSingle={false} />
+                        <Meta file={file} />
+                        <FileSwitch file={file} isSingle={false} />
                         </div>
                     ))}
 

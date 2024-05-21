@@ -4,12 +4,11 @@ import { Link } from 'react-router-dom';
 //import EditIcon from '@mui/icons-material/FormatColorText';
 //import EditIcon from '@mui/icons-material/DriveFileRenameOutline';
 import EditIcon from '@mui/icons-material/AutoFixHighSharp';
-import { modFuncsObj } from '../../views/folder/main';
 import File from 'funcs/files';
 import { join, dirname } from 'path-browserify';
 import useView from 'state';
 
-export default function FileName({file, modFuncs}: {file: File, modFuncs: modFuncsObj}) {
+export default function FileName({file}: {file: File}) {
     const { renameFile } = useView();
     const [edit, setEdit] = useState(false);
 
