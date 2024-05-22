@@ -34,4 +34,4 @@ go/go
 go/install
 err.log
 
-.yarn/*
+.yarn/install-state.gz
