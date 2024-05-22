@@ -408,7 +408,8 @@ div.text-field {
 }
 
 .text textarea {
-    padding:0;
+    padding:.25rem .5rem;
+    margin-left:-.5rem;
     /*
     background: var(--color-textarea);
     */
