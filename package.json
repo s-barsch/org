@@ -63,5 +63,5 @@
     "react-scripts": "^5.0.1",
     "sass": "^1.54.9"
   },
-  "packageManager": "yarn@4.2.1"
+  "packageManager": "yarn@4.4.0"
 }
