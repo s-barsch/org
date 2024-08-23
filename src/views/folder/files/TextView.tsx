@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import File from 'funcs/files';
 import useView from 'state';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 type TextFieldProps = {
     file: File;

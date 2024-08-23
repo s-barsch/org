@@ -5,7 +5,7 @@ import { DirList, FileList } from 'views/folder/parts/lists';
 import { AddDir, AddText } from 'views/folder/parts/AddDir';
 import { HotKeys } from 'react-hotkeys';
 import useView from 'state';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 type DirViewProps = {
     path: string;
