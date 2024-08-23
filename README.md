@@ -8,8 +8,8 @@ File organization app
 
 Create production built:
 
-`yarn install`<br>
-`yarn build`
+`pnpm install`<br>
+`pnpm build`
 
 Create directory for your files:
 
