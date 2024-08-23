@@ -1,4 +1,3 @@
-import React from 'react';
 import { monthObj } from '../Search';
 import {
     Chart,

@@ -1,4 +1,4 @@
-import { section } from 'funcs/paths';
+import { section } from './paths';
 
 function getFavicon(): HTMLLinkElement {
     const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');

@@ -1,10 +1,9 @@
-import React from 'react';
-import Head from 'parts/Head';
-import File, { dirsOnly, filesOnly } from 'funcs/files';
-import { DirList, FileList } from 'views/folder/parts/lists';
-import { AddDir, AddText } from 'views/folder/parts/AddDir';
+import Head from '../../parts/Head';
+import File, { dirsOnly, filesOnly } from '../../funcs/files';
+import { DirList, FileList } from '../../views/folder/parts/lists';
+import { AddDir, AddText } from '../../views/folder/parts/AddDir';
 import { HotKeys } from 'react-hotkeys';
-import useView from 'state';
+import useView from '../../state';
 import { useNavigate } from 'react-router-dom';
 
 type DirViewProps = {

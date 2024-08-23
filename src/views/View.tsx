@@ -1,9 +1,8 @@
-import React from 'react';
-import All from 'views/All';
-import { fileType } from 'funcs/paths';
-import File from 'funcs/files';
-import TextView from 'views/folder/TextView';
-import DirView from 'views/folder/DirView';
+import All from '../views/All';
+import { fileType } from '../funcs/paths';
+import File from '../funcs/files';
+import TextView from '../views/folder/TextView';
+import DirView from '../views/folder/DirView';
 import MediaView from './folder/MediaView';
 
 type ViewProps = {

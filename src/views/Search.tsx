@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SearchView } from './search/view';
-import Nav from 'parts/Nav';
-import File from 'funcs/files';
+import Nav from '../parts/Nav';
+import File from '../funcs/files';
 
 type resultView = {
    name: string;

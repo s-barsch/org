@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import ReverseIcon from '@mui/icons-material/SwapVert';
 import { ReactSortable } from 'react-sortablejs';
 import { basename } from 'path-browserify';
-import File from 'funcs/files';
-import { setActiveTarget } from 'funcs/targets';
-import { TargetsContext } from 'context/targets';
-import { separate } from 'funcs/sort';
-import { FileSwitch } from 'views/folder/parts/switch'
+import File from '../../../funcs/files';
+import { setActiveTarget } from '../../../funcs/targets';
+import { TargetsContext } from '../../../context/targets';
+import { separate } from '../../../funcs/sort';
+import { FileSwitch } from '../../../views/folder/parts/switch'
 import { Meta } from '../../../parts/Meta';
 import Sortable from 'sortablejs';
 import { flushSync } from 'react-dom';
-import useView from 'state';
+import useView from '../../../state';
 
 export function FileList({files}: { files: File[] }) {
     const { saveSort } = useView();
@@ -51,7 +51,7 @@ export function FileList({files}: { files: File[] }) {
             <ReactSortable
                 handle=".info__name" onEnd={endFn}
                 animation={200} list={state} setList={setFn}>
-                    { state.map((file, i) => (
+                    { state.map((file) => (
                         <div key={file.id}>
                         <Meta file={file} />
                         <FileSwitch file={file} isSingle={false} />

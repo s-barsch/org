@@ -5,7 +5,7 @@ import (
 )
 
 var ROOT = "data"
-var BUILD = "build"
+var BUILD = "dist"
 
 func main() {
 	setup()

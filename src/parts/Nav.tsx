@@ -4,17 +4,17 @@ import ThemeIcon from '@mui/icons-material/WbSunnySharp';
 import TargetIcon from '@mui/icons-material/BookmarkBorder';
 import ActiveTargetIcon from '@mui/icons-material/BookmarkOutlined';
 import { basename, dirname } from 'path-browserify';
-import CrumbNav from 'parts/nav/crumbs';
-import { Del } from 'parts/Meta';
-import { extendedBase, section, isFile } from 'funcs/paths';
-import { TargetsContext, TargetsProps } from 'context/targets';
+import CrumbNav from '../parts/nav/crumbs';
+import { Del } from '../parts/Meta';
+import { extendedBase, section, isFile } from '../funcs/paths';
+import { TargetsContext, TargetsProps } from '../context/targets';
 //import { ErrContext } from 'context/err';
-import File from 'funcs/files';
-import { setActiveTarget, removeTarget, unsetActiveTarget } from 'funcs/targets';
-import { ErrComponent } from 'parts/nav/error';
-import Config from 'config';
-import { ErrContext } from 'context/err';
-import { isActiveTarget } from 'funcs/targets';
+import File from '../funcs/files';
+import { setActiveTarget, removeTarget, unsetActiveTarget } from '../funcs/targets';
+import { ErrComponent } from '../parts/nav/error';
+import Config from '../config';
+import { ErrContext } from '../context/err';
+import { isActiveTarget } from '../funcs/targets';
 
 type NavProps = {
     path: string;
@@ -61,8 +61,8 @@ export default function Nav({path}: NavProps) {
         return <button onClick={clickFn}>{ isTarget ? <ActiveTargetIcon /> : <TargetIcon />}</button>
     }
 
-    function ThemeButton({clickFn}: {clickFn: () => void}) {
-        return <button onClick={toggleTheme} ><ThemeIcon /></button>
+    function ThemeButton({clickFn}: { clickFn: () => void}) {
+        return <button onClick={clickFn} ><ThemeIcon /></button>
     }
 
     function setThisActive() {

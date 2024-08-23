@@ -1,5 +1,4 @@
-import React from 'react';
-import File from 'funcs/files';
+import File from '../../funcs/files';
 import { Link } from 'react-router-dom';
 
 export function FileList({files}: {files: File[]}) {
@@ -8,7 +7,7 @@ export function FileList({files}: {files: File[]}) {
     }
     return (
         <>
-            {files.map((file, i) => (
+            {files.map((file, _i) => (
                 <div key={file.id}>
                     <Meta file={file} />
                     <FileSwitch file={file} />

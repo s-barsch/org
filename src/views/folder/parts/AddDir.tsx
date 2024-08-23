@@ -1,5 +1,5 @@
 import React, {useRef, useCallback, useState} from 'react';
-import useView from 'state';
+import useView from '../../../state';
 
 export function AddText({createFile}: {createFile: () => void}) {
     return <button className="add-text" onClick={createFile}>+ Text</button>

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import Nav from 'parts/Nav';
-import { FileList } from 'views/search/list';
-import { newView } from 'state';
+import Nav from '../parts/Nav';
+import { FileList } from '../views/search/list';
+import { newView } from '../state';
 
 export type topic = {
     name: string;

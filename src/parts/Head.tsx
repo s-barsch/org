@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { dirname, join } from 'path-browserify';
-import { orgBase } from 'funcs/paths';
-import useView from 'state';
+import { orgBase } from '../funcs/paths';
+import useView from '../state';
 type HeadProps = {
     path: string;
     disabled?: boolean;

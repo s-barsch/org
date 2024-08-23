@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { newTimestamp } from 'funcs/paths';
+import { newTimestamp } from '../funcs/paths';
 import { join } from 'path-browserify';
 
 export default function Write(){

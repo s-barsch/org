@@ -1,13 +1,12 @@
-import React from 'react';
-import 'css/main.scss';
+import './css/main.scss';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import TargetsProvider from './context/targets';
 import ErrProvider from './context/err';
-import Write from 'views/Write';
-import Search from 'views/Search';
-import Today from 'views/Today';
-import Topics, { Topic } from 'views/Topics';
-import Loader from 'Loader';
+import Write from './views/Write';
+import Search from './views/Search';
+import Today from './views/Today';
+import Topics, { Topic } from './views/Topics';
+import Loader from './Loader';
 
 export default function App() {
     return (

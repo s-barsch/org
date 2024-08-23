@@ -1,6 +1,6 @@
 import { isTimestamp, dateToTimestamp, newTimestamp, timestampToDate } from './paths';
 import { basename, extname, dirname, join } from 'path-browserify';
-import { orgSort } from 'funcs/sort';
+import { orgSort } from './sort';
 
 type File = {
     id: number;

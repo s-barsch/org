@@ -1,6 +1,5 @@
-import React from 'react';
-import File from 'funcs/files';
-import AddInfo from 'views/folder/files/extra/AddInfo'
+import File from '../../../funcs/files';
+import AddInfo from '../../../views/folder/files/extra/AddInfo'
 
 type VideoProps = {
     file: File;

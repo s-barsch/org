@@ -1,7 +1,5 @@
-import React from 'react';
-
-import Head from 'parts/Head';
-import File from 'funcs/files';
+import Head from '../../parts/Head';
+import File from '../../funcs/files';
 import Image from './files/Image';
 import Video from './files/Video';
 

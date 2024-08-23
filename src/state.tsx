@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, merge, removeFromArr, renameText, updateFile } from 'funcs/files';
+import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, merge, removeFromArr, renameText, updateFile } from './funcs/files';
 import { basename, dirname, join } from 'path-browserify';
-import { deleteRequest, moveRequest, newDirRequest, saveSortRequest, writeRequest } from 'funcs/requests';
-import { isDir, isText, newTimestamp } from 'funcs/paths';
-import { errObj } from 'context/err';
-import { orgSort } from 'funcs/sort';
+import { deleteRequest, moveRequest, newDirRequest, saveSortRequest, writeRequest } from './funcs/requests';
+import { isDir, isText, newTimestamp } from './funcs/paths';
+import { errObj } from './context/err';
+import { orgSort } from './funcs/sort';
 
 interface ViewState {
   view: viewObject;

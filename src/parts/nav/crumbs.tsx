@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { base } from 'funcs/paths'
-import { TargetsContext } from 'context/targets';
-import { isText } from 'funcs/paths';
-import File from 'funcs/files';
-import { setActiveTarget } from 'funcs/targets';
+import { base } from '../../funcs/paths'
+import { TargetsContext } from '../../context/targets';
+import { isText } from '../../funcs/paths';
+import File from '../../funcs/files';
+import { setActiveTarget } from '../../funcs/targets';
 
 function Spacer() {
     return (

@@ -1,5 +1,4 @@
-import React from 'react';
-import File from 'funcs/files';
+import File from '../../../funcs/files';
 import Info from './Info';
 import AddInfo from './extra/AddInfo';
 

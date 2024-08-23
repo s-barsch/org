@@ -1,16 +1,16 @@
-import React, {useContext } from 'react';
+import {useContext } from 'react';
 import { basename, dirname, join } from 'path-browserify';
-import File from 'funcs/files';
+import File from '../funcs/files';
 import { copyRequest } from '../funcs/requests';
-import { ErrContext } from 'context/err';
-import { TargetsContext } from 'context/targets';
+import { ErrContext } from '../context/err';
+import { TargetsContext } from '../context/targets';
 import FileName from './meta/FileName';
 import PublicIcon from '@mui/icons-material/PublicSharp';
 import DuplicateIcon from '@mui/icons-material/DifferenceSharp';
 import DeleteIcon from '@mui/icons-material/ClearSharp';
-import { ReactComponent as RarrC } from './meta/svg/rarrc.svg'
-import { ReactComponent as Rarr } from './meta/svg/rarr.svg'
-import useView from 'state';
+import RarrC from './meta/svg/rarrc.svg';
+import Rarr from './meta/svg/rarr.svg';
+import useView from '../state';
 
 export function Meta({file}: { file: File }) {
     const { deleteFile, duplicateFile, moveFile } = useView();
@@ -55,11 +55,12 @@ function DuplicateButton({duplicateFn}: {duplicateFn: () => void}) {
 }
 
 function CopyButton({copyToTarget}: {copyToTarget: () => void;}) {
-    return <button onClick={copyToTarget} title="Copy to folder"><RarrC className='rarr'/></button>
+    // moved className to svg file
+    return <button onClick={copyToTarget} title="Copy to folder"><RarrC/></button>
 }
 
 function MoveButton({moveToTarget}: {moveToTarget: () => void;}){
-    return <button onClick={moveToTarget} title="Move to folder"><Rarr className='rarr' /></button>
+    return <button onClick={moveToTarget} title="Move to folder"><Rarr/></button>
 }
 
 type BotToggleProps = {

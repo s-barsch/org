@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { errObj } from 'context/err';
+import { useState, useEffect } from 'react';
+import { errObj } from '../../context/err';
 
 function StatusBox() {
     return <span className="errbox"></span>
@@ -11,6 +11,7 @@ export function ErrComponent({err}: {err: errObj}) {
     useEffect(() => {
         setStatus(err.code)
 
+        setTimeout(() => {});
         let timer: NodeJS.Timeout = setTimeout(() => { });
 
         if (err.code === 200) {

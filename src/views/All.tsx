@@ -1,6 +1,5 @@
-import React from 'react';
-import File, { filesOnly } from 'funcs/files';
-import { FileList } from 'views/search/list'
+import File, { filesOnly } from '../funcs/files';
+import { FileList } from '../views/search/list'
 
 export default function All({files}: { files: File[] }){
     return (
