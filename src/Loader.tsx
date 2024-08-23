@@ -35,7 +35,7 @@ export default function Loader() {
                 return true
             }
             // load if is file but no dir loaded
-            if (!isDir(path) && viewPath === "") {
+            if (!isDir(path) && dirPath(path) !== viewPath) {// viewPath === "") {
                 return true
             }
             return false
