@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, merge, removeFromArr, renameText, updateFile } from 'funcs/files';
-import type {} from '@redux-devtools/extension'
 import { basename, dirname, join } from 'path-browserify';
 import { deleteRequest, moveRequest, newDirRequest, saveSortRequest, writeRequest } from 'funcs/requests';
 import { isDir, isText, newTimestamp } from 'funcs/paths';
