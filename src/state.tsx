@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
+import { devtools } from 'zustand/middleware'
 import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, merge, removeFromArr, renameText, updateFile } from 'funcs/files';
 import type {} from '@redux-devtools/extension'
 import { basename, dirname, join } from 'path-browserify';
@@ -33,7 +33,6 @@ function setErr(err: errObj) {
 
 const useView = create<ViewState>()(
   devtools(
-    persist(
       (set, get) => ({
         view: newView(),
         status: "",
@@ -141,7 +140,6 @@ const useView = create<ViewState>()(
       {
         name: 'dir-state',
       },
-    ),
   ),
 )
 
