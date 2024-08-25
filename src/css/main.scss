@@ -500,3 +500,22 @@ div.text-field {
     margin-left:-.5rem;
     border-radius:.5rem;
 }
+
+.MuiDateCalendar-root {
+    margin:2rem 5% 0 !important;
+    background: blue;
+}
+
+.MuiPickersDay-root {
+    border-radius: 0 !important;
+}
+
+.MuiButtonBase-root.MuiPickersDay-root.Mui-selected {
+    background:black;
+    color:white;
+}
+
+.selected button {
+    background: yellow;
+    color:black;
+}

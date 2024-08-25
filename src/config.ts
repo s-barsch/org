@@ -9,6 +9,7 @@ let Config: config = {
     "/today",
     "/write",
     //"/public/graph",
+    "/new/reel",
     "/public/kine",
     "/public/about"
 ]}
