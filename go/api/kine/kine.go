@@ -58,7 +58,7 @@ func createKine(r *http.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	infoContent := fmt.Sprintf("date: %v\n", t.Format(tools.Timestamp))
+	infoContent := fmt.Sprintf("date: %v\ntitle: \ntitle-en: \n", t.Format(tools.Timestamp))
 	err = os.WriteFile(fp.Join(fsPath, "info"), []byte(infoContent), 0755)
 	if err != nil {
 		return "", err
