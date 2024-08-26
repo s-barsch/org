@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"org/go/api/crud"
+	"org/go/api/kine"
 	"org/go/api/nav"
 	"org/go/api/search"
 	"org/go/api/today"
@@ -35,6 +36,7 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/search").HandlerFunc(hix(IX, search.SearchFiles))
 	r.PathPrefix("/api/topics/").HandlerFunc(hix(IX, topics.ViewTopic))
 	r.PathPrefix("/api/topics").HandlerFunc(hix(IX, topics.Topics))
+	r.PathPrefix("/api/kines").HandlerFunc(hix(IX, kine.Kines))
 
 	r.PathPrefix("/rl/").HandlerFunc(reloadIndex)
 
