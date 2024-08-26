@@ -8,8 +8,6 @@ let Config: config = {
     "/search",
     "/today",
     "/write",
-    //"/public/graph",
-    "/new/reel",
     "/public/kine",
     "/public/about"
 ]}

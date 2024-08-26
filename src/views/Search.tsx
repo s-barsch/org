@@ -40,7 +40,7 @@ export default function Search() {
     }, [path])
     return (
         <>
-            <Nav path={path} />
+            <Nav path={path} noFetch={true} />
             <SearchView path={path} months={view.months} files={view.files} />
         </>
     )

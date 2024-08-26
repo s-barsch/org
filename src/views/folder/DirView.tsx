@@ -5,6 +5,7 @@ import { AddDir, AddText } from '../../views/folder/parts/AddDir';
 import { HotKeys } from 'react-hotkeys';
 import useView from '../../state';
 import { useNavigate } from 'react-router-dom';
+import KineSelector from '../../parts/KineSelector';
 
 type DirViewProps = {
     path: string;
@@ -31,6 +32,7 @@ export default function DirView({path, files}: DirViewProps) {
     return (
         <HotKeys keyMap={keyMap} handlers={handlers}>
             <Head path={path} />
+            { path == "/public/kine" && <KineSelector/>}
             <nav id="dirs">
                 <DirList  dirs={dirsOnly(files)} />
                 <AddDir />

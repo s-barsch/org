@@ -37,6 +37,7 @@ func routes() *mux.Router {
 	r.PathPrefix("/api/topics/").HandlerFunc(hix(IX, topics.ViewTopic))
 	r.PathPrefix("/api/topics").HandlerFunc(hix(IX, topics.Topics))
 	r.PathPrefix("/api/kines").HandlerFunc(hix(IX, kine.Kines))
+	r.PathPrefix("/api/kine/create").HandlerFunc(hix(IX, kine.KineCreate))
 
 	r.PathPrefix("/rl/").HandlerFunc(reloadIndex)
 

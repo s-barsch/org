@@ -7,7 +7,6 @@ import Search from './views/Search';
 import Today from './views/Today';
 import Topics, { Topic } from './views/Topics';
 import Loader from './Loader';
-import NewReel from './views/Reel';
 
 export default function App() {
     return (
@@ -20,7 +19,6 @@ export default function App() {
                 <Route path="/search/*" element={<Search />} />
                 <Route path="/topics" element={<Topics />} />
                 <Route path="/topics/*" element={<Topic />} />
-                <Route path="/new/reel*" element={<NewReel/>} />
                 <Route path="/*" element={<Loader />} />
             </Routes>
         </Router>

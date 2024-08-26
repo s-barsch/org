@@ -501,9 +501,21 @@ div.text-field {
     border-radius:.5rem;
 }
 
+.kine-selector {
+    float:right;
+}
+
 .MuiDateCalendar-root {
-    margin:2rem 5% 0 !important;
     background: blue;
+    margin:0 !important;
+    float:right;
+    margin:0 5rem !important;
+    /*
+    margin:1rem 60% 2rem !important;
+    margin-right:5%;
+    float:right;
+    right:5%;
+    */
 }
 
 .MuiPickersDay-root {
@@ -516,6 +528,6 @@ div.text-field {
 }
 
 .selected button {
-    background: yellow;
+    background: white;
     color:black;
 }

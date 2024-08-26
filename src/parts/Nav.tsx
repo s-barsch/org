@@ -18,6 +18,7 @@ import { isActiveTarget } from '../funcs/targets';
 
 type NavProps = {
     path: string;
+    noFetch?: boolean ;
 }
 
 /*
@@ -34,7 +35,7 @@ function newNavMeta() {
     }
 }
 
-export default function Nav({path}: NavProps) {
+export default function Nav({path, noFetch}: NavProps) {
     const { err } = useContext(ErrContext);
     const { targets, saveTargets } = useContext(TargetsContext);
 
@@ -81,7 +82,7 @@ export default function Nav({path}: NavProps) {
 
     useEffect(() => {
         async function fetchNav() {
-            if (path.substring(0, '/search'.length) === '/search') {
+            if (noFetch) {
                 return
             }
             const resp = await fetch('/api/nav' + path);

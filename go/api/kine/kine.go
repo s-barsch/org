@@ -1,24 +1,84 @@
 package kine
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"org/go/helper"
 	"org/go/index"
 	"os"
 	fp "path/filepath"
+	"time"
 
 	"g.sacerb.com/sacer/go/entry/info"
 	"g.sacerb.com/sacer/go/entry/tools"
 )
 
+const datestr = "2006-01-02"
+const kineRoot = "./data/public/kine"
+
+func KineCreate(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+	path, err := createKine(r)
+	if err != nil {
+		return &helper.Err{
+			Func: "Kines",
+			Path: "/api/kines",
+			Code: 500,
+		}
+	}
+	fmt.Fprint(w, path)
+	return nil
+}
+
+func createKine(r *http.Request) (string, error) {
+	b, err := io.ReadAll(r.Body)
+	if err != nil {
+		return "", err
+	}
+	t, err := time.Parse(datestr, string(b))
+	if err != nil {
+		return "", err
+	}
+	d, err := time.ParseDuration("2s")
+	if err != nil {
+		return "", err
+	}
+	t = t.Add(d)
+	path := t.Format("06/06-01/02")
+	fsPath := fp.Join(kineRoot, path)
+	webPath := fp.Join("/public/kine", path)
+
+	_, err = os.Stat(fsPath)
+	if err == nil {
+		return webPath, nil
+	}
+	err = os.MkdirAll(fsPath, 0755)
+	if err != nil {
+		return "", err
+	}
+	infoContent := fmt.Sprintf("date: %v\n", t.Format(tools.Timestamp))
+	err = os.WriteFile(fp.Join(fsPath, "info"), []byte(infoContent), 0755)
+	if err != nil {
+		return "", err
+	}
+	return webPath, nil
+}
+
 func Kines(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
-	list, err := readKines(0, "./data/public/kine")
+	list, err := readKines(0, kineRoot)
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Fprint(w, list)
+	err = json.NewEncoder(w).Encode(list)
+	if err != nil {
+		return &helper.Err{
+			Func: "Kines",
+			Path: "/api/kines",
+			Code: 500,
+		}
+	}
 	return nil
 }
 
@@ -48,7 +108,7 @@ func readKines(level int, path string) ([]string, error) {
 			if err != nil {
 				return nil, err
 			}
-			kines = append(kines, t.Format("2006-01-02"))
+			kines = append(kines, t.Format(datestr))
 		}
 	}
 	return kines, nil
