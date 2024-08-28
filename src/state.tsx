@@ -12,7 +12,7 @@ interface ViewState {
   status: string;
   setView: (v: viewObject) => void
   setDir: (dir: dirContent) => void;
-  renameView: (newName: string) => void;
+  renameView: (oldPath: string, newName: string) => void;
   update: (newFiles: File[], isSorted: boolean) => void;
   addNewDir: (name: string) => void;
   writeFile: (f: File) => void;
@@ -52,15 +52,14 @@ const useView = create<ViewState>()(
         },
         setView: (v: viewObject) => { set({ view: v }) },
         // text, media, dir
-        renameView: async (newName) => {
-          const path = get().view.path;
-          let oldName = basename(path);
-          let newPath = join(dirname(path), newName);
+        renameView: async (oldPath, newName) => {
+          let oldName = basename(oldPath);
+          let newPath = join(dirname(oldPath), newName);
 
-          await moveRequest(path, newPath, setErr);
+          await moveRequest(oldPath, newPath, setErr);
 
           const d = get().view.dir;
-          if (isText(path)) {
+          if (isText(newName)) {
             const newFiles = renameText(d.files.slice(), oldName, newName)
             get().update(newFiles, d.sorted);
           }

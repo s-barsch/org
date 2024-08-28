@@ -56,7 +56,7 @@ function Rename({ path, disabled }: HeadProps) {
         if (old === name || name === '') {
             return;
         }
-        renameView(name);
+        renameView(path, name);
         const newPath = join(dirname(path), name);
         navigate(newPath);
     }
