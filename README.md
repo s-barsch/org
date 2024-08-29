@@ -17,6 +17,6 @@ Create directory for your files:
 
 Compile and run the server:
 
-`./make; ./org`
+`go build; ./org`
 
 Go to: [http://localhost:8334/](http://localhost:8334/)
