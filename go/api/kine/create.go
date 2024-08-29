@@ -19,7 +19,12 @@ import (
 const datestr = "2006-01-02"
 const kineRoot = "./data/public/kine"
 
-func KineCreate(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+const (
+	CreateAPI = "/api/kine/create"
+	UploadAPI = "/api/kine/upload"
+)
+
+func Create(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	path, err := createKine(r)
 	if err != nil {
 		return &helper.Err{

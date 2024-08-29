@@ -11,6 +11,8 @@ interface ViewState {
   view: viewObject;
   status: string;
   setView: (v: viewObject) => void
+  loadView: (path: string) => void;
+  reloadView: () => void;
   setDir: (dir: dirContent) => void;
   renameView: (oldPath: string, newName: string) => void;
   update: (newFiles: File[], isSorted: boolean) => void;
@@ -35,6 +37,16 @@ const useView = create<ViewState>()(
       (set, get) => ({
         view: newView(),
         status: "",
+        loadView: async (path: string) => {
+          const resp = await fetch("/api/view" + path);
+          if (!resp.ok) {
+            set({ status: resp.status + " - " + resp.statusText})
+          }
+          set({ view: await resp.json() });
+        },
+        reloadView: () => {
+          get().loadView(get().view.path)
+        },
         setDir: (dir: dirContent) => {
           let v = get().view;
           v.dir = dir;

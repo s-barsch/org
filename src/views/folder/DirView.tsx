@@ -6,6 +6,8 @@ import { HotKeys } from 'react-hotkeys';
 import useView from '../../state';
 import { useNavigate } from 'react-router-dom';
 import KineSelector from '../../parts/kine/Selector';
+import { MyDropzone } from '../../parts/kine/Upload';
+import { AddButton } from './parts/AddButton';
 
 type DirViewProps = {
     path: string;
@@ -39,8 +41,47 @@ export default function DirView({path, files}: DirViewProps) {
             </nav>
             <section id="files">
                 <AddText createFile={createFile} />
+                { isKineFolder(path) && <MyDropzone /> }
+                <KineButtons path={path} />
                 <FileList files={filesOnly(files)} />
             </section>
         </HotKeys>
     )
 }
+
+export function KineButtons({path}: { path: string}) {
+    if (!isKineFolder(path)) {
+        return
+    }
+    return (
+        <>
+            {/*
+            <AddButton name="Cover" />
+            <AddButton name="Video" />
+            <br/>
+            <AddButton name="Trans De" />
+            <AddButton name="Caption De" />
+            <br />
+            <AddButton name="Trans En" />
+            <AddButton name="Caption En" />
+            */}
+        </>
+    )
+}
+
+function isKineFolder(path: string): boolean {
+    const kineRoot = '/public/kine'
+    if (path.indexOf(kineRoot) < 0) {
+        return false
+    }
+    const levels = path.substring(kineRoot.length).split('/')
+    if (levels.length !== 4) {
+        return false
+    }
+    if (levels[3] === 'bot') {
+        return false
+    }
+    return true
+}
+
+

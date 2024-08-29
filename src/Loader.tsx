@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useEffect, useCallback, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { TargetsContext } from './context/targets';
 import Nav from './parts/Nav';
@@ -13,21 +13,11 @@ export default function Loader() {
     const { targets } = useContext(TargetsContext);
     const path = useLocation().pathname;
 
-    const { view, setView } = useView()
-    const [status, setStatus] = useState("");
+    const { status, loadView, view } = useView()
 
     const viewPath = view.path;
 
     useEffect(() => {
-        async function loadView(path: string) {
-            const resp = await fetch("/api/view" + path);
-            if (!resp.ok) {
-                setStatus(resp.status + " - " + resp.statusText)
-            }
-            const newView = await resp.json();
-            setView(newView);
-        };
-    
         // only load when a new *dir* is requested
         function shouldLoad(path: string, viewPath: string): boolean {
             // load if is new dir
@@ -47,7 +37,7 @@ export default function Loader() {
         if (shouldLoad(path, viewPath)) {
             loadView(path);
         }
-    }, [path, viewPath, setView]);
+    }, [path, viewPath]);
 
     // listen if another tab sends files to this tab.
     const listenForWrite = useCallback(() => {

@@ -129,13 +129,22 @@ h1 input {
     color:black;
 }
 
-.add-text {
+.add-button {
     font-size:1.5rem;
     font-family:var(--font-monospace);
     padding:.375rem .5rem;
     margin:.25rem 0 2rem;
-    background:#277739;
     color:white;
+    margin-right:1rem;
+    background: #656565;
+}
+
+.add-button::before {
+    content: '+';
+    margin-right:.5rem;
+}
+.add-text {
+    background:#277739;
 }
 
 .add-info {
@@ -530,4 +539,8 @@ div.text-field {
 .selected button {
     background: white;
     color:black;
+}
+
+.upload {
+    display:inline;
 }
