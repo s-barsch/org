@@ -3,11 +3,12 @@ package crud
 import (
 	"fmt"
 	"net/http"
-	"org/go/helper"
-	"org/go/helper/path"
-	"org/go/index"
 	"os"
 	"strings"
+
+	"g.sacerb.com/org/go/helper"
+	"g.sacerb.com/org/go/helper/path"
+	"g.sacerb.com/org/go/index"
 )
 
 func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {

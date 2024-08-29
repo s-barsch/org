@@ -3,8 +3,9 @@ package index
 import (
 	"fmt"
 	"log"
-	"org/go/helper/path"
 	fp "path/filepath"
+
+	"g.sacerb.com/org/go/helper/path"
 )
 
 type Index struct {
@@ -12,6 +13,7 @@ type Index struct {
 	Words Words
 	Tags  Tags
 	Root  string
+	Build string
 }
 
 func (ix *Index) NewPath(rel string) *path.Path {

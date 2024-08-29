@@ -2,10 +2,11 @@ package crud
 
 import (
 	"net/http"
-	"org/go/helper"
-	"org/go/index"
 	"os"
 	fp "path/filepath"
+
+	"g.sacerb.com/org/go/helper"
+	"g.sacerb.com/org/go/index"
 )
 
 func DeleteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {

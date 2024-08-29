@@ -2,9 +2,44 @@ package index
 
 import (
 	"io/fs"
+	"log"
 	"os"
 	"path/filepath"
+	"time"
 )
+
+func New(build, root string) *Index {
+	path, err := filepath.EvalSymlinks(root)
+	if err != nil {
+		panic(err)
+	}
+	return &Index{
+		Root:  path,
+		Build: build,
+		Words: map[string][]*File{},
+		Tags:  map[string][]*File{},
+	}
+}
+
+func (ix *Index) Load() error {
+	start := time.Now()
+	err := ix.Read()
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	log.Printf("Read %d documents in %v", len(ix.Files), time.Since(start))
+
+	start = time.Now()
+	ix.Tokenize()
+	log.Printf("Tokenized %d documents in %v", len(ix.Files), time.Since(start))
+
+	start = time.Now()
+	ix.ParseTags()
+	log.Printf("Extracted tags in %v", time.Since(start))
+
+	return nil
+}
 
 // root is path of the project. folder is a specified subfolder of that project.
 func ReadFiles(root, folder string) ([]*File, error) {

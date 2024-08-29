@@ -2,10 +2,11 @@ package file
 
 import (
 	"fmt"
-	"org/go/helper/path"
 	"os"
 	fp "path/filepath"
 	"strings"
+
+	"g.sacerb.com/org/go/helper/path"
 )
 
 type File struct {
