@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"g.sacerb.com/org/go/helper"
 	"g.sacerb.com/org/go/helper/path"
@@ -41,6 +40,7 @@ func handleUpload(path *path.Path, r *http.Request) error {
 	return err
 }
 
+/*
 func handleFormUpload(r *http.Request) error {
 	err := r.ParseMultipartForm(16106127360)
 	if err != nil {
@@ -65,3 +65,5 @@ func handleFormUpload(r *http.Request) error {
 	}
 	return nil
 }
+
+*/

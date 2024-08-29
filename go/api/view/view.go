@@ -36,7 +36,7 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 	}
 
 	if !p.Exists() {
-		e.Err = fmt.Errorf("Not found %v", p.Rel)
+		e.Err = fmt.Errorf("not found %v", p.Rel)
 		e.Code = 404
 		return e
 	}

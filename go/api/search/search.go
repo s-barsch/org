@@ -128,7 +128,7 @@ func minMax(m map[string]int) (string, string) {
 		}
 		mstr = append(mstr, k)
 	}
-	sort.Sort(sort.StringSlice(mstr))
+	sort.Strings(mstr)
 	if len(mstr) == 0 {
 		return "", ""
 	}

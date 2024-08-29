@@ -53,7 +53,7 @@ func readSort(sortFile string) ([]string, error) {
 	list := []string{}
 	dupli := make(map[string]bool)
 	for _, name := range strings.Split(string(b), "\n") {
-		if name == "" || dupli[name] == true || dupli[stripExt(name)] == true {
+		if name == "" || dupli[name] || dupli[stripExt(name)] {
 			continue
 		}
 		list = append(list, name)

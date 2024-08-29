@@ -65,6 +65,7 @@ func renumerate(files []*File) []*File {
 	return files
 }
 
+/*
 func preSort(files []*File) []*File {
 	nu := []*File{}
 	for _, f := range files {
@@ -84,6 +85,7 @@ func preSort(files []*File) []*File {
 
 	return antoSort(nu)
 }
+*/
 
 func divide(all []*File) (dirs, info, files []*File) {
 	sort := []*File{}
@@ -114,6 +116,7 @@ func antoSort(all []*File) []*File {
 	return append(dirs, append(info, files...)...)
 }
 
+/*
 func separate(all []*File) []*File {
 	dirs, info, files := divide(all)
 	return append(dirs, append(info, files...)...)
@@ -127,6 +130,7 @@ func hasFile(files []*File, path string) bool {
 	}
 	return false
 }
+*/
 
 type Asc []*File
 

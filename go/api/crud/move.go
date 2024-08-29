@@ -4,7 +4,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"g.sacerb.com/org/go/helper"
 	"g.sacerb.com/org/go/helper/file"
@@ -51,6 +50,7 @@ func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper
 	return nil
 }
 
+/*
 func deleteBot(path string) error {
 	dir := filepath.Dir(path)
 	if filepath.Base(dir) != "bot" {
@@ -68,6 +68,7 @@ func deleteBot(path string) error {
 
 	return nil
 }
+*/
 
 func createBot(path *path.Path) error {
 	dir := path.Parent()

@@ -56,11 +56,13 @@ func GetFilesRecursive(p *path.Path) ([]*File, error) {
 	return files, nil
 }
 
+/*
 func printFiles(files []*File) {
 	for _, f := range files {
 		fmt.Println(f.Name)
 	}
 }
+*/
 
 func stripExt(path string) string {
 	return path[:len(path)-len(fp.Ext(path))]
@@ -81,6 +83,7 @@ func isDirMode(mode os.FileMode) bool {
 	return mode&os.ModeSymlink != 0
 }
 
+/*
 func fileTypeStat(path string) string {
 	t := fileType(path)
 	if t != "file" {
@@ -95,6 +98,7 @@ func fileTypeStat(path string) string {
 	}
 	return t
 }
+*/
 
 func fileType(path string) string {
 	switch fp.Ext(strings.ToLower(path)) {

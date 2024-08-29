@@ -82,7 +82,7 @@ func CreateDir(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 		return e
 	}
 	if !fi.IsDir() {
-		e.Err = fmt.Errorf("Can’t create dir in non-dir.")
+		e.Err = fmt.Errorf("cannot create dir in non-dir")
 		return e
 	}
 	err = os.Mkdir(p.Abs(), 0755)
@@ -109,18 +109,18 @@ func createInfo(path *path.Path) error {
 }
 
 func getInfoText(path string) string {
-	title := ""
-	date := time.Time{}
+	var (
+		date        time.Time
+		title, text string
+	)
 
 	t, err := parsePathDate(path)
 	if err != nil {
 		date = time.Now()
-		title = strings.Title(filepath.Base(path))
+		title = helper.Title(filepath.Base(path))
 	} else {
 		date = t
 	}
-
-	text := ""
 
 	if title != "" {
 		text = fmt.Sprintf("title: %v\n", title)
@@ -129,6 +129,7 @@ func getInfoText(path string) string {
 	return fmt.Sprintf("%vdate: %v\n", text, date.Format("060102_150405"))
 }
 
+/*
 func getDirDate(path string) time.Time {
 	t, err := parsePathDate(path)
 	if err != nil {
@@ -136,6 +137,7 @@ func getDirDate(path string) time.Time {
 	}
 	return t
 }
+*/
 
 func parsePathDate(path string) (time.Time, error) {
 	format := "/06/06-01/02"

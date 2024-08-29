@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"g.sacerb.com/org/go/helper/file"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type Err struct {
@@ -48,4 +50,8 @@ func TodayPath() string {
 		t = time.Now().AddDate(0, 0, -1)
 	}
 	return fmt.Sprintf("/private/graph/%v", t.Format("06/06-01/02"))
+}
+
+func Title(str string) string {
+	return cases.Title(language.German).String(str)
 }

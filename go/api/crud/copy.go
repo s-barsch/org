@@ -43,7 +43,7 @@ func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 
 	err = copyFileFunc(p, newP)
 	if err != nil {
-		e.Err = fmt.Errorf("Faulty target path: %v", newPath)
+		e.Err = fmt.Errorf("faulty target path: %v", newPath)
 		return e
 	}
 
