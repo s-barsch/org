@@ -70,14 +70,6 @@ func Talk(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 		default:
 			fmt.Println(m)
 		}
-		/*
-			_, b, err := c.ReadMessage()
-			if err != nil {
-				log.Println(err)
-			}
-			println("here")
-			println(string(b))
-		*/
 	}
 	if h.Err != nil {
 		return h
