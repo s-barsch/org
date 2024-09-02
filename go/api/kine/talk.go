@@ -1,7 +1,6 @@
 package kine
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -21,32 +20,25 @@ func Talk(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 		Path: TalkAPI,
 		Code: 500,
 	}
-	ix.Status = make(chan string, 100)
-	defer close(ix.Status)
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return nil
 	}
+	defer ix.ResetStatus()
+	log.SetFlags(log.Lmicroseconds)
 	go func() {
 		for msg := range ix.Status {
 			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
 			if err != nil {
-				fmt.Println(err)
+				log.Println("goroutine")
+				log.Println(err)
 				h.Err = err
 			}
 		}
 	}()
+
 	defer c.Close()
 	for {
-		select {
-		case msg := <-ix.Status:
-			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
-			if err != nil {
-				h.Err = err
-				return h
-			}
-		default:
-		}
 		_, message, err := c.ReadMessage()
 		if err != nil {
 			log.Println("read:", err)

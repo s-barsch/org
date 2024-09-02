@@ -3,8 +3,8 @@ module g.sacerb.com/org
 go 1.23.0
 
 require (
-	g.sacerb.com/imagecache v0.0.0-20240828214541-df39b3ca4008
-	g.sacerb.com/sacer v0.0.0-20240828124800-9b4a624388c3
+	g.sacerb.com/imagecache v0.0.0-20240830123746-4fcf4107b8a3
+	g.sacerb.com/sacer v0.0.0-20240830105037-2ebffce54832
 	github.com/antonbaumann/german-go-stemmer v1.2.0
 	github.com/gorilla/mux v1.8.1
 	github.com/gorilla/websocket v1.5.3
@@ -20,3 +20,5 @@ require (
 	gopkg.in/gographics/imagick.v2 v2.7.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace g.sacerb.com/imagecache => ../imagecache

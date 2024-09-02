@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -29,16 +28,14 @@ func Upload(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err
 		Code: 500,
 	}
 
-	status := fmt.Sprintf("received %v", filepath.Base(p.Abs()))
-	log.Println(status)
+	status := fmt.Sprintf("saving.. %v", filepath.Base(p.Abs()))
 	ix.Status <- status
 	err := saveFile(p, r)
 	if err != nil {
 		h.Err = err
 		return h
 	}
-	status = fmt.Sprintf("%v was saved", filepath.Base(p.Abs()))
-	log.Println(status)
+	status = fmt.Sprintf("saved! %v", filepath.Base(p.Abs()))
 	ix.Status <- status
 
 	if ix.Processing != nil {
@@ -46,15 +43,40 @@ func Upload(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err
 		return h
 	}
 
-	switch {
-	case p.Base() == "cover.jpg":
-		h.Err = cache.CacheImage(cache.File(p.Abs()), &cache.Options{})
-		return h
-	case p.Ext() == ".mp4":
-		return cacheVideo(ix, p.Abs())
-	}
-	fmt.Fprint(w, "")
+	// further communication via websocket
+
+	go func() {
+		switch {
+		case p.Base() == "cover.jpg":
+			err = cache.CacheImage(cache.File(p.Abs()), &cache.Options{Writer: newWriter(ix)})
+			if err != nil {
+				ix.Status <- err.Error()
+				return
+			}
+		case p.Ext() == ".mp4":
+			err := cacheVideo(ix, p.Abs())
+			if err != nil {
+				ix.Status <- err.Error()
+				return
+			}
+		}
+		ix.Status <- "ENDED"
+
+	}()
 	return nil
+}
+
+type custom struct {
+	ix *index.Index
+}
+
+func newWriter(ix *index.Index) *custom {
+	return &custom{ix: ix}
+}
+
+func (c *custom) Write(p []byte) (int, error) {
+	c.ix.Status <- string(p)
+	return 0, nil
 }
 
 func saveFile(path *path.Path, r *http.Request) error {
@@ -97,16 +119,10 @@ func durationToI(d string) float64 {
 	return s
 }
 
-func cacheVideo(ix *index.Index, path string) *helper.Err {
-	h := &helper.Err{
-		Func: "kine.cacheVideo",
-		Path: path,
-		Code: 500,
-	}
+func cacheVideo(ix *index.Index, path string) error {
 	v, err := getVideoData(path)
 	if err != nil {
-		h.Err = err
-		return h
+		return err
 	}
 	sizes := []string{"1080", "720", "480"}
 	ix.Processing = &index.Processing{
@@ -119,7 +135,7 @@ func cacheVideo(ix *index.Index, path string) *helper.Err {
 		ix.Abort = make(chan bool)
 		ix.Processing.Size = size
 		ix.Processing.Step = i + 1
-		err := cacheVideoSize(path, v, size, ix.Abort)
+		err := cacheVideoSize(ix, path, v, size)
 		if err != nil {
 			return err
 		}
@@ -131,13 +147,7 @@ func resetProcessing(ix *index.Index) {
 	ix.Processing = nil
 }
 
-func cacheVideoSize(path string, v *VideoData, size string, abort chan bool) *helper.Err {
-	h := &helper.Err{
-		Func: "kine.cacheVideo",
-		Path: path,
-		Code: 500,
-		Err:  nil,
-	}
+func cacheVideoSize(ix *index.Index, path string, v *VideoData, size string) error {
 	var scale string
 	// make sure that scale values are divisible by 2 for libx264
 	if v.Width > v.Height {
@@ -162,16 +172,14 @@ func cacheVideoSize(path string, v *VideoData, size string, abort chan bool) *he
 		"-y",
 		outputPath(path, size),
 	)
-	defer close(abort)
+	defer ix.ResetAbort()
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		h.Err = err
-		return h
+		return err
 	}
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		h.Err = err
-		return h
+		return err
 	}
 	go func() {
 		merged := io.MultiReader(stderr, stdout)
@@ -182,7 +190,7 @@ func cacheVideoSize(path string, v *VideoData, size string, abort chan bool) *he
 		}
 	}()
 	go func() {
-		for range abort {
+		for range ix.Abort {
 			err := cmd.Process.Kill()
 			if err != nil {
 				panic(err)
@@ -190,13 +198,10 @@ func cacheVideoSize(path string, v *VideoData, size string, abort chan bool) *he
 		}
 	}()
 	if err := cmd.Start(); err != nil {
-		h.Err = err
-		return h
+		return err
 	}
 	if err := cmd.Wait(); err != nil {
-		h.Code = 200
-		h.Err = err
-		return h
+		return err
 	}
 	return nil
 }

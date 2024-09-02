@@ -18,7 +18,8 @@ func New(build, root string) *Index {
 		Build:  build,
 		Words:  map[string][]*File{},
 		Tags:   map[string][]*File{},
-		Status: make(chan string, 100),
+		Status: make(chan string, 50),
+		Abort:  make(chan bool),
 	}
 }
 

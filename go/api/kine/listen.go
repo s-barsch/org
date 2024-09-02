@@ -36,7 +36,7 @@ func Listen(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err
 		time, speed := findValues(string(line))
 		percent := time / ix.Processing.Duration * 100
 		ix.Status <- fmt.Sprintf(
-			"%v/%v, %vp %.1f%% %vx",
+			"%v/%v %vp %.1f%% %vx",
 			ix.Processing.Step,
 			ix.Processing.Steps,
 			ix.Processing.Size,

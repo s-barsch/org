@@ -27,6 +27,18 @@ type Processing struct {
 	Duration float64
 }
 
+func (ix *Index) ResetStatus() {
+	oldStatus := ix.Status
+	ix.Status = make(chan string, 100)
+	close(oldStatus)
+}
+
+func (ix *Index) ResetAbort() {
+	oldAbort := ix.Abort
+	ix.Abort = make(chan bool)
+	close(oldAbort)
+}
+
 func (ix *Index) NewPath(rel string) *path.Path {
 	return &path.Path{
 		Root: ix.Root,

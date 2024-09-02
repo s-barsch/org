@@ -1,7 +1,7 @@
-g.sacerb.com/imagecache v0.0.0-20240828214541-df39b3ca4008 h1:9KztzM5TrMJejbQSWeQAl+pr0chv6hPxM1LL0eNYNtw=
-g.sacerb.com/imagecache v0.0.0-20240828214541-df39b3ca4008/go.mod h1:mr0oevgQm1oHuMNFegjoXjEXSunC1PEi4Tm9W1K1SNw=
 g.sacerb.com/sacer v0.0.0-20240828124800-9b4a624388c3 h1:ROU5P+WEpbj/5lFOlyXe1GQyOoELRC+FgYvk4N3AAv0=
 g.sacerb.com/sacer v0.0.0-20240828124800-9b4a624388c3/go.mod h1:PXH2do5DT8L9uXDRSFOqXpKGcgArD0l1EyMPM/zvZM8=
+g.sacerb.com/sacer v0.0.0-20240830105037-2ebffce54832 h1:gGbxDbhu+U+IHkQ6X0Fc8uwJoS7UkgAkL6hoNg5P/oY=
+g.sacerb.com/sacer v0.0.0-20240830105037-2ebffce54832/go.mod h1:PXH2do5DT8L9uXDRSFOqXpKGcgArD0l1EyMPM/zvZM8=
 github.com/antonbaumann/german-go-stemmer v1.2.0 h1:TAjEnUcXBwtBeP+GBSA5awf0vRt9cDGvVxiyP1dJXbI=
 github.com/antonbaumann/german-go-stemmer v1.2.0/go.mod h1:ouebn6Y1yVNz5ztTIAv+n0yOUDRLweUSlK1SR/Tqa9g=
 github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=

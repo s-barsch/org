@@ -5,7 +5,7 @@ import { join } from 'path-browserify';
 import { AddButton } from '../../views/folder/parts/AddButton';
 
 export function MyDropzone({ isKine, name }: { name: string, isKine?: boolean}) {
-  const { view, reloadView } = useView();
+  const { view, reloadView, setUploadStatus } = useView();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach(async (file) => {
@@ -14,6 +14,7 @@ export function MyDropzone({ isKine, name }: { name: string, isKine?: boolean}) 
           if (isKine && file.type == 'image/jpeg') {
             name = 'cover.jpg'
           }
+          setUploadStatus("uploading.. " + name)
           const path = join("/api/kine/upload", view.path, name)
           const response = await fetch(path, {
             method: "POST",

@@ -10,6 +10,8 @@ import { orgSort } from './funcs/sort';
 interface ViewState {
   view: viewObject;
   status: string;
+  uploadStatus: string;
+  setUploadStatus: (msg: string) => void;
   setView: (v: viewObject) => void
   loadView: (path: string) => void;
   reloadView: () => void;
@@ -37,6 +39,10 @@ const useView = create<ViewState>()(
       (set, get) => ({
         view: newView(),
         status: "",
+        uploadStatus: "",
+        setUploadStatus: (msg: string) => {
+          set({uploadStatus: msg});
+        },
         loadView: async (path: string) => {
           const resp = await fetch("/api/view" + path);
           if (!resp.ok) {
