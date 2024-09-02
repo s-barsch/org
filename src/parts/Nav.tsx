@@ -15,6 +15,10 @@ import { ErrComponent } from '../parts/nav/error';
 import Config from '../config';
 import { ErrContext } from '../context/err';
 import { isActiveTarget } from '../funcs/targets';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import useWebSocket from 'react-use-websocket';
+import { SocketURL } from './UploadProgress';
+import useView from '../state';
 
 type NavProps = {
     path: string;
@@ -64,6 +68,20 @@ export default function Nav({path, noFetch}: NavProps) {
 
     function ThemeButton({clickFn}: { clickFn: () => void}) {
         return <button onClick={clickFn} ><ThemeIcon /></button>
+    }
+
+    function RecacheButton() {
+        const { view } = useView();
+        const { sendJsonMessage } = useWebSocket(SocketURL(),
+        {
+          share: true,
+          shouldReconnect: () => true,
+        })
+        if (!view.path.includes("public")) {
+            return null
+        }
+        return <button onClick={() => {sendJsonMessage({ action: "RECACHE", url: view.path})
+     }}><RestartAltIcon /></button>
     }
 
     function setThisActive() {
@@ -125,6 +143,7 @@ export default function Nav({path, noFetch}: NavProps) {
             </span>
             <span className="right">
                 <ErrComponent err={err} />
+                <RecacheButton />
                 <TargetButton clickFn={setThisActive} />
                 <ThemeButton clickFn={toggleTheme} />
                 <Del file={viewFile} deleteFile={deleteDir} />

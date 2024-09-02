@@ -1,9 +1,13 @@
 package kine
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strings"
+	"time"
 
+	"g.sacerb.com/imagecache/cache"
 	"g.sacerb.com/org/go/helper"
 	"g.sacerb.com/org/go/index"
 	"github.com/gorilla/websocket"
@@ -12,6 +16,11 @@ import (
 // only used locally anyway
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool { return true },
+}
+
+type Command struct {
+	Action string `json:"action"`
+	Url    string `json:"url"`
 }
 
 func Talk(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
@@ -37,25 +46,51 @@ func Talk(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 		}
 	}()
 
+	m := Command{}
 	defer c.Close()
 	for {
-		_, message, err := c.ReadMessage()
+		err := c.ReadJSON(&m)
 		if err != nil {
 			log.Println("read:", err)
 			break
 		}
-		if string(message) == "STOP" {
+		switch m.Action {
+		case "RECACHE":
+			err = recacheFiles(ix, m.Url)
+			if err != nil {
+				log.Println(err)
+			}
+			ix.Status <- "ENDED"
+		case "STOP":
 			err = c.WriteMessage(websocket.TextMessage, []byte("aborted"))
 			if err != nil {
-				h.Err = err
-				return h
+				log.Println(err)
 			}
 			ix.Abort <- true
+		default:
+			fmt.Println(m)
 		}
-		log.Println(string(message))
+		/*
+			_, b, err := c.ReadMessage()
+			if err != nil {
+				log.Println(err)
+			}
+			println("here")
+			println(string(b))
+		*/
 	}
 	if h.Err != nil {
 		return h
 	}
+	return nil
+}
+
+func recacheFiles(ix *index.Index, url string) error {
+	if strings.Contains(url, "public") {
+		path := ix.NewPath(url)
+		return cache.CacheImages(path.Abs(), &cache.Options{Writer: newWriter(ix)})
+	}
+	ix.Status <- "not allowed"
+	<-time.After(1 * time.Second)
 	return nil
 }

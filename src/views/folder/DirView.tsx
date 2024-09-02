@@ -8,13 +8,11 @@ import { useNavigate } from 'react-router-dom';
 import KineSelector from '../../parts/kine/Selector';
 import { MyDropzone } from '../../parts/kine/Upload';
 import { AddButton } from './parts/AddButton';
-import { useEffect, useRef, useState } from 'react';
 
 type DirViewProps = {
     path: string;
     files: File[];
 }
-
 
 export default function DirView({path, files}: DirViewProps) {
     const navigate = useNavigate();
@@ -34,7 +32,6 @@ export default function DirView({path, files}: DirViewProps) {
 
     return (
         <HotKeys keyMap={keyMap} handlers={handlers}>
-            <UploadProgress />
             <Head path={path} />
             { path == "/public/kine" && <KineSelector/>}
             <nav id="dirs">
@@ -51,41 +48,7 @@ export default function DirView({path, files}: DirViewProps) {
     )
 }
 
-export function UploadProgress() {
-    const { uploadStatus, setUploadStatus, reloadView } = useView();
-    const [isProcessing, setProcessing] = useState(false)
-    const connection = useRef({} as WebSocket)
 
-    useEffect(() => {
-        const socket = new WebSocket("ws://"+window.location.host+"/api/kine/talk")
-        socket.addEventListener("message", event => {
-            setUploadStatus(event.data)
-            if (event.data == "ENDED") {
-                setProcessing(false);
-                setTimeout(() => {
-                    setUploadStatus('');
-                }, 2000);
-                reloadView();
-                return;
-            }
-            setProcessing(true);
-        });
-        connection.current = socket;
-    }, [])
-
-    console.log(connection.current);
-  
-    function abort() {
-        connection.current.send("STOP")
-    }
-
-    return (
-        <div className='progress'>
-            <div className='statusMessage'>{uploadStatus}</div>
-            { isProcessing && <button onClick={abort} className='abort-button'>abort</button> }
-        </div>
-    )
-}
 
 export function KineButtons({path}: { path: string}) {
     if (!isKineFolder(path)) {

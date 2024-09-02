@@ -21,6 +21,7 @@
     "react-hotkeys": "^2.0.0",
     "react-router-dom": "^6.26.1",
     "react-sortablejs": "^6.1.4",
+    "react-use-websocket": "^4.8.1",
     "sortablejs": "^1.15.2",
     "styled-components": "^6.1.12",
     "zustand": "^4.5.5"

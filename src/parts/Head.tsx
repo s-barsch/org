@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { dirname, join } from 'path-browserify';
 import { orgBase } from '../funcs/paths';
 import useView from '../state';
+import { UploadProgress } from './UploadProgress';
 type HeadProps = {
     path: string;
     disabled?: boolean;
@@ -12,14 +13,18 @@ type HeadProps = {
 
 export default function Head({path, isNew, disabled}: HeadProps) {
     return (
+        <>
+        <UploadProgress />
         <h1 className="name">
         <Link className="parent" to={dirname(path)}>^</Link>
         <IsNew isNew={isNew}>
             <Rename path={path} disabled={disabled} />
         </IsNew>
         </h1>
+        </>
     )
 }
+
 
 function IsNew({ children, isNew }: {children: React.ReactNode, isNew?: boolean}) {
     if (isNew) {
