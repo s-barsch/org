@@ -65,3 +65,5 @@ go/install
 err.log
 
 .yarn/install-state.gz
+
+_minitest/*

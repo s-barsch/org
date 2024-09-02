@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import KineSelector from '../../parts/kine/Selector';
 import { MyDropzone } from '../../parts/kine/Upload';
 import { AddButton } from './parts/AddButton';
+import { useEffect, useState } from 'react';
 
 type DirViewProps = {
     path: string;
@@ -33,6 +34,7 @@ export default function DirView({path, files}: DirViewProps) {
 
     return (
         <HotKeys keyMap={keyMap} handlers={handlers}>
+            <UploadProgress />
             <Head path={path} />
             { path == "/public/kine" && <KineSelector/>}
             <nav id="dirs">
@@ -41,11 +43,53 @@ export default function DirView({path, files}: DirViewProps) {
             </nav>
             <section id="files">
                 <AddText createFile={createFile} />
-                { isKineFolder(path) && <MyDropzone /> }
+                { isKineFolder(path) && <MyDropzone isKine={true} name="File" /> }
                 <KineButtons path={path} />
                 <FileList files={filesOnly(files)} />
             </section>
         </HotKeys>
+    )
+}
+
+export function UploadProgress() {
+    const { reloadView } = useView();
+    const [msg, setMsg] = useState("")
+    const [isProcessing, setProcessing] = useState(false)
+
+    const socket = new WebSocket("ws://"+window.location.host+"/api/kine/talk")
+
+    useEffect(() => {
+        console.log(socket);
+    }, [])
+  
+    // Connection opened
+    socket.addEventListener("open", _ => {
+        //setMsg("connection established");
+    });
+  
+    // Listen for messages
+    socket.addEventListener("message", event => {
+        setMsg(event.data)
+        if (event.data == "ENDED") {
+            setProcessing(false);
+            setTimeout(() => {
+                setMsg('');
+            }, 2000);
+            reloadView();
+            return;
+        }
+        setProcessing(true);
+    });
+
+    function abort() {
+        socket.send("STOP")
+    }
+
+    return (
+        <div className='progress'>
+            <div className='statusMessage'>{msg}</div>
+            { isProcessing && <button onClick={abort} className='abort-button'>abort</button> }
+        </div>
     )
 }
 

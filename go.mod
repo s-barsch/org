@@ -7,7 +7,9 @@ require (
 	g.sacerb.com/sacer v0.0.0-20240828124800-9b4a624388c3
 	github.com/antonbaumann/german-go-stemmer v1.2.0
 	github.com/gorilla/mux v1.8.1
+	github.com/gorilla/websocket v1.5.3
 	golang.org/x/text v0.17.0
+	gopkg.in/vansante/go-ffprobe.v2 v2.2.0
 )
 
 require (

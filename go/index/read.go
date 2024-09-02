@@ -14,10 +14,11 @@ func New(build, root string) *Index {
 		panic(err)
 	}
 	return &Index{
-		Root:  path,
-		Build: build,
-		Words: map[string][]*File{},
-		Tags:  map[string][]*File{},
+		Root:   path,
+		Build:  build,
+		Words:  map[string][]*File{},
+		Tags:   map[string][]*File{},
+		Status: make(chan string, 100),
 	}
 }
 

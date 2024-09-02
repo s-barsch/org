@@ -6,6 +6,15 @@ import svgr from "vite-plugin-svgr";
 // https://vitejs.dev/config/
 export default defineConfig({
   build: { watch: {} },
+  /*
+  server: {
+    hmr: {
+      // host: "yourdomainname.com",
+      port: 5173,
+      protocol: "ws",
+    },
+  },
+  */
   plugins: [
     react(),
     svgr({

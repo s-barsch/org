@@ -40,6 +40,8 @@ func Routes(ix *index.Index) *mux.Router {
 	r.PathPrefix("/api/kines").HandlerFunc(hix(ix, kine.Kines))
 	r.PathPrefix(kine.CreateAPI).HandlerFunc(hix(ix, kine.Create))
 	r.PathPrefix(kine.UploadAPI).HandlerFunc(hix(ix, kine.Upload))
+	r.PathPrefix(kine.TalkAPI).HandlerFunc(hix(ix, kine.Talk))
+	r.PathPrefix("/api/kine/listen").HandlerFunc(hix(ix, kine.Listen))
 
 	r.PathPrefix("/rl/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := ix.Load()

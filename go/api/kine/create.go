@@ -23,6 +23,7 @@ const kineRoot = "./data/public/kine"
 const (
 	CreateAPI = "/api/kine/create"
 	UploadAPI = "/api/kine/upload"
+	TalkAPI   = "/api/kine/talk"
 )
 
 func Create(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {

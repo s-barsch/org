@@ -2,14 +2,19 @@ import {useCallback} from 'react'
 import {useDropzone} from 'react-dropzone'
 import useView from '../../state';
 import { join } from 'path-browserify';
+import { AddButton } from '../../views/folder/parts/AddButton';
 
-export function MyDropzone() {
+export function MyDropzone({ isKine, name }: { name: string, isKine?: boolean}) {
   const { view, reloadView } = useView();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach(async (file) => {
         try {
-          const path = join("/api/kine/upload", view.path, file.name)
+          let name = file.name;
+          if (isKine && file.type == 'image/jpeg') {
+            name = 'cover.jpg'
+          }
+          const path = join("/api/kine/upload", view.path, name)
           const response = await fetch(path, {
             method: "POST",
             body: file,
@@ -45,7 +50,7 @@ export function MyDropzone() {
   return (
     <div className='upload' {...getRootProps()}>
       <input {...getInputProps()} />
-      Cover
+      <AddButton name={name} />
     </div>
   )
 }

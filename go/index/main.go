@@ -9,11 +9,22 @@ import (
 )
 
 type Index struct {
-	Files []*File
-	Words Words
-	Tags  Tags
-	Root  string
-	Build string
+	Files      []*File
+	Words      Words
+	Tags       Tags
+	Root       string
+	Build      string
+	Status     chan string
+	Abort      chan bool
+	Processing *Processing
+}
+
+type Processing struct {
+	Name     string
+	Step     int
+	Steps    int
+	Size     string
+	Duration float64
 }
 
 func (ix *Index) NewPath(rel string) *path.Path {
