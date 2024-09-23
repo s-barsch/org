@@ -9,7 +9,7 @@ import (
 
 func main() {
 	ix := index.New("dist", "data")
-	//go ix.Load()
+	go ix.Load()
 
 	http.Handle("/", routes.Routes(ix))
 	http.ListenAndServe(":8334", nil)
