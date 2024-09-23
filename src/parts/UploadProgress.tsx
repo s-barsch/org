@@ -10,7 +10,7 @@ export function UploadProgress() {
     const { uploadStatus, setUploadStatus, reloadView } = useView();
     const [isProcessing, setProcessing] = useState(false)
 
-    const { sendMessage, lastMessage } = useWebSocket(
+    const { sendJsonMessage, lastMessage } = useWebSocket(
         SocketURL(),
         {
           share: true,
@@ -35,7 +35,7 @@ export function UploadProgress() {
     }, [lastMessage])
 
     function abort() {
-        sendMessage("STOP")
+        sendJsonMessage({"action": "STOP"})
     }
 
     return (
