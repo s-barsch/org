@@ -4,10 +4,11 @@ import { DirList, FileList } from '../../views/folder/parts/lists';
 import { AddDir, AddText } from '../../views/folder/parts/AddDir';
 import { HotKeys } from 'react-hotkeys';
 import useView from '../../state';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import KineSelector from '../../parts/kine/Selector';
 import { MyDropzone } from '../../parts/kine/Upload';
-import { AddButton } from './parts/AddButton';
+import { dirPath } from '../../funcs/paths';
+import { join, basename } from 'path-browserify';
 
 type DirViewProps = {
     path: string;
@@ -34,6 +35,7 @@ export default function DirView({path, files}: DirViewProps) {
         <HotKeys keyMap={keyMap} handlers={handlers}>
             <Head path={path} />
             { path == "/public/kine" && <KineSelector/>}
+            <TranscriptLinks files={files} />
             <nav id="dirs">
                 <DirList  dirs={dirsOnly(files)} />
                 <AddDir />
@@ -45,6 +47,28 @@ export default function DirView({path, files}: DirViewProps) {
                 <FileList files={filesOnly(files)} />
             </section>
         </HotKeys>
+    )
+}
+
+function TranscriptLinks({files}: {files: File[]}) {
+    let mp4 = ""
+    function transcriptPath(path: string, lang: string): string {
+        const name = basename(path).slice(0, -4)
+        return join(dirPath(path), "transcript", name + "." + lang + ".txt")
+    }
+    for (const f of files) {
+        if (f.type === "video") {
+            mp4 = f.path
+        }
+    }
+    if (mp4 === "") {
+        return null;
+    }
+    return(
+        <>
+        <Link to={transcriptPath(mp4, "de")}>de</Link>
+        <Link to={transcriptPath(mp4, "en")}>en</Link>
+        </>
     )
 }
 
