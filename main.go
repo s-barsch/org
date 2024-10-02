@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"g.sacerb.com/org/go/index"
@@ -12,5 +13,5 @@ func main() {
 	go ix.Load()
 
 	http.Handle("/", routes.Routes(ix))
-	http.ListenAndServe(":8334", nil)
+	log.Fatal(http.ListenAndServe(":8334", nil))
 }

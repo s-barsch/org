@@ -41,7 +41,7 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 		return e
 	}
 
-	v := &helper.DirView{}
+	var v *helper.DirView
 	var err error
 	if all {
 		v, err = viewDirRecursive(p)
