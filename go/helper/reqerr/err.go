@@ -9,6 +9,13 @@ type Err struct {
 	Err  error
 }
 
+func New(fnName, path string) *Err {
+	return &Err{
+		Func: fnName,
+		Path: path,
+	}
+}
+
 func (e *Err) Error() string {
 	// err is initialized with 0
 	if e.Code == 0 {

@@ -19,11 +19,7 @@ import (
 
 func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/write"):])
-
-	e := &reqerr.Err{
-		Func: "WriteFile",
-		Path: p.Rel,
-	}
+	e := reqerr.New("WriteFile", p.Rel)
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -64,11 +60,7 @@ func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.
 
 func CreateDir(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/write"):])
-
-	e := &reqerr.Err{
-		Func: "createDir",
-		Path: p.Rel,
-	}
+	e := reqerr.New("createDir", p.Rel)
 
 	dir := p.Parent()
 	fi, err := os.Stat(dir.Abs())

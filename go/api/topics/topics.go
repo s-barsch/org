@@ -45,9 +45,7 @@ func lastDate(files []*index.File) (time.Time, error) {
 }
 
 func Topics(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
-	e := &reqerr.Err{
-		Func: "topics.Topics",
-	}
+	e := reqerr.New("topics.Topics", "")
 
 	topics := []*Topic{}
 	for t := range ix.Tags {
@@ -76,10 +74,7 @@ func ViewTopic(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.
 	topic := r.URL.Path[len("/api/topics/"):]
 	indexed := ix.Tags[topic]
 
-	e := &reqerr.Err{
-		Func: "topics.ViewTopic",
-		Path: topic,
-	}
+	e := reqerr.New("topics.ViewTopic", topic)
 
 	files := []*file.File{}
 	for i, f := range indexed {

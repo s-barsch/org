@@ -28,11 +28,7 @@ type ResultView struct {
 
 func SearchFiles(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	query := r.URL.Path[len("/api/search"):]
-
-	e := &reqerr.Err{
-		Func: "search.SearchFiles",
-		Path: query,
-	}
+	e := reqerr.New("search.SearchFiles", query)
 
 	files := []*file.File{}
 	matches := ix.Words.Search(query)

@@ -22,10 +22,7 @@ import (
 
 func Upload(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len(UploadAPI):])
-	h := &reqerr.Err{
-		Func: "kine.Upload",
-		Path: p.Rel,
-	}
+	h := reqerr.New("kine.Upload", p.Rel)
 
 	status := fmt.Sprintf("saving.. %v", filepath.Base(p.Abs()))
 	ix.Status <- status

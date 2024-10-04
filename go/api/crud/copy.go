@@ -13,11 +13,7 @@ import (
 
 func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/copy"):])
-
-	e := &reqerr.Err{
-		Func: "CopyFile",
-		Path: p.Rel,
-	}
+	e := reqerr.New("CopyFile", p.Rel)
 
 	newPath, err := getBodyPath(r)
 	if err != nil {

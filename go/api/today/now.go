@@ -13,9 +13,7 @@ import (
 )
 
 func GetToday(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
-	e := &reqerr.Err{
-		Func: "today.GetToday",
-	}
+	e := reqerr.New("today.GetToday", "")
 
 	path, err := helper.MakeToday(ix.Root)
 	if err != nil {
@@ -27,9 +25,7 @@ func GetToday(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.E
 }
 
 func GetNow(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
-	e := &reqerr.Err{
-		Func: "today.GetNow",
-	}
+	e := reqerr.New("today.GetNow", "")
 
 	now, err := makeNow(ix.Root)
 	if err != nil {

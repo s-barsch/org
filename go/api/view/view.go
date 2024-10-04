@@ -26,10 +26,7 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.E
 		all = true
 	}
 
-	e := &reqerr.Err{
-		Func: "view.ViewFile",
-		Path: p.Rel,
-	}
+	e := reqerr.New("view.ViewFile", p.Rel)
 
 	if p.IsFile() {
 		p.Rel = fp.Dir(p.Rel)

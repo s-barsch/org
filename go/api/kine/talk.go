@@ -24,14 +24,14 @@ type Command struct {
 }
 
 func Talk(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
-	h := &reqerr.Err{
-		Func: "kine.Talk",
-		Path: TalkAPI,
-	}
+	h := reqerr.New("kine.Talk", TalkAPI)
+
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
+		// TODO: why is this ommited?
 		return nil
 	}
+
 	defer ix.ResetStatus()
 	log.SetFlags(log.Lmicroseconds)
 	go func() {

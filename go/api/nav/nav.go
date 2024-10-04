@@ -23,11 +23,7 @@ type Nav struct {
 
 func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/nav"):])
-
-	e := &reqerr.Err{
-		Func: "nav.ViewNav",
-		Path: p.Rel,
-	}
+	e := reqerr.New("nav.ViewNav", p.Rel)
 
 	nav, err := getNav(p)
 	if err != nil {

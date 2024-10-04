@@ -29,10 +29,8 @@ const (
 func Create(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	path, err := createKine(r)
 	if err != nil {
-		return &reqerr.Err{
-			Func: "kine.Create",
-			Path: "/api/kines",
-		}
+		e := reqerr.New("kine.Create", "/api/kines")
+		return e.Set(err, 500)
 	}
 	fmt.Fprint(w, path)
 	return nil
@@ -73,16 +71,16 @@ func createKine(r *http.Request) (string, error) {
 }
 
 func Kines(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
+	e := reqerr.New("kine.Kines", "/api/kines")
+
 	list, err := readKines(0, kineRoot)
 	if err != nil {
 		log.Println(err)
 	}
+
 	err = json.NewEncoder(w).Encode(list)
 	if err != nil {
-		return &reqerr.Err{
-			Func: "kine.Kines",
-			Path: "/api/kines",
-		}
+		return e.Set(err, 500)
 	}
 	return nil
 }

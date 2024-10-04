@@ -13,10 +13,7 @@ import (
 func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	path := ix.NewPath(r.URL.Path[len("/api/sort"):])
 
-	e := &reqerr.Err{
-		Func: "WriteSort",
-		Path: path.Rel,
-	}
+	e := reqerr.New("WriteSort", path.Rel)
 
 	list := []string{}
 

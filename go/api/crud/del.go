@@ -12,10 +12,7 @@ import (
 func DeleteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	path := r.URL.Path[len("/api/delete"):]
 
-	e := &reqerr.Err{
-		Func: "DeleteFile",
-		Path: path,
-	}
+	e := reqerr.New("DeleteFile", path)
 
 	err := os.Remove(fp.Join(ix.Root, path))
 	if err != nil {
