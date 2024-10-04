@@ -13,14 +13,11 @@ func New(fnName, path string) *Err {
 	return &Err{
 		Func: fnName,
 		Path: path,
+		Code: 500,
 	}
 }
 
 func (e *Err) Error() string {
-	// err is initialized with 0
-	if e.Code == 0 {
-		e.Code = 500
-	}
 	return fmt.Sprintf("%v: %v (%d) (%v)", e.Func, e.Err.Error(), e.Code, e.Path)
 }
 
