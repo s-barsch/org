@@ -16,21 +16,18 @@ func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 	e := &helper.Err{
 		Func: "WriteSort",
 		Path: path.Rel,
-		Code: 500,
 	}
 
 	list := []string{}
 
 	err := json.NewDecoder(io.Reader(r.Body)).Decode(&list)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	err = file.WriteSortFile(path, list)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	return nil

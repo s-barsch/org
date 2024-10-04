@@ -22,21 +22,18 @@ func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 	e := &helper.Err{
 		Func: "WriteFile",
 		Path: p.Rel,
-		Code: 500,
 	}
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	// delete empty info files
 	if p.Ext() == ".info" && len(body) == 0 {
 		err := rmFile(p.Abs())
 		if err != nil {
-			e.Err = err
-			return e
+			return e.Set(err, 500)
 		}
 		return nil
 	}
@@ -51,14 +48,12 @@ func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 
 	err = isTodayPath(p)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	err = os.WriteFile(p.Abs(), body, 0664)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 	ix.UpdateFile(p.Rel)
 
@@ -72,14 +67,12 @@ func CreateDir(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 	e := &helper.Err{
 		Func: "createDir",
 		Path: p.Rel,
-		Code: 500,
 	}
 
 	dir := p.Parent()
 	fi, err := os.Stat(dir.Abs())
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 	if !fi.IsDir() {
 		e.Err = fmt.Errorf("cannot create dir in non-dir")
@@ -87,14 +80,12 @@ func CreateDir(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 	}
 	err = os.Mkdir(p.Abs(), 0755)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	err = createInfo(p)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	return nil

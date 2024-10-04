@@ -46,7 +46,6 @@ func lastDate(files []*index.File) (time.Time, error) {
 func Topics(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	e := &helper.Err{
 		Func: "topics.Topics",
-		Code: 500,
 	}
 
 	topics := []*Topic{}
@@ -66,8 +65,7 @@ func Topics(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err
 
 	err := json.NewEncoder(w).Encode(topics)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	return nil
@@ -80,7 +78,6 @@ func ViewTopic(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 	e := &helper.Err{
 		Func: "topics.ViewTopic",
 		Path: topic,
-		Code: 500,
 	}
 
 	files := []*file.File{}
@@ -105,8 +102,7 @@ func ViewTopic(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 
 	err := json.NewEncoder(w).Encode(v)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 	return nil
 }

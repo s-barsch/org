@@ -28,7 +28,6 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 	e := &helper.Err{
 		Func: "view.ViewFile",
 		Path: p.Rel,
-		Code: 500,
 	}
 
 	if p.IsFile() {
@@ -36,9 +35,7 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 	}
 
 	if !p.Exists() {
-		e.Err = fmt.Errorf("not found %v", p.Rel)
-		e.Code = 404
-		return e
+		return e.Set(fmt.Errorf("not found"), 404)
 	}
 
 	var v *helper.DirView
@@ -49,14 +46,12 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 		v, err = viewDir(p)
 	}
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	err = json.NewEncoder(w).Encode(v)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	return nil

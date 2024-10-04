@@ -15,13 +15,11 @@ func DeleteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper
 	e := &helper.Err{
 		Func: "DeleteFile",
 		Path: path,
-		Code: 500,
 	}
 
 	err := os.Remove(fp.Join(ix.Root, path))
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	return nil

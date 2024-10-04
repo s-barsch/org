@@ -25,7 +25,6 @@ func Upload(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err
 	h := &helper.Err{
 		Func: "kine.Upload",
 		Path: p.Rel,
-		Code: 500,
 	}
 
 	status := fmt.Sprintf("saving.. %v", filepath.Base(p.Abs()))

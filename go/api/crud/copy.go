@@ -17,13 +17,11 @@ func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 	e := &helper.Err{
 		Func: "CopyFile",
 		Path: p.Rel,
-		Code: 500,
 	}
 
 	newPath, err := getBodyPath(r)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	newP := p.New(newPath)
@@ -32,19 +30,17 @@ func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 		dir := newP.Parent()
 		err := os.MkdirAll(dir.Abs(), 0755)
 		if err != nil {
-			e.Err = err
-			return e
+			return e.Set(err, 500)
 		}
 		err = createInfo(dir)
 		if err != nil {
-			return e
+			return e.Set(err, 500)
 		}
 	}
 
 	err = copyFileFunc(p, newP)
 	if err != nil {
-		e.Err = fmt.Errorf("faulty target path: %v", newPath)
-		return e
+		return e.Set(fmt.Errorf("faulty target path: %v", newPath), 500)
 	}
 
 	return nil

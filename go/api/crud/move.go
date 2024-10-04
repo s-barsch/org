@@ -17,13 +17,11 @@ func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper
 	e := &helper.Err{
 		Func: "RenameFile",
 		Path: p.Rel,
-		Code: 500,
 	}
 
 	newPath, err := getBodyPath(r)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	newP := p.New(newPath)
@@ -31,20 +29,17 @@ func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper
 	// TODO: dont like that.
 	err = createBot(newP)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	err = file.RenameSortEntry(p, newP)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	err = os.Rename(p.Abs(), newP.Abs())
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	return nil

@@ -32,7 +32,6 @@ func Create(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err
 		return &helper.Err{
 			Func: "kine.Create",
 			Path: "/api/kines",
-			Code: 500,
 		}
 	}
 	fmt.Fprint(w, path)
@@ -83,7 +82,6 @@ func Kines(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err 
 		return &helper.Err{
 			Func: "kine.Kines",
 			Path: "/api/kines",
-			Code: 500,
 		}
 	}
 	return nil

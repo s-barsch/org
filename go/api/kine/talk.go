@@ -27,7 +27,6 @@ func Talk(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	h := &helper.Err{
 		Func: "kine.Talk",
 		Path: TalkAPI,
-		Code: 500,
 	}
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {

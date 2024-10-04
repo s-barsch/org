@@ -27,20 +27,16 @@ func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Er
 	e := &helper.Err{
 		Func: "nav.ViewNav",
 		Path: p.Rel,
-		Code: 500,
 	}
 
 	nav, err := getNav(p)
 	if err != nil {
-		e.Err = err
-		e.Code = 404
-		return e
+		return e.Set(err, 404)
 	}
 
 	err = json.NewEncoder(w).Encode(nav)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	return nil

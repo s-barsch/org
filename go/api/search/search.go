@@ -32,7 +32,6 @@ func SearchFiles(ix *index.Index, w http.ResponseWriter, r *http.Request) *helpe
 	e := &helper.Err{
 		Func: "search.SearchFiles",
 		Path: query,
-		Code: 500,
 	}
 
 	files := []*file.File{}
@@ -59,8 +58,7 @@ func SearchFiles(ix *index.Index, w http.ResponseWriter, r *http.Request) *helpe
 
 	err := json.NewEncoder(w).Encode(v)
 	if err != nil {
-		e.Err = err
-		return e
+		return e.Set(err, 500)
 	}
 
 	return nil
