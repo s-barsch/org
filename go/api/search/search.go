@@ -30,7 +30,7 @@ func SearchFiles(ix *index.Index, w http.ResponseWriter, r *http.Request) *helpe
 	query := r.URL.Path[len("/api/search"):]
 
 	e := &helper.Err{
-		Func: "search",
+		Func: "search.SearchFiles",
 		Path: query,
 		Code: 500,
 	}

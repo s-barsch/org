@@ -14,7 +14,7 @@ func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 	path := ix.NewPath(r.URL.Path[len("/api/sort"):])
 
 	e := &helper.Err{
-		Func: "writeSort",
+		Func: "WriteSort",
 		Path: path.Rel,
 		Code: 500,
 	}

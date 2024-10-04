@@ -20,7 +20,7 @@ func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 	p := ix.NewPath(r.URL.Path[len("/api/write"):])
 
 	e := &helper.Err{
-		Func: "writeFile",
+		Func: "WriteFile",
 		Path: p.Rel,
 		Code: 500,
 	}

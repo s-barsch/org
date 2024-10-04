@@ -13,7 +13,7 @@ func DeleteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper
 	path := r.URL.Path[len("/api/delete"):]
 
 	e := &helper.Err{
-		Func: "deleteFile",
+		Func: "DeleteFile",
 		Path: path,
 		Code: 500,
 	}

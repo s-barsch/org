@@ -25,7 +25,7 @@ func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Er
 	p := ix.NewPath(r.URL.Path[len("/api/nav"):])
 
 	e := &helper.Err{
-		Func: "viewNav",
+		Func: "nav.ViewNav",
 		Path: p.Rel,
 		Code: 500,
 	}

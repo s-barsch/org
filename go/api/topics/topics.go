@@ -45,7 +45,7 @@ func lastDate(files []*index.File) (time.Time, error) {
 
 func Topics(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	e := &helper.Err{
-		Func: "topics",
+		Func: "topics.Topics",
 		Code: 500,
 	}
 
@@ -78,7 +78,7 @@ func ViewTopic(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 	indexed := ix.Tags[topic]
 
 	e := &helper.Err{
-		Func: "topic",
+		Func: "topics.ViewTopic",
 		Path: topic,
 		Code: 500,
 	}

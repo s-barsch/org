@@ -26,7 +26,7 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 	}
 
 	e := &helper.Err{
-		Func: "viewFile",
+		Func: "view.ViewFile",
 		Path: p.Rel,
 		Code: 500,
 	}

@@ -13,7 +13,7 @@ import (
 
 func GetToday(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	e := &helper.Err{
-		Func: "getToday",
+		Func: "today.GetToday",
 		Code: 500,
 	}
 
@@ -29,7 +29,7 @@ func GetToday(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 
 func GetNow(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
 	e := &helper.Err{
-		Func: "getNow",
+		Func: "today.GetNow",
 		Code: 500,
 	}
 

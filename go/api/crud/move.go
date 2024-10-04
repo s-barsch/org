@@ -15,7 +15,7 @@ func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper
 	p := ix.NewPath(r.URL.Path[len("/api/move"):])
 
 	e := &helper.Err{
-		Func: "renameFile",
+		Func: "RenameFile",
 		Path: p.Rel,
 		Code: 500,
 	}
@@ -28,7 +28,7 @@ func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper
 
 	newP := p.New(newPath)
 
-	// dont like that.
+	// TODO: dont like that.
 	err = createBot(newP)
 	if err != nil {
 		e.Err = err

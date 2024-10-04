@@ -15,7 +15,7 @@ func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 	p := ix.NewPath(r.URL.Path[len("/api/copy"):])
 
 	e := &helper.Err{
-		Func: "copyFile",
+		Func: "CopyFile",
 		Path: p.Rel,
 		Code: 500,
 	}

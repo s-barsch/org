@@ -30,7 +30,7 @@ func Create(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err
 	path, err := createKine(r)
 	if err != nil {
 		return &helper.Err{
-			Func: "Kines",
+			Func: "kine.Create",
 			Path: "/api/kines",
 			Code: 500,
 		}
@@ -81,7 +81,7 @@ func Kines(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err 
 	err = json.NewEncoder(w).Encode(list)
 	if err != nil {
 		return &helper.Err{
-			Func: "Kines",
+			Func: "kine.Kines",
 			Path: "/api/kines",
 			Code: 500,
 		}
