@@ -44,10 +44,7 @@ func Routes(ix *index.Index) *mux.Router {
 	r.Path("/api/kine/listen").HandlerFunc(hix(ix, kine.Listen))
 
 	r.PathPrefix("/rl/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := ix.Load()
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-		}
+		ix.Load()
 	})
 
 	r.PathPrefix("/").HandlerFunc(buildWrapper(ix, serveBuild))
