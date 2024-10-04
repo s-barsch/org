@@ -1,4 +1,4 @@
-package crud
+package files
 
 import (
 	"encoding/json"

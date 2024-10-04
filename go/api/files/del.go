@@ -1,4 +1,4 @@
-package crud
+package files
 
 import (
 	"net/http"

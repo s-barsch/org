@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"g.rg-s.com/org/go/api/crud"
+	"g.rg-s.com/org/go/api/files"
 	"g.rg-s.com/org/go/api/kine"
 	"g.rg-s.com/org/go/api/nav"
 	"g.rg-s.com/org/go/api/search"
@@ -29,11 +29,11 @@ func Routes(ix *index.Index) *mux.Router {
 	r.PathPrefix("/api/nav").HandlerFunc(hix(ix, nav.ViewNav))
 
 	r.PathPrefix("/api/view").HandlerFunc(hix(ix, view.ViewFile))
-	r.PathPrefix("/api/copy").HandlerFunc(hix(ix, crud.CopyFile))
-	r.PathPrefix("/api/move").HandlerFunc(hix(ix, crud.RenameFile))
-	r.PathPrefix("/api/write").HandlerFunc(hix(ix, crud.WriteSwitch))
-	r.PathPrefix("/api/delete").HandlerFunc(hix(ix, crud.DeleteFile))
-	r.PathPrefix("/api/sort").HandlerFunc(hix(ix, crud.WriteSort))
+	r.PathPrefix("/api/copy").HandlerFunc(hix(ix, files.CopyFile))
+	r.PathPrefix("/api/move").HandlerFunc(hix(ix, files.RenameFile))
+	r.PathPrefix("/api/write").HandlerFunc(hix(ix, files.WriteSwitch))
+	r.PathPrefix("/api/delete").HandlerFunc(hix(ix, files.DeleteFile))
+	r.PathPrefix("/api/sort").HandlerFunc(hix(ix, files.WriteSort))
 	r.PathPrefix("/api/search").HandlerFunc(hix(ix, search.SearchFiles))
 	r.PathPrefix("/api/topics/").HandlerFunc(hix(ix, topics.ViewTopic))
 	r.PathPrefix("/api/topics").HandlerFunc(hix(ix, topics.Topics))
