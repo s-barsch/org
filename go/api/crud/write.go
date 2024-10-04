@@ -13,13 +13,14 @@ import (
 	"g.rg-s.com/org/go/helper"
 	"g.rg-s.com/org/go/helper/file"
 	"g.rg-s.com/org/go/helper/path"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
-func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/write"):])
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "WriteFile",
 		Path: p.Rel,
 	}
@@ -61,10 +62,10 @@ func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.
 	return nil
 }
 
-func CreateDir(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func CreateDir(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/write"):])
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "createDir",
 		Path: p.Rel,
 	}
@@ -159,7 +160,7 @@ func isTodayPath(p *path.Path) error {
 	return nil
 }
 
-func WriteSwitch(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func WriteSwitch(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/write"):])
 
 	if strings.Contains(p.Rel, ".") || p.Base() == "info" {

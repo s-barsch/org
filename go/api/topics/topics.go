@@ -10,6 +10,7 @@ import (
 
 	"g.rg-s.com/org/go/helper"
 	"g.rg-s.com/org/go/helper/file"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
@@ -43,8 +44,8 @@ func lastDate(files []*index.File) (time.Time, error) {
 	return time.Time{}, fmt.Errorf("no valid date found")
 }
 
-func Topics(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
-	e := &helper.Err{
+func Topics(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
+	e := &reqerr.Err{
 		Func: "topics.Topics",
 	}
 
@@ -71,11 +72,11 @@ func Topics(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err
 	return nil
 }
 
-func ViewTopic(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func ViewTopic(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	topic := r.URL.Path[len("/api/topics/"):]
 	indexed := ix.Tags[topic]
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "topics.ViewTopic",
 		Path: topic,
 	}

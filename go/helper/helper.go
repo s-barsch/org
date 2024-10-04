@@ -11,27 +11,6 @@ import (
 	"golang.org/x/text/language"
 )
 
-type Err struct {
-	Func string
-	Path string
-	Code int
-	Err  error
-}
-
-func (e *Err) Error() string {
-	// err is initialized with 0
-	if e.Code == 0 {
-		e.Code = 500
-	}
-	return fmt.Sprintf("%v: %v (%d) (%v)", e.Func, e.Err.Error(), e.Code, e.Path)
-}
-
-func (e *Err) Set(err error, code int) *Err {
-	e.Code = code
-	e.Err = err
-	return e
-}
-
 type DirView struct {
 	Path string `json:"path"`
 	Dir  *Dir   `json:"dir"`

@@ -6,15 +6,15 @@ import (
 	"os"
 	"strings"
 
-	"g.rg-s.com/org/go/helper"
 	"g.rg-s.com/org/go/helper/path"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
-func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func CopyFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/copy"):])
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "CopyFile",
 		Path: p.Rel,
 	}

@@ -5,16 +5,16 @@ import (
 	"net/http"
 	"os"
 
-	"g.rg-s.com/org/go/helper"
 	"g.rg-s.com/org/go/helper/file"
 	"g.rg-s.com/org/go/helper/path"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
-func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/move"):])
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "RenameFile",
 		Path: p.Rel,
 	}

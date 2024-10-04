@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"g.rg-s.com/imagecache/cache"
-	"g.rg-s.com/org/go/helper"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 	"github.com/gorilla/websocket"
 )
@@ -23,8 +23,8 @@ type Command struct {
 	Url    string `json:"url"`
 }
 
-func Talk(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
-	h := &helper.Err{
+func Talk(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
+	h := &reqerr.Err{
 		Func: "kine.Talk",
 		Path: TalkAPI,
 	}

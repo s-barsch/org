@@ -9,6 +9,7 @@ import (
 	"g.rg-s.com/org/go/helper"
 	"g.rg-s.com/org/go/helper/file"
 	"g.rg-s.com/org/go/helper/path"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
@@ -16,7 +17,7 @@ func isAll(path string) bool {
 	return fp.Base(path) == "all"
 }
 
-func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/view"):])
 
 	all := false
@@ -25,7 +26,7 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 		all = true
 	}
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "view.ViewFile",
 		Path: p.Rel,
 	}
@@ -95,7 +96,7 @@ func viewDir(p *path.Path) (*helper.DirView, error) {
 	}, nil
 }
 
-func ServeStatic(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func ServeStatic(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	path := r.URL.Path[len("/file"):]
 
 	http.ServeFile(w, r, fp.Join(ix.Root, path))

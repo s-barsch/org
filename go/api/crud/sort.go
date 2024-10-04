@@ -5,15 +5,15 @@ import (
 	"io"
 	"net/http"
 
-	"g.rg-s.com/org/go/helper"
 	"g.rg-s.com/org/go/helper/file"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
-func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	path := ix.NewPath(r.URL.Path[len("/api/sort"):])
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "WriteSort",
 		Path: path.Rel,
 	}

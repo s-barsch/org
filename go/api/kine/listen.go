@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"g.rg-s.com/org/go/helper"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
@@ -23,7 +23,7 @@ import (
 	chunked_transfer_encoding on;
 */
 
-func Listen(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func Listen(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	b := bufio.NewReader(r.Body)
 	for {
 		line, err := b.ReadSlice('x')

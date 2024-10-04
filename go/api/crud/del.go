@@ -5,14 +5,14 @@ import (
 	"os"
 	fp "path/filepath"
 
-	"g.rg-s.com/org/go/helper"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
-func DeleteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func DeleteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	path := r.URL.Path[len("/api/delete"):]
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "DeleteFile",
 		Path: path,
 	}

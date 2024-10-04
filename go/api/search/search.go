@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"g.rg-s.com/org/go/helper"
 	"g.rg-s.com/org/go/helper/file"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
@@ -26,10 +26,10 @@ type ResultView struct {
 	Files  []*file.File `json:"files"`
 }
 
-func SearchFiles(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func SearchFiles(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	query := r.URL.Path[len("/api/search"):]
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "search.SearchFiles",
 		Path: query,
 	}

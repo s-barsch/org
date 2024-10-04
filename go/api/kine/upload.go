@@ -12,17 +12,17 @@ import (
 	"strconv"
 	"time"
 
-	"g.rg-s.com/org/go/helper"
 	"g.rg-s.com/org/go/helper/path"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 	"gopkg.in/vansante/go-ffprobe.v2"
 
 	"g.rg-s.com/imagecache/cache"
 )
 
-func Upload(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func Upload(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len(UploadAPI):])
-	h := &helper.Err{
+	h := &reqerr.Err{
 		Func: "kine.Upload",
 		Path: p.Rel,
 	}

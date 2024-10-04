@@ -10,7 +10,7 @@ import (
 	fp "path/filepath"
 	"time"
 
-	"g.rg-s.com/org/go/helper"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 
 	"g.rg-s.com/sera/go/entry/info"
@@ -26,10 +26,10 @@ const (
 	TalkAPI   = "/api/kine/talk"
 )
 
-func Create(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func Create(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	path, err := createKine(r)
 	if err != nil {
-		return &helper.Err{
+		return &reqerr.Err{
 			Func: "kine.Create",
 			Path: "/api/kines",
 		}
@@ -72,14 +72,14 @@ func createKine(r *http.Request) (string, error) {
 	return webPath, nil
 }
 
-func Kines(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func Kines(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	list, err := readKines(0, kineRoot)
 	if err != nil {
 		log.Println(err)
 	}
 	err = json.NewEncoder(w).Encode(list)
 	if err != nil {
-		return &helper.Err{
+		return &reqerr.Err{
 			Func: "kine.Kines",
 			Path: "/api/kines",
 		}

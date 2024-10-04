@@ -8,11 +8,12 @@ import (
 	"time"
 
 	"g.rg-s.com/org/go/helper"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
-func GetToday(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
-	e := &helper.Err{
+func GetToday(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
+	e := &reqerr.Err{
 		Func: "today.GetToday",
 	}
 
@@ -25,8 +26,8 @@ func GetToday(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.E
 	return nil
 }
 
-func GetNow(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
-	e := &helper.Err{
+func GetNow(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
+	e := &reqerr.Err{
 		Func: "today.GetNow",
 	}
 

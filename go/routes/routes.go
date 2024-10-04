@@ -12,7 +12,7 @@ import (
 	"g.rg-s.com/org/go/api/today"
 	"g.rg-s.com/org/go/api/topics"
 	"g.rg-s.com/org/go/api/view"
-	"g.rg-s.com/org/go/helper"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 
 	"github.com/gorilla/mux"
@@ -73,7 +73,7 @@ func serveBuild(ix *index.Index, w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, ix.Build+"/index.html")
 }
 
-func hix(ix *index.Index, fn func(*index.Index, http.ResponseWriter, *http.Request) *helper.Err) http.HandlerFunc {
+func hix(ix *index.Index, fn func(*index.Index, http.ResponseWriter, *http.Request) *reqerr.Err) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := fn(ix, w, r)
 		if err != nil {

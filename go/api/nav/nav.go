@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"g.rg-s.com/org/go/helper"
 	"g.rg-s.com/org/go/helper/file"
 	"g.rg-s.com/org/go/helper/path"
+	"g.rg-s.com/org/go/helper/reqerr"
 	"g.rg-s.com/org/go/index"
 )
 
@@ -21,10 +21,10 @@ type Nav struct {
 	Siblings []*file.File `json:"siblings"`
 }
 
-func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
+func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/nav"):])
 
-	e := &helper.Err{
+	e := &reqerr.Err{
 		Func: "nav.ViewNav",
 		Path: p.Rel,
 	}
