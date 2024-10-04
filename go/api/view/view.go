@@ -21,15 +21,15 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.E
 	p := ix.NewPath(r.URL.Path[len("/api/view"):])
 
 	all := false
-	if isAll(p.Rel) {
-		p.Rel = fp.Dir(p.Rel)
+	if isAll(p.Path) {
+		p.Path = fp.Dir(p.Path)
 		all = true
 	}
 
-	e := reqerr.New("view.ViewFile", p.Rel)
+	e := reqerr.New("view.ViewFile", p.Path)
 
 	if p.IsFile() {
-		p.Rel = fp.Dir(p.Rel)
+		p.Path = fp.Dir(p.Path)
 	}
 
 	if !p.Exists() {
@@ -55,8 +55,8 @@ func ViewFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.E
 	return nil
 }
 
-func viewDirRecursive(path *path.Path) (*helper.DirView, error) {
-	files, err := file.GetFilesRecursive(path)
+func viewDirRecursive(p *path.Path) (*helper.DirView, error) {
+	files, err := file.GetFilesRecursive(p)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func viewDirRecursive(path *path.Path) (*helper.DirView, error) {
 	}
 
 	return &helper.DirView{
-		Path: path.Rel,
+		Path: p.Path,
 		Dir: &helper.Dir{
 			Files:  files,
 			Sorted: false,
@@ -85,7 +85,7 @@ func viewDir(p *path.Path) (*helper.DirView, error) {
 	}
 
 	return &helper.DirView{
-		Path: p.Rel,
+		Path: p.Path,
 		Dir: &helper.Dir{
 			Files:  files,
 			Sorted: sorted,

@@ -42,7 +42,7 @@ func (ix *Index) ResetAbort() {
 func (ix *Index) NewPath(rel string) *path.Path {
 	return &path.Path{
 		Root: ix.Root,
-		Rel:  rel,
+		Path: rel,
 	}
 }
 

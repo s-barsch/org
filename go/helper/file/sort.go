@@ -21,7 +21,7 @@ func parseSort(path *path.Path) ([]*File, error) {
 func makeSortFiles(dir *path.Path, list []string) ([]*File, error) {
 	files := []*File{}
 	for i, name := range list {
-		p := dir.New(fp.Join(dir.Rel, name))
+		p := dir.New(fp.Join(dir.Path, name))
 		fi, err := os.Stat(p.Abs())
 		if err != nil {
 			continue
@@ -29,8 +29,8 @@ func makeSortFiles(dir *path.Path, list []string) ([]*File, error) {
 		f := &File{
 			Num:  i,
 			Name: name,
-			Path: p.Rel,
-			Type: GetFileType(p.Rel, fi.IsDir()),
+			Path: p.Path,
+			Type: GetFileType(p.Path, fi.IsDir()),
 			root: p.Root,
 		}
 		if f.Type == "text" {

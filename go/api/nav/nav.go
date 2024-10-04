@@ -23,7 +23,7 @@ type Nav struct {
 
 func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/nav"):])
-	e := reqerr.New("nav.ViewNav", p.Rel)
+	e := reqerr.New("nav.ViewNav", p.Path)
 
 	nav, err := getNav(p)
 	if err != nil {
@@ -41,7 +41,7 @@ func ViewNav(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Er
 func getNav(p *path.Path) (*Nav, error) {
 	siblings := []*file.File{}
 
-	if strings.Count(p.Rel, "/") >= 2 {
+	if strings.Count(p.Path, "/") >= 2 {
 		s, err := getSiblings(p)
 		if err != nil {
 			return nil, err
@@ -55,8 +55,8 @@ func getNav(p *path.Path) (*Nav, error) {
 	}, nil
 }
 
-func getSiblings(path *path.Path) ([]*file.File, error) {
-	parent := path.Parent()
+func getSiblings(p *path.Path) ([]*file.File, error) {
+	parent := p.Parent()
 	files, _, err := file.GetFiles(parent)
 	if err != nil {
 		return nil, err
@@ -66,7 +66,7 @@ func getSiblings(path *path.Path) ([]*file.File, error) {
 
 	c := 0
 	for i, f := range files {
-		if f.Path == path.Rel {
+		if f.Path == p.Path {
 			c = i
 			break
 		}
@@ -94,10 +94,10 @@ func getSiblings(path *path.Path) ([]*file.File, error) {
 //	/public/graph/20/20-10/10/subdir
 //
 // -> /private/graph/20/20-10
-func switchPath(path *path.Path) string {
+func switchPath(p *path.Path) string {
 	public := false
-	if l := len("/public"); len(path.Rel) > l {
-		public = path.Rel[:l] == "/public"
+	if l := len("/public"); len(p.Path) > l {
+		public = p.Path[:l] == "/public"
 	}
 
 	var find, replace string
@@ -110,9 +110,9 @@ func switchPath(path *path.Path) string {
 		replace = "public"
 	}
 
-	newPath := path.New(strings.Replace(path.Rel, find, replace, -1))
+	newP := p.New(strings.Replace(p.Path, find, replace, -1))
 
-	existent := findExistent(newPath)
+	existent := findExistent(newP)
 
 	if existent == "/private" || existent == "/public" {
 		return ""
@@ -122,15 +122,15 @@ func switchPath(path *path.Path) string {
 
 // Recursive function going upwards the tree until it finds a existent
 // directory.
-func findExistent(path *path.Path) string {
-	if path.Rel == "/" || path.Rel == "." {
-		return path.Rel
+func findExistent(p *path.Path) string {
+	if p.Path == "/" || p.Path == "." {
+		return p.Path
 	}
-	_, err := os.Stat(path.Abs())
+	_, err := os.Stat(p.Abs())
 	if err == nil {
-		return path.Rel
+		return p.Path
 	}
-	return findExistent(path.Parent())
+	return findExistent(p.Parent())
 }
 
 func dirsOnly(files []*file.File) []*file.File {

@@ -18,11 +18,11 @@ func ReadFiles(p *path.Path) ([]*File, error) {
 		if fi.Name() == ".DS_Store" {
 			continue
 		}
-		fpath := fp.Join(p.Rel, fi.Name())
+		fpath := fp.Join(p.Path, fi.Name())
 		files = append(files, &File{
 			Num:  i,
 			Name: fi.Name(),
-			Path: fp.Join(p.Rel, fi.Name()),
+			Path: fp.Join(p.Path, fi.Name()),
 			Type: GetFileType(fpath, isDir(fi)),
 			root: p.Root,
 		})

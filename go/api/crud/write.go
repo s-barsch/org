@@ -19,7 +19,7 @@ import (
 
 func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/write"):])
-	e := reqerr.New("WriteFile", p.Rel)
+	e := reqerr.New("WriteFile", p.Path)
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -52,7 +52,7 @@ func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.
 	if err != nil {
 		return e.Set(err, 500)
 	}
-	ix.UpdateFile(p.Rel)
+	ix.UpdateFile(p.Path)
 
 	// log.Printf("writeFile:\n{%s}\n", body)
 	return nil
@@ -60,7 +60,7 @@ func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.
 
 func CreateDir(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/write"):])
-	e := reqerr.New("createDir", p.Rel)
+	e := reqerr.New("createDir", p.Path)
 
 	dir := p.Parent()
 	fi, err := os.Stat(dir.Abs())
@@ -84,12 +84,12 @@ func CreateDir(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.
 	return nil
 }
 
-func createInfo(path *path.Path) error {
-	if path.Base() == "bot" || !strings.Contains(path.Rel, "/public") {
+func createInfo(p *path.Path) error {
+	if p.Base() == "bot" || !strings.Contains(p.Path, "/public") {
 		return nil
 	}
 
-	return os.WriteFile(path.Abs()+"/info", []byte(getInfoText(path.Rel)), 0755)
+	return os.WriteFile(p.Abs()+"/info", []byte(getInfoText(p.Path)), 0755)
 }
 
 func getInfoText(path string) string {
@@ -141,7 +141,7 @@ func parsePathDate(path string) (time.Time, error) {
 func isTodayPath(p *path.Path) error {
 	today := helper.TodayPath()
 	dir := p.Parent()
-	if dir.Rel == today {
+	if dir.Path == today {
 		if !dir.Exists() {
 			_, err := helper.MakeToday(p.Root)
 			if err != nil {
@@ -155,7 +155,7 @@ func isTodayPath(p *path.Path) error {
 func WriteSwitch(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/write"):])
 
-	if strings.Contains(p.Rel, ".") || p.Base() == "info" {
+	if strings.Contains(p.Path, ".") || p.Base() == "info" {
 		return WriteFile(ix, w, r)
 	}
 	return CreateDir(ix, w, r)

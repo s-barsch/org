@@ -13,8 +13,7 @@ import (
 
 func RenameFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
 	p := ix.NewPath(r.URL.Path[len("/api/move"):])
-
-	e := reqerr.New("RenameFile", p.Rel)
+	e := reqerr.New("RenameFile", p.Path)
 
 	newPath, err := getBodyPath(r)
 	if err != nil {

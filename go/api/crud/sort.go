@@ -11,9 +11,8 @@ import (
 )
 
 func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.Err {
-	path := ix.NewPath(r.URL.Path[len("/api/sort"):])
-
-	e := reqerr.New("WriteSort", path.Rel)
+	p := ix.NewPath(r.URL.Path[len("/api/sort"):])
+	e := reqerr.New("WriteSort", p.Path)
 
 	list := []string{}
 
@@ -22,7 +21,7 @@ func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.
 		return e.Set(err, 500)
 	}
 
-	err = file.WriteSortFile(path, list)
+	err = file.WriteSortFile(p, list)
 	if err != nil {
 		return e.Set(err, 500)
 	}

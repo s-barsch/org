@@ -9,40 +9,40 @@ import (
 
 type Path struct {
 	Root string
-	Rel  string
+	Path string
 }
 
-func (p *Path) New(rel string) *Path {
+func (p *Path) New(path string) *Path {
 	return &Path{
-		Rel:  rel,
+		Path: path,
 		Root: p.Root,
 	}
 }
 
 func (p *Path) IsFile() bool {
-	return strings.Contains(p.Rel, ".")
+	return strings.Contains(p.Path, ".")
 }
 
 func (p *Path) Parent() *Path {
 	return &Path{
 		Root: p.Root,
-		Rel:  fp.Dir(p.Rel),
+		Path: fp.Dir(p.Path),
 	}
 }
 
 func (p *Path) Base() string {
-	return fp.Base(p.Rel)
+	return fp.Base(p.Path)
 }
 
 func (p *Path) Abs() string {
 	if p.Root == "" {
-		panic(fmt.Sprintf("*path.Path.Root shall never be empty (%v)", p.Rel))
+		panic(fmt.Sprintf("*path.Path.Root shall never be empty (%v)", p.Path))
 	}
-	return p.Root + p.Rel
+	return p.Root + p.Path
 }
 
 func (p *Path) Ext() string {
-	return fp.Ext(p.Rel)
+	return fp.Ext(p.Path)
 }
 
 func (p *Path) Exists() bool {
