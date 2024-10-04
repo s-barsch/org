@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"g.sacerb.com/org/go/index"
-	"g.sacerb.com/org/go/routes"
+	"g.rg-s.com/org/go/index"
+	"g.rg-s.com/org/go/routes"
 )
 
 func main() {

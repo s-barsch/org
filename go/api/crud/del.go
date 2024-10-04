@@ -5,8 +5,8 @@ import (
 	"os"
 	fp "path/filepath"
 
-	"g.sacerb.com/org/go/helper"
-	"g.sacerb.com/org/go/index"
+	"g.rg-s.com/org/go/helper"
+	"g.rg-s.com/org/go/index"
 )
 
 func DeleteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *helper.Err {
