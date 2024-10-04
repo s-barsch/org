@@ -17,8 +17,16 @@ func New(fnName, path string) *Err {
 	}
 }
 
+func (e *Err) Create() error {
+	return fmt.Errorf("%v: %w (%d) (%v)", e.Func, e.Err, e.Code, e.Path)
+}
+
 func (e *Err) Error() string {
-	return fmt.Sprintf("%v: %v (%d) (%v)", e.Func, e.Err.Error(), e.Code, e.Path)
+	return e.Create().Error()
+}
+
+func (e *Err) Unwrap() error {
+	return e.Err
 }
 
 func (e *Err) Set(err error, code int) *Err {
