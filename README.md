@@ -2,13 +2,13 @@
 
 File organization app
 
-<img src="https://stefba.com/org.jpg?v=2" alt="ORG screenshot">
+![ORG screenshot](https://stefba.com/org.jpg)
 
-### Installation
+## Installation
 
 Create production built:
 
-`pnpm install`<br>
+`pnpm install`\
 `pnpm build`
 
 Create directory for your files:
