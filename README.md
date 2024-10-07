@@ -6,14 +6,16 @@ File organization app
 
 ## Installation
 
+*Note: ImageMagick 6 is needed to be installed and accessible.*
+
 Create production built:
 
 `pnpm install`\
 `pnpm build`
 
-Create directory for your files:
+Create a directory for your files:
 
-`mkdir data`
+`mkdir -p data/private/graph`
 
 Compile and run the server:
 
