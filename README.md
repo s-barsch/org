@@ -6,7 +6,7 @@ File organization app
 
 ## Installation
 
-*Note: ImageMagick 6 is needed to be installed and accessible.*
+*ImageMagick 6 needs to be installed and accessible.*
 
 Create production built:
 
