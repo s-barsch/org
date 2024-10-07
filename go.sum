@@ -1,5 +1,5 @@
-g.rg-s.com/sera v0.0.0-20241004175708-3ecda7393035 h1:uhN7KL5JFXOhbliJLi1zVJbh/GblbkgLhI3E8dCIyow=
-g.rg-s.com/sera v0.0.0-20241004175708-3ecda7393035/go.mod h1:EjLRp+IXxkPc1fOfFZ0yupseyKjdLt7zzV6U7QY64rc=
+g.rg-s.com/sera v0.0.0-20241005103956-dfbe4c29f7c2 h1:ycEPHYwJXibpMG1T2I5JHkEPmyJ74S4bOXCML6uyd2w=
+g.rg-s.com/sera v0.0.0-20241005103956-dfbe4c29f7c2/go.mod h1:EjLRp+IXxkPc1fOfFZ0yupseyKjdLt7zzV6U7QY64rc=
 github.com/antonbaumann/german-go-stemmer v1.2.0 h1:TAjEnUcXBwtBeP+GBSA5awf0vRt9cDGvVxiyP1dJXbI=
 github.com/antonbaumann/german-go-stemmer v1.2.0/go.mod h1:ouebn6Y1yVNz5ztTIAv+n0yOUDRLweUSlK1SR/Tqa9g=
 github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
@@ -12,12 +12,8 @@ github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd h1:CmH9+J6ZSsIjUK
 github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd/go.mod h1:hPqNNc0+uJM6H+SuU8sEs5K5IQeKccPqeSjfgcKGgPk=
 github.com/yuin/goldmark v1.7.4 h1:BDXOHExt+A7gwPCJgPIIq7ENvceR7we7rOS9TNoLZeg=
 github.com/yuin/goldmark v1.7.4/go.mod h1:uzxRWxtg69N339t3louHJ7+O03ezfj6PlliRlaOzY1E=
-golang.org/x/net v0.28.0 h1:a9JDOJc5GMUJ0+UDqmLT86WiEy7iWyIhz8gz8E4e5hE=
-golang.org/x/net v0.28.0/go.mod h1:yqtgsTWOOnlGLG9GFRrK3++bGOUEkNBoHZc8MEDWPNg=
 golang.org/x/net v0.30.0 h1:AcW1SDZMkb8IpzCdQUaIq2sP4sZ4zw+55h6ynffypl4=
 golang.org/x/net v0.30.0/go.mod h1:2wGyMJ5iFasEhkwi13ChkO/t1ECNC4X4eBKkVFyYFlU=
-golang.org/x/text v0.17.0 h1:XtiM5bkSOt+ewxlOE/aE/AKEHibwj/6gvWMl9Rsh0Qc=
-golang.org/x/text v0.17.0/go.mod h1:BuEKDfySbSR4drPmRPG/7iBdf8hvFMuRexcpahXilzY=
 golang.org/x/text v0.19.0 h1:kTxAhCbGbxhK0IwgSKiMO5awPoDQ0RpfiVYBfK860YM=
 golang.org/x/text v0.19.0/go.mod h1:BuEKDfySbSR4drPmRPG/7iBdf8hvFMuRexcpahXilzY=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=

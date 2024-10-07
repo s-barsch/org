@@ -3,8 +3,8 @@ module g.rg-s.com/org
 go 1.23.0
 
 require (
-	g.rg-s.com/imagecache v0.0.0-20240924122413-fd79696da7a5
-	g.rg-s.com/sera v0.0.0-20241004175708-3ecda7393035
+	g.rg-s.com/imagecache v0.0.0-20241004185657-24c2ef46c7ee
+	g.rg-s.com/sera v0.0.0-20241005103956-dfbe4c29f7c2
 	github.com/antonbaumann/german-go-stemmer v1.2.0
 	github.com/gorilla/mux v1.8.1
 	github.com/gorilla/websocket v1.5.3
