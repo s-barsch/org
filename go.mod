@@ -1,6 +1,6 @@
 module g.rg-s.com/org
 
-go 1.23.0
+go 1.25.1
 
 require (
 	g.rg-s.com/imagecache v0.0.0-20241007110305-ac2eef76ea5d
