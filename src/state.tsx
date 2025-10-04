@@ -76,7 +76,10 @@ const useView = create<ViewState>()(
         },
         writeFile: async (f: File) => {
           await writeRequest(f.path, f.body, setErr);
-          get().update(updateFile( get().view.files.slice(), f))
+
+          let v = get().view;
+          v.files = updateFile( get().view.files.slice(), f)
+          set({ view: v });
         },
         duplicateFile: async (f: File) => {
           const files = get().view.files.slice();
