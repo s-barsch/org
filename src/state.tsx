@@ -3,9 +3,10 @@ import { devtools } from 'zustand/middleware'
 import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, merge, removeFromArr, renameText, updateFile } from './funcs/files';
 import { basename, dirname, join } from 'path-browserify';
 import { deleteRequest, moveRequest, newDirRequest, saveSortRequest, writeRequest } from './funcs/requests';
-import { isDir, isText, newTimestamp } from './funcs/paths';
+import { isDir, isText } from './funcs/paths';
 import { errObj } from './context/err';
 import { orgSort } from './funcs/sort';
+import { newFilePath } from './funcs';
 
 interface ViewState {
   view: viewObject;
@@ -145,12 +146,8 @@ const useView = create<ViewState>()(
           await moveRequest(f.path, newPath, setErr);
           get().update(removeFromArr(v.dir.files.slice(), f.name), v.dir.sorted);
         },
-        // text, dir view
         createFilePath: () => {
-          const v = get().view;
-          const dirPath = isText(v.path) ? dirname(v.path) : v.path;
-          const filePath = join(dirPath, newTimestamp() + ".txt")
-          return filePath;
+          return newFilePath(get().view.path);
         }
       }),
       {
