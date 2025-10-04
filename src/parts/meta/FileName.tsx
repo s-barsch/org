@@ -43,10 +43,10 @@ export default function FileName({file}: {file: File}) {
         if (name === file.name) {
             return;
         }
-        const oldPath = file.path;
+        const oldFile = { ...file };
         file.path = join(dirname(file.path), name);
         file.name = name;
-        renameFile(oldPath, file);
+        renameFile(oldFile, file);
     }
 
     return (

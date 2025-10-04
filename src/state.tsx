@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, merge, removeFromArr, renameText, updateFile } from './funcs/files';
+import File, { createDuplicate, insertDuplicateFile, insertNewDir, isPresent, merge, removeFile, renameText, updateFile } from './funcs/files';
 import { basename, dirname, join } from 'path-browserify';
 import { deleteRequest, moveRequest, newDirRequest, saveSortRequest, writeRequest } from './funcs/requests';
 import { isDir, isText } from './funcs/paths';
 import { errObj } from './context/err';
-import { orgSort } from './funcs/sort';
+import { orgSort, isOrdered, isSortFile } from './funcs/sort';
 import { newFilePath } from './funcs';
 
 interface ViewState {
@@ -18,10 +18,10 @@ interface ViewState {
   reloadView: () => void;
   setDir: (dir: dirContent) => void;
   renameView: (oldPath: string, newName: string) => void;
-  update: (newFiles: File[], isSorted: boolean) => void;
+  update: (newFiles: File[]) => void;
   addNewDir: (name: string) => void;
   writeFile: (f: File) => void;
-  renameFile: (oldPath: string, f: File) => void;
+  renameFile: (oldFile: File, newFile: File) => void;
   duplicateFile: (f: File) => void;
   deleteFile: (f: File) => void;
   saveSort: (part: File[], type: string) => void;
@@ -59,18 +59,17 @@ const useView = create<ViewState>()(
           v.dir = dir;
           set({ view: v });
         },
-        update: (newFiles, isSorted) => {
+        update: (newFiles) => {
           get().setDir({
-            sorted: isSorted,
+            sorted: false,
             files: newFiles
           })
           const path = get().view.path
-          if (isSorted && isDir(path)) {
+          if (isDir(path) && isOrdered(newFiles)) {
             saveSortRequest(path, newFiles, setErr)
           }
         },
         setView: (v: viewObject) => { set({ view: v }) },
-        // text, media, dir
         renameView: async (oldPath, newName) => {
           let oldName = basename(oldPath);
           let newPath = join(dirname(oldPath), newName);
@@ -80,15 +79,16 @@ const useView = create<ViewState>()(
           const d = get().view.dir;
           if (isText(newName)) {
             const newFiles = renameText(d.files.slice(), oldName, newName)
-            get().update(newFiles, d.sorted);
+            get().update(newFiles);
           }
         },
         writeFile: async (f: File) => {
-          const d = get().view.dir;
           await writeRequest(f.path, f.body, setErr);
-          get().update(updateFile(d.files.slice(), f, d.sorted), d.sorted)
+          get().setDir({
+            sorted: true,
+            files: updateFile( get().view.dir.files.slice(), f),
+          })
         },
-        // meta
         duplicateFile: async (f: File) => {
           const v = get().view;
           let newF: File;
@@ -100,18 +100,19 @@ const useView = create<ViewState>()(
           }
           await writeRequest(newF.path, newF.body, setErr);
 
-          const newFiles = insertDuplicateFile(v.dir.files.slice(), f, newF, v.dir.sorted)
-          get().update(newFiles, v.dir.sorted);
+          const newFiles = insertDuplicateFile(v.dir.files.slice(), f, newF)
+          get().update(newFiles);
         },
-        // meta, nav
         deleteFile: async (f: File) => {
-          const v = get().view;
-          let isSorted = v.dir.sorted;
-          if (f.name === ".sort") {
-            isSorted = false;
-          }
           await deleteRequest(f.path, setErr);
-          get().update(removeFromArr(v.dir.files.slice(), f.name), isSorted);
+
+          let newFiles = removeFile(get().view.dir.files.slice(), f.name);
+
+          if (isSortFile(f)) {
+            newFiles = orgSort(newFiles)
+          }
+
+          get().update(newFiles);
         },
         addNewDir: async (name: string) => {
           const v = get().view;
@@ -122,29 +123,27 @@ const useView = create<ViewState>()(
           const dirPath = join(v.path, name);
 
           await newDirRequest(dirPath, setErr)
-          get().update(insertNewDir(v.dir.files.slice(), dirPath, v.dir.sorted), v.dir.sorted)
+          get().update(insertNewDir(v.dir.files.slice(), dirPath, v.dir.sorted))
         },
-        // meta
-        renameFile: async (oldPath: string, f: File) => {
-          const v = get().view
-          let newFiles = v.dir.files.slice()
-          if (!v.dir.sorted) {
+        renameFile: async (oldFile: File, newFile: File) => {
+          await moveRequest(oldFile.path, newFile.path, setErr);
+
+          let newFiles = get().view.dir.files.slice()
+          if (!isOrdered(newFiles)) {
             newFiles = orgSort(newFiles)
           }
-          await moveRequest(oldPath, f.path, setErr);
-          get().update(newFiles, v.dir.sorted);
+
+          get().update(newFiles);
         },
-        // list view
         saveSort: async (part: File[], type: string) => {
-          const v = get().view;
-          const newFiles = merge(v.dir.files.slice(), part, type);
-          get().update(newFiles, true);
+          const newFiles = merge(get().view.dir.files.slice(), part, type);
+
+          get().update(newFiles);
         },
-        // meta
         moveFile: async (f: File, newPath: string) => {
           const v = get().view;
           await moveRequest(f.path, newPath, setErr);
-          get().update(removeFromArr(v.dir.files.slice(), f.name), v.dir.sorted);
+          get().update(removeFile(v.dir.files.slice(), f.name));
         },
         createFilePath: () => {
           return newFilePath(get().view.path);

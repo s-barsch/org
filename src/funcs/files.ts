@@ -1,6 +1,6 @@
 import { isTimestamp, dateToTimestamp, newTimestamp, timestampToDate } from './paths';
 import { basename, extname, dirname, join } from 'path-browserify';
-import { orgSort } from './sort';
+import { isOrdered, orgSort } from './sort';
 
 type File = {
     id: number;
@@ -147,6 +147,7 @@ export function replaceFile(files: File[], oldFile: File, newFile: File): File[]
             return files;
         }
     }
+
     throw new Error('Could not replace file: ' + oldFile.name);
 }
 
@@ -189,27 +190,28 @@ export function createDuplicate(file: File, files: File[]): File {
 }
 
 
-export function insertDuplicateFile(files: File[], f: File, newF: File, isSorted: boolean) {
-    if (isSorted) {
-        return insertBefore(files, f, newF);
+export function insertDuplicateFile(files: File[], file: File, duplicate: File) {
+    if (isOrdered(files)) {
+        return insertBefore(files, file, duplicate);
     }
-    return orgSort(files.concat(newF));
+    return orgSort(files.concat(duplicate));
 }
 
-export function insertNewFile(files: File[], f: File, isSorted: boolean): File[] {
-    if (isSorted) {
+export function insertNewFile(files: File[], f: File): File[] {
+    if (isOrdered(files)) {
         return [f].concat(files)
     }
+
     return orgSort(files.concat(f))
 }
 
-export function updateFile(files: File[], f: File, sorted: boolean): File[] {
-    let oldFile = files.find(x => x.name === f.name);
-    if (!oldFile) {
-        return insertNewFile(files, f, sorted)
+export function updateFile(files: File[], f: File): File[] {
+    const oldFile = files.find(x => x.name === f.name)
+    if (oldFile) {
+        return replaceFile(files, oldFile, f);
     }
-    oldFile = f
-    return files
+
+    return insertNewFile(files, f);
 }
 
 export function renameText(files: File[], oldName: string, newName: string): File[] {
@@ -217,8 +219,10 @@ export function renameText(files: File[], oldName: string, newName: string): Fil
     if (!f) {
         throw new Error("renameFile: Couldn’t find file. " + oldName)
     }
+
     f.path = join(dirname(f.path), newName);
     f.name = newName;
+
     return files
 }
 

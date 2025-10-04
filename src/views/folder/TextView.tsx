@@ -27,14 +27,10 @@ function findText(files: File[], path: string): { text: File; isNew: boolean; } 
 
     const name = basename(path);
     const text = files.find(f => f.name === name);
+    
+    if (text) {
+        return { text: text, isNew: false }
+    }
 
-    if (!text) {
-        return { text: f, isNew: true }
-    }
-    return { text: text, isNew: false }
-    /*
-    if (!text) {
-        return <>{'Couldn’t find text: ' + name + '.'}</>
-    }
-    */
+    return { text: f, isNew: true }
 }

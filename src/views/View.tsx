@@ -8,7 +8,6 @@ import MediaView from './folder/MediaView';
 type ViewProps = {
     path: string;
     files: File[];
-    sorted: boolean;
 }
 
 export default function View({path, files }: ViewProps) {
