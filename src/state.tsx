@@ -16,7 +16,6 @@ interface ViewState {
   setView: (v: viewObject) => void
   loadView: (path: string) => void;
   reloadView: () => void;
-  setDir: (dir: dirContent) => void;
   renameView: (oldPath: string, newName: string) => void;
   update: (newFiles: File[]) => void;
   addNewDir: (name: string) => void;
@@ -54,19 +53,13 @@ const useView = create<ViewState>()(
         reloadView: () => {
           get().loadView(get().view.path)
         },
-        setDir: (dir: dirContent) => {
+        update: (newFiles: File[]) => {
           let v = get().view;
-          v.dir = dir;
+          v.dir.files = newFiles;
           set({ view: v });
-        },
-        update: (newFiles) => {
-          get().setDir({
-            sorted: false,
-            files: newFiles
-          })
-          const path = get().view.path
-          if (isDir(path) && isOrdered(newFiles)) {
-            saveSortRequest(path, newFiles, setErr)
+
+          if (isDir(v.path) && isOrdered(newFiles)) {
+            saveSortRequest(v.path, newFiles, setErr)
           }
         },
         setView: (v: viewObject) => { set({ view: v }) },
@@ -84,10 +77,7 @@ const useView = create<ViewState>()(
         },
         writeFile: async (f: File) => {
           await writeRequest(f.path, f.body, setErr);
-          get().setDir({
-            sorted: true,
-            files: updateFile( get().view.dir.files.slice(), f),
-          })
+          get().update(updateFile( get().view.dir.files.slice(), f))
         },
         duplicateFile: async (f: File) => {
           const v = get().view;
