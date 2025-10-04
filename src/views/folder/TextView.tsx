@@ -1,6 +1,6 @@
 import Head from '../../parts/Head';
 import TextField from '../../views/folder/files/TextView';
-import File, { newFile } from '../../funcs/files';
+import File, { newTextFile } from '../../funcs/files';
 
 import { basename } from 'path-browserify';
 
@@ -20,7 +20,7 @@ export default function TextView({path, files}: TextViewProps) {
 }
 
 function findText(files: File[], path: string): { text: File; isNew: boolean; } {
-    const f = newFile(path)
+    const f = newTextFile(path)
     if (!files || files.length === 0) {
         return { text: f, isNew: true }
     }

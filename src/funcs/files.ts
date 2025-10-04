@@ -24,7 +24,7 @@ export function newInfoFile(mainFilePath: string): File {
     }
 }
 
-export function newFile(path: string): File {
+export function newTextFile(path: string): File {
     return {
         id: Date.now(),
         name: basename(path),
@@ -130,7 +130,7 @@ function subtract(base: File[], other: File[]): File[] {
     return base
 }
 
-export function removeFromArr(files: File[], name: string): File[] {
+export function removeFile(files: File[], name: string): File[] {
     for (let i = 0; i < files.length; i++) {
         if (files[i].name === name) {
             files.splice(i, 1)
@@ -138,6 +138,16 @@ export function removeFromArr(files: File[], name: string): File[] {
         }
     }
     throw new Error("Could not delete " + name + "from files.");
+}
+
+export function replaceFile(files: File[], oldFile: File, newFile: File): File[] {
+    for (let i = 0; i < files.length; i++) {
+        if (files[i].name === oldFile.name) {
+            files.splice(i, 1, newFile)
+            return files;
+        }
+    }
+    throw new Error('Could not replace file: ' + oldFile.name);
 }
 
 export function insertBefore(files: File[], f: File, newF: File): File[] {
