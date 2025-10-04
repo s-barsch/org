@@ -2,6 +2,7 @@ package files
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -25,6 +26,8 @@ func WriteSort(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.
 	if err != nil {
 		return e.Set(err, 500)
 	}
+
+	fmt.Println("WriteSort", list)
 
 	return nil
 }

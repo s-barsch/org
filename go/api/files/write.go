@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -54,7 +55,7 @@ func WriteFile(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.
 	}
 	ix.UpdateFile(p.Path)
 
-	// log.Printf("writeFile:\n{%s}\n", body)
+	log.Printf("writeFile:\n{%s}\n", body)
 	return nil
 }
 
