@@ -30,32 +30,33 @@ func ReadFiles(p *path.Path) ([]*File, error) {
 	return files, nil
 }
 
-func GetFiles(p *path.Path) ([]*File, bool, error) {
+func GetFiles(p *path.Path) ([]*File, error) {
 	files, err := ReadFiles(p)
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
 
 	for _, f := range files {
 		if f.Type == "text" {
 			err = f.Read()
 			if err != nil {
-				return nil, false, err
+				return nil, err
 			}
 		}
 	}
+
 	if !hasSort(p.Abs()) {
-		return antoSort(files), false, err
+		return antoSort(files), err
 	}
 
 	sorted, err := parseSort(p)
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
 
 	fresh := merge(sorted, files)
 
-	return renumerate(fresh), true, nil
+	return renumerate(fresh), nil
 }
 
 func renumerate(files []*File) []*File {

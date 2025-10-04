@@ -66,16 +66,13 @@ func viewDirRecursive(p *path.Path) (*helper.DirView, error) {
 	}
 
 	return &helper.DirView{
-		Path: p.Path,
-		Dir: &helper.Dir{
-			Files:  files,
-			Sorted: false,
-		},
+		Path:  p.Path,
+		Files: files,
 	}, nil
 }
 
 func viewDir(p *path.Path) (*helper.DirView, error) {
-	files, sorted, err := file.GetFiles(p)
+	files, err := file.GetFiles(p)
 	if err != nil {
 		return nil, err
 	}
@@ -85,11 +82,8 @@ func viewDir(p *path.Path) (*helper.DirView, error) {
 	}
 
 	return &helper.DirView{
-		Path: p.Path,
-		Dir: &helper.Dir{
-			Files:  files,
-			Sorted: sorted,
-		},
+		Path:  p.Path,
+		Files: files,
 	}, nil
 }
 

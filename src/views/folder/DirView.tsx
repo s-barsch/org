@@ -51,25 +51,36 @@ export default function DirView({path, files}: DirViewProps) {
 }
 
 function TranscriptLinks({files}: {files: File[]}) {
-    let mp4 = ""
+    if (!files) {
+        return null
+    }
+    
     function transcriptPath(path: string, lang: string): string {
         const name = basename(path).slice(0, -4)
         return join(dirPath(path), "transcript", name + "." + lang + ".txt")
     }
-    for (const f of files) {
-        if (f.type === "video") {
-            mp4 = f.path
-        }
-    }
+
+    let mp4 = findMp4(files);
     if (mp4 === "") {
         return null;
     }
+
     return(
         <>
         <Link to={transcriptPath(mp4, "de")}>de</Link>
         <Link to={transcriptPath(mp4, "en")}>en</Link>
         </>
     )
+}
+
+function findMp4(files: File[]): string {
+    for (const f of files) {
+        if (f.type === "video") {
+            return f.path
+        }
+    }
+
+    return ""
 }
 
 

@@ -35,7 +35,7 @@ func (f *File) Read() error {
 }
 
 func GetFilesRecursive(p *path.Path) ([]*File, error) {
-	l, _, err := GetFiles(p)
+	l, err := GetFiles(p)
 	if err != nil {
 		return nil, err
 	}

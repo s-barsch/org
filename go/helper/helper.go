@@ -12,13 +12,8 @@ import (
 )
 
 type DirView struct {
-	Path string `json:"path"`
-	Dir  *Dir   `json:"dir"`
-}
-
-type Dir struct {
-	Files  []*file.File `json:"files"`
-	Sorted bool         `json:"sorted"`
+	Path  string       `json:"path"`
+	Files []*file.File `json:"files"`
 }
 
 func MakeToday(root string) (string, error) {

@@ -88,12 +88,8 @@ func ViewTopic(ix *index.Index, w http.ResponseWriter, r *http.Request) *reqerr.
 	}
 
 	v := &helper.DirView{
-		Path: topic,
-		// Nav:  nav,
-		Dir: &helper.Dir{
-			Files:  files,
-			Sorted: false,
-		},
+		Path:  topic,
+		Files: files,
 	}
 
 	err := json.NewEncoder(w).Encode(v)

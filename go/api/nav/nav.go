@@ -57,7 +57,7 @@ func getNav(p *path.Path) (*Nav, error) {
 
 func getSiblings(p *path.Path) ([]*file.File, error) {
 	parent := p.Parent()
-	files, _, err := file.GetFiles(parent)
+	files, err := file.GetFiles(parent)
 	if err != nil {
 		return nil, err
 	}
