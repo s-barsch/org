@@ -226,7 +226,7 @@ export function renameText(files: File[], oldName: string, newName: string): Fil
     return files
 }
 
-export function insertNewDir(files: File[], path: string, isSorted: boolean): File[] {
+export function insertNewDir(files: File[], path: string): File[] {
     let f = {
         id: Date.now(),
         name: basename(path),
@@ -234,10 +234,12 @@ export function insertNewDir(files: File[], path: string, isSorted: boolean): Fi
         type: "dir",
         body: ""
     }
+
     let newFiles = files.concat(f)
-    if (!isSorted) {
+    if (!isOrdered(files)) {
         return orgSort(newFiles);
     }
+
     return newFiles;
 }
 
