@@ -67,7 +67,7 @@ export function Topic() {
             <Nav path={path} />
             <h1 className="title">{topic.path}</h1>
             <section id="files">
-            <FileList files={topic.dir.files} />
+            <FileList files={topic.files} />
             </section>
         </>
     )
