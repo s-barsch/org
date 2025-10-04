@@ -67,3 +67,4 @@ err.log
 .yarn/install-state.gz
 
 _minitest/*
+tsconfig.app.tsbuildinfo
